@@ -1,0 +1,29 @@
+## Paso 1
+
+Instalar el xampp 7.2.4 64 bit, con php 7 y composer, se debe añadir al PATH del sistema el php y el composer
+
+## Paso 2
+
+Abrir una consola en la raiz del proyecto y ejecutar el comando: composer install
+
+## Paso 3
+
+Crear la base de datos mysql con nombre loan, si desea cambiar el nombre debe actualizar la cadena de conexión en el fichero
+config/db.php
+NOTA: actualizar en este fichero usuario y contraseña de la base de datos
+
+## Paso 4
+
+Abrir la consola en la raiz del proyecto y ejecutar los siguientes comandos, para correr las migraciones de la base de datos:
+
+- yii migrate --migrationNamespaces=Da\User\Migration
+- yii migrate --migrationPath=@yii/rbac/migrations
+- yii migrate
+
+## Paso 5
+Abrir la consola en la raiz del proyecto y ejecutar:
+- yii loan/generate-root-use
+
+Este comando genera el usuario root con contraseña root*<year>, con el cual podemos hacer login por primera vez en el sistema.
+
+
