@@ -8,36 +8,39 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="loan-form">
+<!-- begin row -->
+<div class="row">
+    <!-- begin col-12 -->
+    <div class="col-md-12">
+        <!-- begin panel -->
+        <div class="box box-success">
+            <div class="box-body">
+                <?php $form = ActiveForm::begin(); ?>
+                <div class="row">
+                    <div class="col-md-6">
+                        <?= $form->field($model, 'customer_id')->textInput() ?>
 
-    <?php $form = ActiveForm::begin(); ?>
+                        <?= $form->field($model, 'amount')->textInput() ?>
 
-    <?= $form->field($model, 'customer_id')->textInput() ?>
+                        <?= $form->field($model, 'porcent_interest')->textInput() ?>
+                    </div>
+                    <div class="col-md-6">
 
-    <?= $form->field($model, 'banker_id')->textInput() ?>
+                        <?= $form->field($model, 'frequency_payment')->textInput() ?>
 
-    <?= $form->field($model, 'amount')->textInput() ?>
+                        <?= $form->field($model, 'start_date')->textInput() ?>
 
-    <?= $form->field($model, 'porcent_interest')->textInput() ?>
+                        <?= $form->field($model, 'end_date')->textInput() ?>
+                    </div>
+                </div>
 
-    <?= $form->field($model, 'status')->textInput() ?>
+                <div class="form-group">
+                    <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>
+                    <?= Html::button('Cancelar', ['class' => 'btn btn-default', 'onclick'=>'window.history.go(-1)']) ?>
+                </div>
 
-    <?= $form->field($model, 'refinancing_id')->textInput() ?>
-
-    <?= $form->field($model, 'frequency_payment')->textInput() ?>
-
-    <?= $form->field($model, 'start_date')->textInput() ?>
-
-    <?= $form->field($model, 'end_date')->textInput() ?>
-
-    <?= $form->field($model, 'created_at')->textInput() ?>
-
-    <?= $form->field($model, 'updated_at')->textInput() ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+                <?php ActiveForm::end(); ?>
+            </div>
+        </div>
     </div>
-
-    <?php ActiveForm::end(); ?>
-
 </div>

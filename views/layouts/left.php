@@ -31,10 +31,10 @@
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget'=> 'tree'],
                 'items' => [
                     ['label' => 'Menu', 'options' => ['class' => 'header']],
-                    ['label' => 'Prestamos', 'icon' => 'file-code-o', 'url' => ['/loan/index']],
-                    ['label' => 'Cobros', 'icon' => 'file-code-o', 'url' => ['/payment/index']],
-                    ['label' => 'Clientes', 'icon' => 'file-code-o', 'url' => ['/customer/index']],
-                    ['label' => 'Administración', 'icon' => 'file-code-o', 'url' => ['/user/admin/index']],
+                    ['label' => 'Prestamos', 'icon' => 'money', 'url' => ['/loan/index']],
+                    ['label' => 'Cobros', 'icon' => 'credit-card', 'url' => ['/payment/index']],
+                    ['label' => 'Clientes', 'icon' => 'users', 'url' => ['/customer/index']],
+                    ['label' => 'Administración', 'icon' => 'cogs', 'url' => ['/user/admin/index']],
                     [
                         'label' => 'Administración',
                         'icon' => 'share',

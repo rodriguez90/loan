@@ -16,14 +16,14 @@ class m181104_034825_crate_customer_table extends Migration
             'id' => $this->primaryKey(),
             'first_name'=>$this->string()->notNull(),
             'last_name'=>$this->string()->notNull(),
-            'dni'=>$this->string()->notNull(),
+            'dni'=>$this->string()->unique()->notNull(),
             'email'=>$this->string()->notNull(),
             'phone_number'=>$this->string()->notNull(),
             'location'=>$this->string()->notNull(),
             'address'=>$this->string()->notNull(),
-            'created_at'=>$this->timestamp()->notNull(),
-            'updated_at'=>$this->timestamp()->notNull(),
-            'created_by'=>$this->integer(),
+            'created_at'=>$this->timestamp()->defaultExpression('CURRENT_TIMESTAMP')->notNull(),
+            'updated_at'=>$this->timestamp()->defaultExpression('CURRENT_TIMESTAMP')->notNull(),
+            'created_by'=>$this->integer()->null(),
         ]);
 
         $this->addForeignKey(

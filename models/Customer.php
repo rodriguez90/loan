@@ -42,7 +42,7 @@ class Customer extends \yii\db\ActiveRecord
             [['created_at', 'updated_at'], 'safe'],
             [['created_by'], 'integer'],
             [['first_name', 'last_name', 'dni', 'email', 'phone_number', 'location', 'address'], 'string', 'max' => 255],
-            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['created_by' => 'id']],
+            [['created_by'], 'exist', 'skipOnError' => false, 'targetClass' => User::className(), 'targetAttribute' => ['created_by' => 'id']],
         ];
     }
 
@@ -52,17 +52,17 @@ class Customer extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'first_name' => 'First Name',
-            'last_name' => 'Last Name',
-            'dni' => 'Dni',
+            'id' => 'Número',
+            'first_name' => 'Nombre',
+            'last_name' => 'Apellidos',
+            'dni' => 'Cedúla',
             'email' => 'Email',
-            'phone_number' => 'Phone Number',
-            'location' => 'Location',
-            'address' => 'Address',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'created_by' => 'Created By',
+            'phone_number' => 'Teléfono',
+            'location' => 'Ubicación',
+            'address' => 'Dirección',
+            'created_at' => 'Fecha de Registro',
+            'updated_at' => 'Fecha de Modificación',
+            'created_by' => 'Creado Por',
         ];
     }
 

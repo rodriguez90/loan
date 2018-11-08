@@ -58,18 +58,18 @@ class Loan extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'customer_id' => 'Customer ID',
-            'banker_id' => 'Banker ID',
-            'amount' => 'Amount',
-            'porcent_interest' => 'Porcent Interest',
-            'status' => 'Status',
-            'refinancing_id' => 'Refinancing ID',
-            'frequency_payment' => 'Frequency Payment',
-            'start_date' => 'Start Date',
-            'end_date' => 'End Date',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'id' => 'Número',
+            'customer_id' => 'Cliente',
+            'banker_id' => 'Prestamista',
+            'amount' => 'Cantidad',
+            'porcent_interest' => 'Interés',
+            'status' => 'Estado',
+            'refinancing_id' => 'Refinanciamiento',
+            'frequency_payment' => 'Frecuencia de Pago',
+            'start_date' => 'Fecha de Inicio',
+            'end_date' => 'Fecha Final',
+            'created_at' => 'Fecha de Registro',
+            'updated_at' => 'Fecha de Modificación',
         ];
     }
 
