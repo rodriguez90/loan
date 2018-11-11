@@ -44,9 +44,9 @@ class m181104_034910_crate_payment_table extends Migration
      */
     public function safeDown()
     {
-        echo "m181104_034910_crate_payment_table cannot be reverted.\n";
+//        echo "m181104_034910_crate_payment_table cannot be reverted.\n";
 
-        return false;
+        return true;
     }
 
     /*

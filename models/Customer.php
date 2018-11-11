@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use Da\User\Model\User;
 
 /**
  * This is the model class for table "customer".

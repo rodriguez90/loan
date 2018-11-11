@@ -66,8 +66,14 @@ class PaymentController extends Controller
     {
         $model = new Payment();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if($data = Yii::$app->request->isPost)
+        {
+            $data = Yii::$app->request->post();
+            $data["Payment"]['collector_id'] = Yii::$app->user->identity->getId();
+
+            if ($model->load($data) && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('create', [

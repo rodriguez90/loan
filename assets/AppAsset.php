@@ -23,7 +23,7 @@ class AppAsset extends AssetBundle
 //        'css/site.css',
     ];
     public $js = [
-        '/js/utils.js'
+        'js/utils.js'
     ];
     public $depends = [
         'dmstr\web\AdminLteAsset',

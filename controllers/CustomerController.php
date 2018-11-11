@@ -5,9 +5,11 @@ namespace app\controllers;
 use Yii;
 use app\models\Customer;
 use app\models\CustomerSearch;
+use yii\db\Query;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * CustomerController implements the CRUD actions for Customer model.
@@ -69,7 +71,7 @@ class CustomerController extends Controller
         {
             $data = Yii::$app->request->post();
 
-            $data['created_by'] = Yii::$app->user->identity->getId();
+            $data['Customer']['created_by'] = Yii::$app->user->identity->getId();
 
             if ( $model->load($data) && $model->save()) {
 
@@ -93,8 +95,16 @@ class CustomerController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if($data = Yii::$app->request->isPost)
+        {
+            $data = Yii::$app->request->post();
+
+            $data['Customer']['created_by'] = Yii::$app->user->identity->getId();
+
+            if ( $model->load($data) && $model->save()) {
+
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('update', [
@@ -114,6 +124,32 @@ class CustomerController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    public function actionCustomerList($q = null, $id = null)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $out = ['results'=>['id'=>'', 'text'=>'']];
+
+        if(!is_null($q))
+        {
+            $query = new Query();
+            $query->select(['id',"CONCAT(first_name, ' ', last_name) AS text"])
+                  ->from('customer')
+                  ->andWhere(['like', 'last_name', $q])
+                  ->orWhere(['like', 'dni', $q]);
+            $command = $query->createCommand();
+            $data = $command->queryAll();
+            $out['results'] = array_values($data);
+        }
+        elseif ($id > 0)
+        {
+            $customer = Customer::findOne($id);
+            $out['results']=['id'=>$id, 'text'=> $customer->first_name . ' ' . $customer->last_name];
+        }
+
+        return $out;
     }
 
     /**

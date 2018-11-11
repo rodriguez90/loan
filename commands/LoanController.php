@@ -31,4 +31,16 @@ class LoanController extends Controller
 
         return ExitCode::OK;
     }
+
+    public function actionGeneratePermision()
+    {
+        // FIXME: Check this
+        return ExitCode::OK;
+    }
+
+    public function actionDefaultAssingPermision()
+    {
+        // FIXME: Check this
+        return ExitCode::OK;
+    }
 }

@@ -19,7 +19,7 @@ class LoanSearch extends Loan
     {
         return [
             [['id', 'customer_id', 'banker_id', 'status', 'refinancing_id', 'frequency_payment'], 'integer'],
-            [['amount', 'porcent_interest'], 'number'],
+            [['amount', 'porcent_interest', 'fee_payment'], 'number'],
             [['start_date', 'end_date', 'created_at', 'updated_at'], 'safe'],
         ];
     }
@@ -72,6 +72,7 @@ class LoanSearch extends Loan
             'end_date' => $this->end_date,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'fee_payment' => $this->fee_payment,
         ]);
 
         return $dataProvider;

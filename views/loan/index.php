@@ -24,14 +24,21 @@ $this->params['breadcrumbs'][] = $this->title;
                     'dataProvider' => $dataProvider,
                     'filterModel' => $searchModel,
                     'columns' => [
-                        ['class' => 'yii\grid\SerialColumn'],
+//                        ['class' => 'yii\grid\SerialColumn'],
 
                         'id',
-                        'customer_id',
-//                        'banker_id',
+                        'customer.first_name',
+//                        'banker',
                         'amount',
                         'porcent_interest',
-                        'status',
+                        [
+                            'class' => 'yii\grid\DataColumn', // can be omitted, as it is the default
+                            'attribute' => 'status',
+                            'value' => function($data) {
+                                return \app\models\Loan::STATUS_LABEL[$data['status']];
+                            },
+                            'filter' => ['0' =>'Inactivo', '1' =>'Activo' , '2'=>'Cerrado',],
+                        ],
                         //'refinancing_id',
 //                        'frequency_payment',
                         'start_date',

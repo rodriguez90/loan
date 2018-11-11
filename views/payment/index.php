@@ -7,33 +7,36 @@ use yii\widgets\Pjax;
 /* @var $searchModel app\models\PaymentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Payments';
+$this->title = 'Cobros';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="payment-index">
+<div class="row">
+    <div class="col-lg-12 col-xs-6">
+        <div class="box box-solid">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+            <div class="box-header with-border">
+                <?= Html::a('Nuevo Cobro', ['create'], ['class' => 'btn btn-success']) ?>
+            </div>
+            <div class="box-body">
 
-    <p>
-        <?= Html::a('Create Payment', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+                <?php Pjax::begin(); ?>
+                <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+                <?= GridView::widget([
+                    'dataProvider' => $dataProvider,
+                    'filterModel' => $searchModel,
+                    'columns' => [
+                        'id',
+                        'loan_id',
+                        'collector.username',
+                        'payment_date',
+                        'amount',
 
-            'id',
-            'loan_id',
-            'collector_id',
-            'payment_date',
-            'amount',
-
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
-    <?php Pjax::end(); ?>
+                        ['class' => 'yii\grid\ActionColumn'],
+                    ],
+                ]); ?>
+                <?php Pjax::end(); ?>
+            </div>
+        </div>
+    </div>
 </div>

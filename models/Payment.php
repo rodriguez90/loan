@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use Da\User\Model\User;
 
 /**
  * This is the model class for table "payment".
@@ -11,7 +12,9 @@ use Yii;
  * @property int $loan_id
  * @property int $collector_id
  * @property string $payment_date
- * @property double $amount
+ * @property string $amount
+ * @property string $created_at
+ * @property string $updated_at
  *
  * @property User $collector
  * @property Loan $loan
@@ -35,6 +38,7 @@ class Payment extends \yii\db\ActiveRecord
             [['loan_id', 'collector_id', 'payment_date', 'amount'], 'required'],
             [['loan_id', 'collector_id'], 'integer'],
             [['amount'], 'number'],
+            [['created_at', 'updated_at'], 'safe'],
             [['payment_date'], 'string', 'max' => 255],
             [['collector_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['collector_id' => 'id']],
             [['loan_id'], 'exist', 'skipOnError' => true, 'targetClass' => Loan::className(), 'targetAttribute' => ['loan_id' => 'id']],
@@ -47,11 +51,13 @@ class Payment extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'loan_id' => 'Loan ID',
-            'collector_id' => 'Collector ID',
-            'payment_date' => 'Payment Date',
-            'amount' => 'Amount',
+            'id' => 'No.',
+            'loan_id' => 'Préstamo',
+            'collector_id' => 'Cobrador',
+            'payment_date' => 'Fecha de pago',
+            'amount' => 'Cuota',
+            'created_at' => 'Fecha Registro',
+            'updated_at' => 'Fehca Modificación',
         ];
     }
 

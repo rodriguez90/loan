@@ -5,9 +5,11 @@ namespace app\controllers;
 use Yii;
 use app\models\Loan;
 use app\models\LoanSearch;
+use yii\db\Query;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * LoanController implements the CRUD actions for Loan model.
@@ -66,8 +68,19 @@ class LoanController extends Controller
     {
         $model = new Loan();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if($data = Yii::$app->request->isPost)
+        {
+            $data = Yii::$app->request->post();
+
+            $data["Loan"]['banker_id'] = Yii::$app->user->identity->getId();
+            $data["Loan"]['status'] = Loan::ACTIVE;
+
+            $data["Loan"]['start_date'] = date('Y-m-d', strtotime($data["Loan"]['start_date']));
+            $data["Loan"]['end_date'] = date('Y-m-d', strtotime($data["Loan"]['end_date']));
+
+            if ($model->load($data) && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('create', [
@@ -86,9 +99,19 @@ class LoanController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if($data = Yii::$app->request->isPost)
+        {
+            $data = Yii::$app->request->post();
+
+//            $data["Loan"]['banker_id'] = Yii::$app->user->identity->getId();
+//            $data["Loan"]['status'] = Loan::ACTIVE;
+//            var_dump($data);die;
+
+            if ($model->load($data) && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
+
 
         return $this->render('update', [
             'model' => $model,
@@ -107,6 +130,37 @@ class LoanController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+
+    /**
+     * @param null $q
+     * @param null $id
+     * @return array
+     */
+    public function actionLoanList($q = null, $id = null)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $out = ['results'=>['id'=>'', 'text'=>'']];
+
+        if(!is_null($q))
+        {
+            $query = new Query();
+            $query->select(['id',"id AS text"])
+                ->from('loan')
+                ->andWhere(['like', 'CONVERT(id, CHAR(50))', $q]);
+            $command = $query->createCommand();
+            $data = $command->queryAll();
+            $out['results'] = array_values($data);
+        }
+        elseif ($id > 0)
+        {
+            $loan = Loan::findOne($id);
+            $out['results']=['id'=>$id, 'text'=> $loan->id];
+        }
+
+        return $out;
     }
 
     /**

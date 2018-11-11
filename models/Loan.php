@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use Da\User\Model\User;
 
 /**
  * This is the model class for table "loan".
@@ -10,7 +11,7 @@ use Yii;
  * @property int $id
  * @property int $customer_id
  * @property int $banker_id
- * @property double $amount
+ * @property string $amount
  * @property double $porcent_interest
  * @property int $status
  * @property int $refinancing_id
@@ -19,6 +20,7 @@ use Yii;
  * @property string $end_date
  * @property string $created_at
  * @property string $updated_at
+ * @property string $fee_payment
  *
  * @property User $banker
  * @property Customer $customer
@@ -28,6 +30,17 @@ use Yii;
  */
 class Loan extends \yii\db\ActiveRecord
 {
+
+    const INACTIVE = 0;
+    const ACTIVE = 1;
+    const CLOSE = 2;
+
+    const STATUS_LABEL = [
+        0 => 'Inactivo',
+        1 => 'Activo',
+        2 => 'Cerrado',
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -42,9 +55,9 @@ class Loan extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['customer_id', 'banker_id', 'amount', 'porcent_interest', 'status', 'frequency_payment', 'start_date', 'end_date'], 'required'],
+            [['customer_id', 'banker_id', 'porcent_interest', 'status', 'frequency_payment', 'start_date', 'end_date'], 'required'],
             [['customer_id', 'banker_id', 'status', 'refinancing_id', 'frequency_payment'], 'integer'],
-            [['amount', 'porcent_interest'], 'number'],
+            [['amount', 'porcent_interest', 'fee_payment'], 'number'],
             [['start_date', 'end_date', 'created_at', 'updated_at'], 'safe'],
             [['banker_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['banker_id' => 'id']],
             [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => Customer::className(), 'targetAttribute' => ['customer_id' => 'id']],
@@ -58,7 +71,7 @@ class Loan extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'Número',
+            'id' => 'No.',
             'customer_id' => 'Cliente',
             'banker_id' => 'Prestamista',
             'amount' => 'Cantidad',
@@ -70,6 +83,7 @@ class Loan extends \yii\db\ActiveRecord
             'end_date' => 'Fecha Final',
             'created_at' => 'Fecha de Registro',
             'updated_at' => 'Fecha de Modificación',
+            'fee_payment' => 'Couta',
         ];
     }
 

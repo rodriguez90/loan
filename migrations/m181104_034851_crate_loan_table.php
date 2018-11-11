@@ -16,14 +16,14 @@ class m181104_034851_crate_loan_table extends Migration
             'id' => $this->primaryKey(),
             'customer_id'=>$this->integer()->notNull(),
             'banker_id'=>$this->integer()->notNull(),
-            'amount'=>$this->double()->notNull(),
+            'amount'=>$this->decimal(14,2)->notNull(),
             'porcent_interest'=>$this->double()->notNull(),
-            'status'=>$this->tinyInteger()->notNull(),
+            'status'=>$this->tinyInteger()->notNull(), // inactive = 0, active = 1, close = 2
             'refinancing_id'=>$this->integer(),
             'frequency_payment'=>$this->integer()->notNull(),
             'start_date'=>$this->dateTime()->notNull(),
             'end_date'=>$this->dateTime()->notNull(),
-            'created_at'=>$this->timestamp()->notNull(),
+            'created_at'=>$this->timestamp()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
             'updated_at'=>$this->timestamp()->notNull(),
         ]);
 

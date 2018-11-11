@@ -14,7 +14,7 @@ FormWizardAsset::register($this);  // $this represents the view object
 ?>
 
 <?php if ($model->hasErrors()) {
-    \Yii::$app->getSession()->setFlash('error', $model->errors);
+    \Yii::$app->getSession()->setFlash('error', $model->getErrorSummary(true));
 }
 ?>
 
