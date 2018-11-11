@@ -96,7 +96,6 @@ $this->title = '';
                     'columns' => [
                         ['class' => 'yii\grid\SerialColumn'],
 
-                        'id',
                         'loan_id',
                         'collector_id',
                         'payment_date',
