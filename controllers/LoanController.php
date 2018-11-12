@@ -103,9 +103,11 @@ class LoanController extends Controller
         {
             $data = Yii::$app->request->post();
 
-//            $data["Loan"]['banker_id'] = Yii::$app->user->identity->getId();
-//            $data["Loan"]['status'] = Loan::ACTIVE;
-//            var_dump($data);die;
+            $data["Loan"]['banker_id'] = Yii::$app->user->identity->getId();
+            $data["Loan"]['status'] = Loan::ACTIVE;
+
+            $data["Loan"]['start_date'] = date('Y-m-d', strtotime($data["Loan"]['start_date']));
+            $data["Loan"]['end_date'] = date('Y-m-d', strtotime($data["Loan"]['end_date']));
 
             if ($model->load($data) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);

@@ -2,6 +2,9 @@
 
 namespace app\controllers;
 
+use app\models\Customer;
+use app\models\Loan;
+use app\models\Payment;
 use app\models\PaymentSearch;
 use Yii;
 use yii\filters\AccessControl;
@@ -65,9 +68,16 @@ class SiteController extends Controller
         $searchModel = new PaymentSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $customerCount = Customer::find()->count();
+        $loanCount = Loan::find()->count();
+        $paymentCount = Payment::find()->count();
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'customerCount' =>$customerCount,
+            'loanCount' =>$loanCount,
+            'paymentCount' =>$paymentCount,
         ]);
     }
 

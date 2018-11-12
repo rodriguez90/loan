@@ -14,9 +14,9 @@ $this->title = '';
         <!-- small box -->
         <div class="small-box bg-aqua">
             <div class="inner">
-                <h3>150</h3>
+                <h3><?= $loanCount ?></h3>
 
-                <p>Prestamos</p>
+                <p>Préstamos</p>
             </div>
             <div class="icon">
                 <i class="ion ion-bag"></i>
@@ -29,7 +29,8 @@ $this->title = '';
         <!-- small box -->
         <div class="small-box bg-green">
             <div class="inner">
-                <h3>53<sup style="font-size: 20px">%</sup></h3>
+                <h3><?= $paymentCount ?></h3>
+<!--                <h3>4<sup style="font-size: 20px">%</sup></h3>-->
 
                 <p>Cobros</p>
             </div>
@@ -44,7 +45,7 @@ $this->title = '';
         <!-- small box -->
         <div class="small-box bg-yellow">
             <div class="inner">
-                <h3>44</h3>
+                <h3><?= $customerCount ?></h3>
 
                 <p>Clientes</p>
             </div>
@@ -59,7 +60,7 @@ $this->title = '';
         <!-- small box -->
         <div class="small-box bg-red">
             <div class="inner">
-                <h3>65</h3>
+                <h3>0</h3>
 
                 <p>Impagos</p>
             </div>

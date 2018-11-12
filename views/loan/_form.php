@@ -148,7 +148,7 @@ $saveCont = ['class' => 'kv-saved-cont'];
 </div>
 HTML;
                         echo '<div class="form-group drp-container">';
-                         echo '<label>Fecha Fin</label>';
+                         echo '<label>Plazo del Préstamo</label>';
                             echo DateRangePicker::widget([
 //                                'model'=>$model,
 //                                'attribute' => 'dateRange',

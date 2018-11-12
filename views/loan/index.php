@@ -41,8 +41,38 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                         //'refinancing_id',
 //                        'frequency_payment',
-                        'start_date',
-                        'end_date',
+                        [
+                            'attribute' => 'start_date',
+                            'value' => 'start_date',
+                            'format' => 'php:date',
+                            'filter' =>  \kartik\date\DatePicker::widget([
+                                'model' => $searchModel,
+                                'attribute'=>'start_date',
+                                'pluginOptions' => [
+                                    'format' => 'dd-M-yyyy',
+                                    'autoclose'=>true,
+                                    'todayHighlight' => true
+                                ]
+                            ]),
+                            'format' => 'html',
+                        ],
+                        [
+                            'attribute' => 'end_date',
+                            'value' => 'end_date',
+//                            'format' => 'php:date',
+                            'filter' =>  \kartik\date\DatePicker::widget([
+                                'model' => $searchModel,
+                                'attribute'=>'end_date',
+                                'pluginOptions' => [
+                                    'format' => 'dd-M-yyyy',
+                                    'autoclose'=>true,
+                                    'todayHighlight' => true
+                                ]
+                            ]),
+                            'format' => 'html',
+                        ],
+
+//                        'end_date:date',
                         //'created_at',
                         //'updated_at',
 
