@@ -6,12 +6,12 @@ use app\models\Customer;
 use app\models\Loan;
 use app\models\Payment;
 use app\models\PaymentSearch;
+use Da\User\Filter\AccessRuleFilter;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
-use app\models\LoginForm;
 use app\models\ContactForm;
 
 class SiteController extends Controller
@@ -24,10 +24,12 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout'],
+                'ruleConfig' => [
+                    'class' => AccessRuleFilter::class,
+                ],
+//                'only' => ['logout'],
                 'rules' => [
                     [
-                        'actions' => ['logout'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],

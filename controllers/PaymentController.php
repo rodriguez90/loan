@@ -2,9 +2,11 @@
 
 namespace app\controllers;
 
+use Da\User\Filter\AccessRuleFilter;
 use Yii;
 use app\models\Payment;
 use app\models\PaymentSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -24,6 +26,18 @@ class PaymentController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'ruleConfig' => [
+                    'class' => AccessRuleFilter::class,
+                ],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
                 ],
             ],
         ];

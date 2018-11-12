@@ -2,10 +2,12 @@
 
 namespace app\controllers;
 
+use Da\User\Filter\AccessRuleFilter;
 use Yii;
 use app\models\Customer;
 use app\models\CustomerSearch;
 use yii\db\Query;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -26,6 +28,18 @@ class CustomerController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'ruleConfig' => [
+                    'class' => AccessRuleFilter::class,
+                ],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
                 ],
             ],
         ];

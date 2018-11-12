@@ -30,19 +30,28 @@ use yii\helpers\Html;
                     if(!Yii::$app->user->isGuest)
                     {
                         echo Html::beginTag('li', ['class'=>'dropdown user user-menu']);
-                            echo Html::beginTag('a', null ,['class'=>'dropdown-toggle', 'data-toggle'=>"dropdown"]);
+                            echo Html::beginTag('a', ['class'=>'dropdown-toggle', 'data-toggle'=>'dropdown']);
                                 echo Html::tag('span', $user->username ,['class'=>'hidden-xs']);
                             echo Html::endTag('a');
                             echo Html::beginTag('ul', ['class'=>'dropdown-menu']);
                                 echo Html::beginTag('li', ['class'=>'user-header']);
                                     echo Html::beginTag('p', ['class'=>'user-header']);
-                                        echo Html::encode($user->username);
+                                        if($user->profile && !empty($user->profile->name))
+                                        {
+                                            echo Html::encode($user->profile->name);
+                                            echo Html::tag('br');
+                                            echo Html::beginTag('small');
+                                            echo Html::encode(date('d-m-Y H:i', $user->created_at));
+                                            echo Html::endTag('small');
+                                        }
                                     echo Html::endTag('p');
                                 echo Html::endTag('li');
 
                                 echo Html::beginTag('li', ['class'=>'user-footer']);
                                 echo Html::beginTag('div', ['class'=>'pull-left']);
-                                    echo Html::a('Perfil', \yii\helpers\Url::to(['/user/settings/profile']));
+                                    echo Html::a('Perfil',
+                                        \yii\helpers\Url::to(['/user/settings/profile']),
+                                        ['class'=>'btn btn-info btn-flat']);
                                 echo Html::endTag('div');
 
                                 echo Html::beginTag('div', ['class'=>'pull-right']);
