@@ -36,9 +36,21 @@ class LoanController extends Controller
                     'class' => AccessRuleFilter::class,
                 ],
                 'rules' => [
+//                    [
+//                        'allow' => true,
+//                        'roles' => ['@'],
+//                    ],
                     [
+                        'actions' => ['index','view'],
                         'allow' => true,
-                        'roles' => ['@'],
+                        'roles' => ['admin','Administrador','Cobrador'],
+//                        'permissions' => ['customer_view', 'customer_list'],
+                    ],
+                    [
+                        'actions' => ['create','update','delete'],
+                        'allow' => true,
+                        'roles' => ['admin','Administrador'],
+//                        'permissions' => ['customer_create', 'customer_update', 'customer_delete'],
                     ],
                 ],
             ],

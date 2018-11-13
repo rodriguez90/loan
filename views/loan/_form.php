@@ -80,7 +80,7 @@ $saveCont = ['class' => 'kv-saved-cont'];
 //                                'name' => 'Loan[customer_id]',
                                 'initValueText' => $customerName,
                                 'theme' => \kartik\select2\Select2::THEME_BOOTSTRAP,
-                                'options' => ['placeholder' => 'Seleccione el cliente'],
+                                'options' => ['placeholder' => 'Buscar por apellido o cédula'],
                                 'pluginOptions' => [
                                     'allowClear' => false,
                                     'minimumInputLength' => 3,

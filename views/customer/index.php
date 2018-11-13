@@ -45,6 +45,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'label'=>'Teléfono',
                                 'attribute'=>'phone_number'
                             ],
+                            [
+                                'label'=>'Estado',
+                                'attribute'=>'active',
+                                'content' => function ($data) {
+                                    return $data['active'] ? '<span class="label label-success pull-left">Activo</span>' : '<span class="label label-danger">Inactivo</span>';
+                                },
+                                'filter' => ['0' =>'Inactivo', '1' =>'Activo',],
+                            ],
                             //'phone_number',
                             //'location',
                             //'address',

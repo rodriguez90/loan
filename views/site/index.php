@@ -78,7 +78,7 @@ $this->title = '';
     <div class="col-lg-12 col-xs-6">
         <div class="box box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title">Pagos de Hoy</h3>
+                <h3 class="box-title">Pagos de Pendientes</h3>
 
                 <div class="box-tools pull-right">
                     <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -96,9 +96,17 @@ $this->title = '';
                     'filterModel' => $searchModel,
                     'columns' => [
                         ['class' => 'yii\grid\SerialColumn'],
-
-                        'loan_id',
-                        'collector_id',
+                        [
+                            'attribute' => 'loan_id',
+                            'content' => function ($data) {
+                                return  Html::a($data['loan_id'],
+                                    \yii\helpers\Url::toRoute(['/loan/view/', 'id' => $data['loan_id']]));
+                            }
+                        ],
+//                        [
+//                            'loan:',
+//                        ],
+//                        'collector_id',
                         'payment_date',
                         'amount',
 

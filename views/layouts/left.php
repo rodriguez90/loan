@@ -1,3 +1,26 @@
+<?php
+$items = [['label' => 'Menu', 'options' => ['class' => 'header']]];
+
+if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'loan_list'))
+{
+    $items[]=['label' => 'Prestamos', 'icon' => 'money', 'url' => ['/loan/index']];
+}
+
+if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'payment_list'))
+{
+    $items[]=['label' => 'Cobros', 'icon' => 'credit-card', 'url' => ['/payment/index']];
+}
+
+if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'customer_list'))
+{
+    $items[]=['label' => 'Clientes', 'icon' => 'users', 'url' => ['/customer/index']];
+}
+
+if(Yii::$app->authManager->getAssignment('Administrador',Yii::$app->user->getId()))
+{
+    $items[]=['label' => 'Administración', 'icon' => 'cogs', 'url' => ['/user/admin/index']];
+}
+?>
 <aside class="main-sidebar">
 
     <section class="sidebar">
@@ -5,12 +28,14 @@
         <?= dmstr\widgets\Menu::widget(
             [
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget'=> 'tree'],
-                'items' => [
-                    ['label' => 'Menu', 'options' => ['class' => 'header']],
-                    ['label' => 'Prestamos', 'icon' => 'money', 'url' => ['/loan/index']],
-                    ['label' => 'Cobros', 'icon' => 'credit-card', 'url' => ['/payment/index']],
-                    ['label' => 'Clientes', 'icon' => 'users', 'url' => ['/customer/index']],
-                    ['label' => 'Administración', 'icon' => 'cogs', 'url' => ['/user/admin/index']],
+                'items' => $items
+//                'items' => [
+//                    ['label' => 'Menu', 'options' => ['class' => 'header']],
+
+//                    ['label' => 'Prestamos', 'icon' => 'money', 'url' => ['/loan/index']],
+//                    ['label' => 'Cobros', 'icon' => 'credit-card', 'url' => ['/payment/index']],
+//                    ['label' => 'Clientes', 'icon' => 'users', 'url' => ['/customer/index']],
+//                    ['label' => 'Administración', 'icon' => 'cogs', 'url' => ['/user/admin/index']],
 //                    [
 //                        'label' => 'Administración',
 //                        'icon' => 'share',
@@ -41,7 +66,8 @@
 //                    ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug']],
 //                    ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
 
-                ],
+//                ]
+                ,
             ]
         ) ?>
 

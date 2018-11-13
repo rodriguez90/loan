@@ -42,6 +42,14 @@ $this->params['breadcrumbs'][] = ['label' => 'Clientes', 'url' => ['index']];
                         'created_at:datetime',
                         'updated_at:datetime',
                         'createdBy.username',
+                        [
+                            'label'=>'Estado',
+                            'attribute'=>'active',
+                            'format'=>'raw',
+                            'value' => function ($data) {
+                                return $data['active'] ? '<span class="label label-success pull-left">Activo</span>' : '<span class="label label-danger">Inactivo</span>';
+                            },
+                        ],
                     ],
                     'options'=>['class' => 'table table-striped table-bordered table-condensed detail-view']
                 ]) ?>

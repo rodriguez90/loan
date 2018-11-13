@@ -125,9 +125,9 @@ var dniValidator = function (dni)
     }
 
     return true;
-}
+};
 
-var DniValidator = function () {
+var dniValidator = function () {
     "use strict";
     return {
         //main function
@@ -135,4 +135,16 @@ var DniValidator = function () {
             dniValidator();
         }
     };
-}();
+};
+
+
+var calFeePayment = function (loan, interes, fee_count) {
+    "use strict";
+    if(fee_count <= 0) return 0;
+
+   var partial = (loan * interes) / 100;
+   loan += partial;
+   var fee = loan / fee_count;
+
+   return fee;
+};

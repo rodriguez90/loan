@@ -68,7 +68,7 @@ class SiteController extends Controller
     public function actionIndex()
     {
         $searchModel = new PaymentSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->searchDashBoard(Yii::$app->request->queryParams);
 
         $customerCount = Customer::find()->count();
         $loanCount = Loan::find()->count();

@@ -36,9 +36,21 @@ class CustomerController extends Controller
                     'class' => AccessRuleFilter::class,
                 ],
                 'rules' => [
+//                    [
+//                        'allow' => true,
+//                        'roles' => ['@'],
+//                    ],
                     [
+                        'actions' => ['index','view', 'customer-list'],
                         'allow' => true,
-                        'roles' => ['@'],
+                        'roles' => ['admin','Administrador','Cobrador'],
+//                        'permissions' => ['customer_view', 'customer_list'],
+                    ],
+                    [
+                        'actions' => ['create','update','delete'],
+                        'allow' => true,
+                        'roles' => ['admin','Administrador'],
+//                        'permissions' => ['customer_create', 'customer_update', 'customer_delete'],
                     ],
                 ],
             ],
@@ -151,6 +163,7 @@ class CustomerController extends Controller
             $query = new Query();
             $query->select(['id',"CONCAT(first_name, ' ', last_name) AS text"])
                   ->from('customer')
+                  ->where(['active'=>1])
                   ->andWhere(['like', 'last_name', $q])
                   ->orWhere(['like', 'dni', $q]);
             $command = $query->createCommand();
