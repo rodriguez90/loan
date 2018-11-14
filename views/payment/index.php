@@ -20,21 +20,33 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="box-body">
 
                 <?php Pjax::begin(); ?>
-                <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+                <div class="table-responsive">
+                    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-                <?= GridView::widget([
-                    'dataProvider' => $dataProvider,
-                    'filterModel' => $searchModel,
-                    'columns' => [
-                        'id',
-                        'loan_id',
-                        'collector.username',
-                        'payment_date',
-                        'amount',
+                    <?= GridView::widget([
+                        'dataProvider' => $dataProvider,
+                        'filterModel' => $searchModel,
+                        'columns' => [
+                            'id',
+                            'loan_id',
+                            'collector.username',
+                            'payment_date',
+                            'amount',
+                            [
+                                'class' => 'yii\grid\DataColumn', // can be omitted, as it is the default
+                                'attribute' => 'status',
+                                'content' => function ($data) {
+                                    return $data['status'] ? '<span class="label label-success pull-left">Cobrado</span>' : '<span class="label label-danger">Pendiente</span>';
+                                },
+                                'filter' => ['0' =>'Pendiente', '1' =>'Cobrado',],
+                            ],
 
-                        ['class' => 'yii\grid\ActionColumn'],
-                    ],
-                ]); ?>
+                            ['class' => 'yii\grid\ActionColumn'],
+                        ],
+                        'tableOptions'=>['class'=>'table table-striped table-bordered table-condensed']
+                    ]); ?>
+                </div>
+
                 <?php Pjax::end(); ?>
             </div>
         </div>

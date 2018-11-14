@@ -11,13 +11,13 @@ $this->title = 'Clientes';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="row">
-    <div class="col-lg-12 col-xs-6">
+    <div class="col-lg-12 col-xs-12">
         <div class="box box-solid">
                 <div class="box-header with-border">
                     <?= Html::a('Nuevo Cliente', ['create'], ['class' => 'btn btn-success btn']) ?>
                 </div>
                 <!-- /.box-header -->
-                <div class="box-body">
+                <div class="box-body table-responsive">
 
                     <?php Pjax::begin(); ?>
                     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -49,12 +49,21 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'label'=>'Estado',
                                 'attribute'=>'active',
                                 'content' => function ($data) {
-                                    return $data['active'] ? '<span class="label label-success pull-left">Activo</span>' : '<span class="label label-danger">Inactivo</span>';
+                                    return $data['active'] ? '<span class="label label-success  pull-left">Activo</span>' : '<span class="label label-danger">Inactivo</span>';
                                 },
                                 'filter' => ['0' =>'Inactivo', '1' =>'Activo',],
                             ],
                             //'phone_number',
-                            //'location',
+                            [
+                                'attribute'=>'location',
+                                'format'=>'raw',
+//                                'contentOptions'=>['class'=>'text-truncate'],
+                                'value' => function ($data) {
+//                                    return Html::a($data->location,$data->location, ['style'=>'text-overflow:ellipsis;white-space:nowrap;overflow:hidden;width:70px'] );
+//                                    return Html::a($data->location,$data->location, ['class'=>'text-ellipsis'] );
+                                    return Html::a('Ir',$data->location);
+                                },
+                            ],
                             //'address',
                             //'created_at',
                             //'updated_at',
@@ -62,6 +71,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                             ['class' => 'yii\grid\ActionColumn'],
                         ],
+                        'tableOptions'=>['class'=>'table table-striped table-bordered table-condensed']
                     ]); ?>
                     <?php Pjax::end(); ?>
                 </div>

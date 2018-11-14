@@ -126,6 +126,7 @@ class CustomerController extends Controller
             $data = Yii::$app->request->post();
 
             $data['Customer']['created_by'] = Yii::$app->user->identity->getId();
+            $data["Customer"]['updated_at'] = date('Y-m-d');
 
             if ( $model->load($data) && $model->save()) {
 

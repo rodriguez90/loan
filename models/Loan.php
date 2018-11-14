@@ -5,6 +5,7 @@ namespace app\models;
 use Yii;
 use Da\User\Model\User;
 
+
 /**
  * This is the model class for table "loan".
  *
@@ -21,8 +22,10 @@ use Da\User\Model\User;
  * @property string $created_at
  * @property string $updated_at
  * @property string $fee_payment
+ * @property int $collector_id
  *
  * @property User $banker
+ * @property User $collector
  * @property Customer $customer
  * @property Loan $refinancing
  * @property Loan[] $loans
@@ -30,7 +33,6 @@ use Da\User\Model\User;
  */
 class Loan extends \yii\db\ActiveRecord
 {
-
     const INACTIVE = 0;
     const ACTIVE = 1;
     const CLOSE = 2;
@@ -55,11 +57,12 @@ class Loan extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['customer_id', 'banker_id', 'porcent_interest', 'status', 'frequency_payment', 'start_date', 'end_date'], 'required'],
-            [['customer_id', 'banker_id', 'status', 'refinancing_id', 'frequency_payment'], 'integer'],
+            [['customer_id', 'banker_id', 'amount', 'porcent_interest', 'status', 'frequency_payment', 'start_date', 'end_date', 'fee_payment', 'collector_id'], 'required'],
+            [['customer_id', 'banker_id', 'status', 'refinancing_id', 'frequency_payment', 'collector_id'], 'integer'],
             [['amount', 'porcent_interest', 'fee_payment'], 'number'],
             [['start_date', 'end_date', 'created_at', 'updated_at'], 'safe'],
             [['banker_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['banker_id' => 'id']],
+            [['collector_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['collector_id' => 'id']],
             [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => Customer::className(), 'targetAttribute' => ['customer_id' => 'id']],
             [['refinancing_id'], 'exist', 'skipOnError' => true, 'targetClass' => Loan::className(), 'targetAttribute' => ['refinancing_id' => 'id']],
         ];
@@ -84,6 +87,7 @@ class Loan extends \yii\db\ActiveRecord
             'created_at' => 'Fecha de Registro',
             'updated_at' => 'Fecha de Modificación',
             'fee_payment' => 'Couta',
+            'collector_id' => 'Cobrador',
         ];
     }
 
@@ -93,6 +97,14 @@ class Loan extends \yii\db\ActiveRecord
     public function getBanker()
     {
         return $this->hasOne(User::className(), ['id' => 'banker_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCollector()
+    {
+        return $this->hasOne(User::className(), ['id' => 'collector_id']);
     }
 
     /**

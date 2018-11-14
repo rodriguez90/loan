@@ -43,6 +43,10 @@ $this->params['breadcrumbs'][] = ['label' => 'Préstamos', 'url' => ['index']];
                             'attribute' => 'banker.username',
                             'label' => 'Prestamista',
                         ],
+                        [
+                            'attribute' => 'collector.username',
+                            'label' => 'Cobrador',
+                        ],
                         'amount',
                         [
                             'attribute' => 'porcent_interest',

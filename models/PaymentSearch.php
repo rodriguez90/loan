@@ -18,7 +18,7 @@ class PaymentSearch extends Payment
     public function rules()
     {
         return [
-            [['id', 'loan_id', 'collector_id'], 'integer'],
+            [['id', 'loan_id', 'collector_id', 'status'], 'integer'],
             [['payment_date', 'created_at', 'updated_at'], 'safe'],
             [['amount'], 'number'],
         ];
@@ -66,6 +66,7 @@ class PaymentSearch extends Payment
             'amount' => $this->amount,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'status' => $this->status,
         ]);
 
         $query->andFilterWhere(['like', 'payment_date', $this->payment_date]);

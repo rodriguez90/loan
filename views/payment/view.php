@@ -37,6 +37,16 @@ $this->params['breadcrumbs'][] = ['label' => 'Cobros', 'url' => ['index']];
                             'collector.username',
                             'payment_date:date',
                             'amount',
+                            [
+                                'label'=>'Estado',
+                                'attribute'=>'status',
+                                'format'=>'raw',
+                                'value' => function ($data) {
+                                    return $data['active'] ?
+                                        '<span class="label label-success pull-left">Cobrado</span>' :
+                                        '<span class="label label-danger">Pendiente</span>';
+                                },
+                            ],
                         ],
                         'options'=>['class' => 'table table-striped table-bordered table-condensed detail-view']
                     ]) ?>

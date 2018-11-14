@@ -18,7 +18,7 @@ class LoanSearch extends Loan
     public function rules()
     {
         return [
-            [['id', 'customer_id', 'banker_id', 'status', 'refinancing_id', 'frequency_payment'], 'integer'],
+            [['id', 'customer_id', 'banker_id', 'status', 'refinancing_id', 'frequency_payment', 'collector_id'], 'integer'],
             [['amount', 'porcent_interest', 'fee_payment'], 'number'],
             [['start_date', 'end_date', 'created_at', 'updated_at'], 'safe'],
         ];
@@ -73,6 +73,7 @@ class LoanSearch extends Loan
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'fee_payment' => $this->fee_payment,
+            'collector_id' => $this->collector_id,
         ]);
 
         return $dataProvider;

@@ -29,7 +29,7 @@ class Customer extends \yii\db\ActiveRecord
     const INACTIVE = 0;
     const ACTIVE = 1;
 
-    const STATUS_LABEL = [
+    const ACTIVE_LABEL = [
         0 => 'Inactivo',
         1 => 'Activo',
     ];
@@ -51,7 +51,8 @@ class Customer extends \yii\db\ActiveRecord
             [['first_name', 'last_name', 'dni', 'email', 'phone_number', 'location', 'address'], 'required'],
             [['created_at', 'updated_at'], 'safe'],
             [['created_by', 'active'], 'integer'],
-            [['first_name', 'last_name', 'dni', 'email', 'phone_number', 'location', 'address'], 'string', 'max' => 255],
+            [['location'], 'string'],
+            [['first_name', 'last_name', 'dni', 'email', 'phone_number', 'address'], 'string', 'max' => 255],
             [['created_by'], 'exist', 'skipOnError' => false, 'targetClass' => User::className(), 'targetAttribute' => ['created_by' => 'id']],
         ];
     }

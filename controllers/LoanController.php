@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use Da\User\Filter\AccessRuleFilter;
+use Da\User\Model\User;
 use Yii;
 use app\models\Loan;
 use app\models\LoanSearch;
@@ -41,7 +42,7 @@ class LoanController extends Controller
 //                        'roles' => ['@'],
 //                    ],
                     [
-                        'actions' => ['index','view'],
+                        'actions' => ['index','view', 'user-list'],
                         'allow' => true,
                         'roles' => ['admin','Administrador','Cobrador'],
 //                        'permissions' => ['customer_view', 'customer_list'],
@@ -134,6 +135,7 @@ class LoanController extends Controller
 
             $data["Loan"]['start_date'] = date('Y-m-d', strtotime($data["Loan"]['start_date']));
             $data["Loan"]['end_date'] = date('Y-m-d', strtotime($data["Loan"]['end_date']));
+            $data["Loan"]['updated_at'] = date('Y-m-d');
 
             if ($model->load($data) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
@@ -162,10 +164,10 @@ class LoanController extends Controller
 
 
     /**
-     * @param null $q
-     * @param null $id
-     * @return array
-     */
+ * @param null $q
+ * @param null $id
+ * @return array
+ */
     public function actionLoanList($q = null, $id = null)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -186,6 +188,36 @@ class LoanController extends Controller
         {
             $loan = Loan::findOne($id);
             $out['results']=['id'=>$id, 'text'=> $loan->id];
+        }
+
+        return $out;
+    }
+
+    /**
+     * @param null $q
+     * @param null $id
+     * @return array
+     */
+    public function actionUserList($q = null, $id = null)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $out = ['results'=>['id'=>'', 'text'=>'']];
+
+        if(!is_null($q))
+        {
+            $data = User::find()
+                ->select(['user.id',"user.username"])
+                ->leftJoin('profile', 'profile.user_id=user.id')
+                ->andWhere(['like', 'user.username', $q])
+                ->orWhere(['like','profile.name', $q])
+                ->all();
+            $out['results'] = array_values($data);
+        }
+        elseif ($id > 0)
+        {
+            $user = User::findOne($id);
+            $out['results']=['id'=>$id, 'text'=> $user->username];
         }
 
         return $out;

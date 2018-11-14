@@ -1,3 +1,34 @@
+var lan = {
+    "sProcessing":     "Procesando...",
+    "sLengthMenu":     "Mostrar _MENU_ registros",
+    "sZeroRecords":    "No se encontraron resultados",
+    "sEmptyTable":     "Ningún dato disponible en esta tabla",
+    "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+    "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+    "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+    "sInfoPostFix":    "",
+    "select":{
+        _: "%d filas selecionadas",
+    },
+    "sSearch":         "Buscar:",
+    "sUrl":            "",
+    "sInfoThousands":  ",",
+    "sLoadingRecords": "Cargando...",
+    "oPaginate": {
+        // "sFirst":    "Primero",
+        "sFirst":    "<<",
+        // "sLast":     "Último",
+        "sLast":     ">>",
+        // "sNext":     "Siguiente",
+        "sNext":     ">",
+        // "sPrevious": "Anterior"
+        "sPrevious": "<"
+    },
+    "oAria": {
+        "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+    }
+};
 
 function algoritmoModulo10(digitosIniciales, digitoVerificador)
 {
@@ -139,7 +170,7 @@ var dniValidator = function () {
 
 
 var calFeePayment = function (loan, interes, fee_count) {
-    "use strict";
+    // "use strict";
     if(fee_count <= 0) return 0;
 
    var partial = (loan * interes) / 100;
@@ -147,4 +178,9 @@ var calFeePayment = function (loan, interes, fee_count) {
    var fee = loan / fee_count;
 
    return fee;
+};
+
+
+var round = function (value, decimals) {
+    return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
 };

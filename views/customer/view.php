@@ -37,7 +37,13 @@ $this->params['breadcrumbs'][] = ['label' => 'Clientes', 'url' => ['index']];
                         'dni',
                         'email:email',
                         'phone_number',
-                        'location',
+                        [
+                                'attribute'=>'location',
+                                'format'=>'raw',
+                                'value' => function ($data) {
+                                    return Html::a('Ir', $data->location);
+                                },
+                        ],
                         'address',
                         'created_at:datetime',
                         'updated_at:datetime',

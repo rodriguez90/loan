@@ -15,12 +15,22 @@ use Da\User\Model\User;
  * @property string $amount
  * @property string $created_at
  * @property string $updated_at
+ * @property int $status
  *
  * @property User $collector
  * @property Loan $loan
  */
 class Payment extends \yii\db\ActiveRecord
 {
+
+    const PENDING = 0;
+    const COLLECTED = 1;
+
+    const STATUS_LABEL = [
+        0 => 'Pendiente',
+        1 => 'Cobrado',
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -36,7 +46,7 @@ class Payment extends \yii\db\ActiveRecord
     {
         return [
             [['loan_id', 'collector_id', 'payment_date', 'amount'], 'required'],
-            [['loan_id', 'collector_id'], 'integer'],
+            [['loan_id', 'collector_id', 'status'], 'integer'],
             [['amount'], 'number'],
             [['created_at', 'updated_at'], 'safe'],
             [['payment_date'], 'string', 'max' => 255],
@@ -58,6 +68,7 @@ class Payment extends \yii\db\ActiveRecord
             'amount' => 'Cuota',
             'created_at' => 'Fecha Registro',
             'updated_at' => 'Fehca Modificación',
+            'status' => 'Estado',
         ];
     }
 

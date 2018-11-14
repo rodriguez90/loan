@@ -118,6 +118,8 @@ class PaymentController extends Controller
     {
         $model = $this->findModel($id);
 
+        $data["Payment"]['updated_at'] = date('Y-m-d');
+
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }

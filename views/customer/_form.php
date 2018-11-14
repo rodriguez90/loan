@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use kartik\widgets\SwitchInput;
+use app\models\Customer;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Customer */
@@ -46,7 +48,7 @@ FormPluginsAsset::register($this);  // $this represents the view object
                                                name="Customer[first_name]"
                                                placeholder="Juan"
                                                class="form-control"
-                                               data-parsley-group="wizard-step-1"
+                                               data-parsley-required="true"
                                                value="<?= $model['first_name'] ?>"
                                                required />
                                     </div>
@@ -55,7 +57,7 @@ FormPluginsAsset::register($this);  // $this represents the view object
                                         <input type="text" name="Customer[last_name]"
                                                placeholder="Pérez"
                                                class="form-control"
-                                               data-parsley-group="wizard-step-1"
+                                               data-parsley-required="true"
                                                value="<?= $model['last_name'] ?>"
                                                required />
                                     </div>
@@ -64,7 +66,7 @@ FormPluginsAsset::register($this);  // $this represents the view object
                                         <input type="text" name="Customer[dni]"
                                                placeholder="01234567890"
                                                class="form-control"
-                                               data-parsley-group="wizard-step-1"
+                                               data-parsley-required="true"
                                                data-parsley-type="number"
                                                data-parsley-maxlength="10"
                                                data-parsley-minlength="10"
@@ -77,8 +79,8 @@ FormPluginsAsset::register($this);  // $this represents the view object
                                                name="Customer[phone_number]"
                                                placeholder="1234567890"
                                                class="form-control"
-                                               data-parsley-group="wizard-step-2"
                                                data-parsley-type="number"
+                                               data-parsley-required="true"
                                                value="<?= $model['phone_number'] ?>"
                                                required />
                                     </div>
@@ -88,7 +90,7 @@ FormPluginsAsset::register($this);  // $this represents the view object
                                                name="Customer[email]"
                                                placeholder="algun@ejemplo.com"
                                                class="form-control"
-                                               data-parsley-group="wizard-step-2"
+                                               data-parsley-required="true"
                                                data-parsley-type="email"
                                                value="<?= $model['email'] ?>"
                                                required />
@@ -97,21 +99,30 @@ FormPluginsAsset::register($this);  // $this represents the view object
                                 <!-- end col-4 -->
                                 <!-- begin col-4 -->
                                 <div class="col-md-6">
-                                    <?= $form->field($model, 'address')->textarea(['data-parsley-group'=>"wizard-step-3",'data-parsley-required'=>"true"])?>
+                                    <?= $form->field($model, 'address')->textarea(['data-parsley-required'=>"true"])?>
 
                                     <div class="form-group">
                                         <label>Ubicación</label>
-                                        <div class="controls">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-map-marker"></i>
+                                            </div>
                                             <input type="text"
                                                    name="Customer[location]"
                                                    placeholder=""
                                                    class="form-control"
-                                                   data-parsley-group="wizard-step-3"
+                                                   data-parsley-required="true"
+                                                   data-parsley-type="url"
                                                    value="<?= $model['location'] ?>"
                                                    required />
                                         </div>
                                     </div>
-                                    <?= $form->field($model, 'active')->textInput() ?>
+                                    <?= $form->field($model, 'active')->widget(SwitchInput::className(),[
+                                            'pluginOptions'=>[
+                                                    'onText'=>Customer::ACTIVE_LABEL[Customer::ACTIVE],
+                                                    'offText'=>Customer::ACTIVE_LABEL[Customer::INACTIVE]
+                                            ]
+                                    ]) ?>
                                 </div>
                                 <!-- end col-4 -->
                             </div>
