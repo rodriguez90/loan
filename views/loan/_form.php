@@ -149,6 +149,8 @@ HTML;
                                 'name' => 'kvdate2',
                                 'useWithAddon' => true,
                                 'convertFormat' => true,
+                                'disabled'=>true,
+                                'readonly'=>true,
 //                               'value'=> '14-11-2018 - 14-01-2019',
                                'value'=> $defaultValueDateRange,
                                 'language' => Yii::$app->language,
