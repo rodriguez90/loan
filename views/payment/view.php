@@ -19,8 +19,8 @@ $this->params['breadcrumbs'][] = ['label' => 'Cobros', 'url' => ['index']];
 
                 <div class="box-tools pull-right">
 
-                    <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-                    <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+                    <?= Html::a('Modificar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+                    <?= Html::a('Eliminar', ['delete', 'id' => $model->id], [
                         'class' => 'btn btn-danger',
                         'data' => [
                             'confirm' => 'Está seguro que desea eliminar este cobro?',
@@ -37,12 +37,14 @@ $this->params['breadcrumbs'][] = ['label' => 'Cobros', 'url' => ['index']];
                             'collector.username',
                             'payment_date:date',
                             'amount',
+                            'collectorName',
+                            'customerName',
                             [
                                 'label'=>'Estado',
                                 'attribute'=>'status',
                                 'format'=>'raw',
                                 'value' => function ($data) {
-                                    return $data['active'] ?
+                                    return $data['status'] == 1?
                                         '<span class="label label-success pull-left">Cobrado</span>' :
                                         '<span class="label label-danger">Pendiente</span>';
                                 },

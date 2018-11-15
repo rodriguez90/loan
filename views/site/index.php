@@ -75,7 +75,7 @@ $this->title = '';
 
 <div class="row">
 
-    <div class="col-lg-12 col-xs-6">
+    <div class="col-lg-12 col-xs-12">
         <div class="box box-solid">
             <div class="box-header with-border">
                 <h3 class="box-title">Cuotas Pendientes</h3>
@@ -91,10 +91,11 @@ $this->title = '';
             <div class="box-body">
                 <?php Pjax::begin(); ?>
                 <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-                <?= GridView::widget([
+                <div class="table-responsive">
+                    <?= GridView::widget([
                     'dataProvider' => $dataProvider,
                     'filterModel' => $searchModel,
+//                    'id'=>'payments',
                     'columns' => [
                         ['class' => 'yii\grid\SerialColumn'],
                         [
@@ -136,20 +137,28 @@ $this->title = '';
                             'filter' => ['0' =>'Pendiente', '1' =>'Cobrado',],
                         ],
                         [
-                           'name'=>'pay',
-                           'header' => Html::checkbox('pay_all', false, [
-                                'class' => 'select-on-check-all pull-right',
-                                'label' => '<span class="pull-left">Seleccionar</span>'
-                           ]),
-                           'class' => '\yii\grid\CheckboxColumn'
+//                           'name'=>'id',
+//                           'header' => Html::checkbox('select_all', false, [
+//                                'id'=>'select_all',
+//                                'class' => 'select-on-check-all pull-right',
+//                                'label' => '<span class="pull-left">Seleccionar</span>'
+//                           ]),
+                           'class' => '\yii\grid\CheckboxColumn',
+//                            'id',
+//                            'multiple' => true
                         ],
-                        ['class' => 'yii\grid\ActionColumn'],
+                        ['class' => 'yii\grid\ActionColumn',
+                          'controller'=>'payment'
+                        ],
                     ],
                     'tableOptions'=>['class'=>'table table-striped table-bordered table-condensed' ]
                 ]); ?>
+                </div>
                 <?php Pjax::end(); ?>
             </div>
             <!-- /.box-body -->
         </div>
     </div>
 </div>
+
+<?php $this->registerJsFile('@web/js/site/index.js', ['depends' => ['app\assets\AppAsset']]) ?>

@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use kartik\daterange\DateRangePicker;
 use kartik\form\ActiveForm;
 use kartik\number\NumberControl;
+use app\models\Payment;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Payment */
@@ -77,6 +78,18 @@ $url = \yii\helpers\Url::to(['/loan/loan-list']);
 //                                'options' => $saveOptions,
                     'displayOptions' => $disOptions,
                     'saveInputContainer' => $saveCont,
+                ]) ?>
+
+                <?= $form->field($model, 'status')->widget(\kartik\widgets\SwitchInput::className(),[
+                    'pluginOptions'=>[
+                        'size'=>'mini',
+//                        'onstyle'=>'success',
+//                        'offstyle'=>'danger',
+                        'onText'=>Payment::STATUS_LABEL[Payment::COLLECTED],
+                        'offText'=>Payment::STATUS_LABEL[Payment::PENDING],
+                        'onColor'=>'success',
+                        'offColor'=>'danger',
+                    ]
                 ]) ?>
 
                 <div class="form-group">

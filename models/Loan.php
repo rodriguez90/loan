@@ -68,6 +68,14 @@ class Loan extends \yii\db\ActiveRecord
         ];
     }
 
+    public function behaviors()
+    {
+        return [
+            \nhkey\arh\ActiveRecordHistoryBehavior::className(),
+        ];
+    }
+
+
     /**
      * {@inheritdoc}
      */

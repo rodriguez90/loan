@@ -103,19 +103,11 @@ class PaymentSearch extends Payment
         $dataProvider->setSort([
             'attributes' => [
                 'loan_id',
-                'bl',
-                'agency_id' => [
-                    'asc' => [
-                        'agency.name' => SORT_ASC,
-                    ],
-                    'desc' => [
-                        'agency.name' => SORT_DESC,
-                    ],
-                    'label' => 'Cliente',
-                    'default' => SORT_ASC
-                ],
-                'delivery_date',
-                'country_id'
+                'customerName',
+                'collectorName',
+                'payment_date',
+                'amount',
+                'status',
             ]
         ]);
 
