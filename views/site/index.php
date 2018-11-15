@@ -78,36 +78,69 @@ $this->title = '';
     <div class="col-lg-12 col-xs-12">
         <div class="box box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title">Cuotas Pendientes</h3>
+<!--                <h3 class="box-title">Cuotas Pendientes</h3>-->
 
                 <div class="box-tools pull-right">
-                    <button id="pay_btn" type="button" class="btn btn-primary btn-sm btn-box-too">Pagar Seleccionados</button>
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                    </button>
+<!--                    <button id="pay_btn" type="button" class="btn btn-primary btn-xs btn-box-too">Pagar Seleccionados</button>-->
+<!--                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>-->
+<!--                    </button>-->
                 </div>
                 <!-- /.box-tools -->
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-                <?php Pjax::begin(); ?>
+                <?php //Pjax::begin(); ?>
                 <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
                 <div class="table-responsive">
-                    <?= GridView::widget([
+                    <?= \kartik\grid\GridView::widget([
                     'dataProvider' => $dataProvider,
                     'filterModel' => $searchModel,
+                    'responsive'=>true,
+                    'hover'=>true,
+                        'striped' => true,
+                    'pjax'=>true,
+                    'pjaxSettings'=>[
+                        'neverTimeout'=>true,
+//                        'beforeGrid'=>'My fancy content before.',
+//                        'afterGrid'=>'My fancy content after.',
+                    ],
+                    'toolbar' => [
+//                        [
+//                            'content'=>
+//                                Html::button('<i class="glyphicon glyphicon-plus"></i>', [
+//                                    'type'=>'button',
+//                                    'title'=>'Add Book',
+//                                    'class'=>'btn btn-success'
+//                                ]) . ' '.
+//                                Html::a('<i class="fas fa-redo"></i>', ['grid-demo'], [
+//                                    'class' => 'btn btn-secondary',
+//                                    'title' =>'Reset Grid'
+//                                ]),
+//                        ],
+                        '{export}',
+                        '{toggleData}'
+                    ],
+                        'panel' => [
+                            'heading'=>'<h3 class="panel-title"><i class="glyphicon glyphicon-globe"></i> Pagos</h3>',
+                            'type'=>'success',
+//                            'before'=>Html::a('<i class="glyphicon glyphicon-plus"></i> Create Country', ['create'], ['class' => 'btn btn-success']),
+                            'after'=>Html::a('<i class="fas fa-redo"></i> Refrescar', ['index'], ['class' => 'btn btn-info']),
+                            'footer'=>false
+                        ],
 //                    'id'=>'payments',
                     'columns' => [
-                        ['class' => 'yii\grid\SerialColumn'],
-                        [
-                            'attribute' => 'loan_id',
-                            'content' => function ($data) {
-                                return  Html::a($data['loan_id'],
-                                    \yii\helpers\Url::toRoute(['/loan/view/', 'id' => $data['loan_id']]));
-                            }
-                        ],
+//                        ['class' => 'yii\grid\SerialColumn'],
+//                        [
+//                            'attribute' => 'loan_id',
+//                            'content' => function ($data) {
+//                                return  Html::a($data['loan_id'],
+//                                    \yii\helpers\Url::toRoute(['/loan/view/', 'id' => $data['loan_id']]));
+//                            }
+//                        ],
                         [
                             'attribute'=>'customerName',
                         ],
+                        'amount',
                         [
                             'attribute'=>'collectorName',
                         ],
@@ -127,7 +160,7 @@ $this->title = '';
                             ]),
                             'format' => 'html',
                         ],
-                        'amount',
+
                         [
                             'class' => 'yii\grid\DataColumn', // can be omitted, as it is the default
                             'attribute' => 'status',
@@ -144,6 +177,7 @@ $this->title = '';
 //                                'label' => '<span class="pull-left">Seleccionar</span>'
 //                           ]),
                            'class' => '\yii\grid\CheckboxColumn',
+                            'header'=> 'Pagar',
 //                            'id',
 //                            'multiple' => true
                         ],
@@ -154,7 +188,7 @@ $this->title = '';
                     'tableOptions'=>['class'=>'table table-striped table-bordered table-condensed' ]
                 ]); ?>
                 </div>
-                <?php Pjax::end(); ?>
+                <?php //Pjax::end(); ?>
             </div>
             <!-- /.box-body -->
         </div>

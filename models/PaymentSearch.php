@@ -95,9 +95,10 @@ class PaymentSearch extends Payment
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'pagination' => [
-                'pageSize' => 10,
-            ]
+            'pagination' => false,
+//            'pagination' => [
+//                'pageSize' => 10,
+//            ]
         ]);
 
         $dataProvider->setSort([

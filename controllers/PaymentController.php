@@ -158,4 +158,50 @@ class PaymentController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+    public function actionList(){
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $response = array();
+        $response['success'] = true;
+        $response['data'] = [];
+        $response['msg'] = '';
+        $response['msg_dev'] = '';
+        $session = Yii::$app->session;
+        if($response['success'])
+        {
+            try{
+
+                $response['data'] = Payment::find()
+                    ->select('process.id, 
+                                    process.bl, 
+                                    process.delivery_date, 
+                                    process.type, 
+                                    process.created_at, 
+                                    agency.name as agency_name,
+                                    COUNT(process_transaction.id) as countContainer,			 
+                                    COUNT(ticket.id) as countTicket,'
+                    )
+                    ->innerJoin('agency', 'agency.id = process.agency_id')
+                    ->innerJoin("process_transaction","process_transaction.process_id = process.id and process_transaction.active=1")
+                    ->leftJoin("ticket","process_transaction.id = ticket.process_transaction_id and ticket.active=1")
+                    ->where(['process.active'=>1])
+                    ->andFilterWhere(['agency_id'=>$session->get('agencyId')])
+                    ->andFilterWhere(['process_transaction.trans_company_id'=>$session->get('transCompanyId')])
+                    ->groupBy(['process.id', 'agency.id'])
+                    ->groupBy(['process.id', 'process.bl', 'process.delivery_date', 'process.type', 'agency.id', 'agency.name', 'process.created_at'])
+                    ->asArray()
+                    ->all();
+            }
+            catch ( Exception $e)
+            {
+                $response['success'] = false;
+                $response['msg'] = "Ah ocurrido al recuperar los procesos.";
+                $response['msg_dev'] = $e->getMessage();
+                $response['data'] = [];
+            }
+        }
+
+        return $response;
+    }
 }

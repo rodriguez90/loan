@@ -19,6 +19,7 @@ Abrir la consola en la raiz del proyecto y ejecutar los siguientes comandos, par
 - yii migrate --migrationNamespaces=Da\User\Migration
 - yii migrate --migrationPath=@yii/rbac/migrations
 - yii migrate
+- yii migrate --migrationPath=@vendor/nhkey/yii2-activerecord-history/migrations
 
 ## Paso 5
 Abrir la consola en la raiz del proyecto y ejecutar:
