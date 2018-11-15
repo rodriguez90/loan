@@ -27,10 +27,36 @@ $this->params['breadcrumbs'][] = $this->title;
                         'dataProvider' => $dataProvider,
                         'filterModel' => $searchModel,
                         'columns' => [
-                            'id',
-                            'loan_id',
-                            'collector.username',
-                            'payment_date',
+                            ['class' => 'yii\grid\SerialColumn'],
+                            [
+                                'attribute' => 'loan_id',
+                                'content' => function ($data) {
+                                    return  Html::a($data['loan_id'],
+                                        \yii\helpers\Url::toRoute(['/loan/view/', 'id' => $data['loan_id']]));
+                                }
+                            ],
+                            [
+                                'attribute'=>'customerName',
+                            ],
+                            [
+                                'attribute'=>'collectorName',
+                            ],
+                            [
+                                'attribute' => 'payment_date',
+                                'value' => 'payment_date',
+//                            'format' => 'php:date',
+                                'filter' =>  \kartik\date\DatePicker::widget([
+                                    'model' => $searchModel,
+                                    'attribute'=>'payment_date',
+                                    'pluginOptions' => [
+//                                    'format' => 'dd-M-yyyy',
+                                        'format' => 'yyyy-m-dd',
+                                        'autoclose'=>true,
+                                        'todayHighlight' => true
+                                    ]
+                                ]),
+                                'format' => 'html',
+                            ],
                             'amount',
                             [
                                 'class' => 'yii\grid\DataColumn', // can be omitted, as it is the default
@@ -43,7 +69,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                             ['class' => 'yii\grid\ActionColumn'],
                         ],
-                        'tableOptions'=>['class'=>'table table-striped table-bordered table-condensed']
+                        'tableOptions'=>['class'=>'table table-striped table-bordered table-condensed' ]
                     ]); ?>
                 </div>
 

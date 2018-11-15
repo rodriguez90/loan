@@ -6,9 +6,14 @@ if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'loan_list'))
     $items[]=['label' => 'Prestamos', 'icon' => 'money', 'url' => ['/loan/index']];
 }
 
-if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'payment_list'))
+if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'payment_list', []))
 {
     $items[]=['label' => 'Cobros', 'icon' => 'credit-card', 'url' => ['/payment/index']];
+}
+
+if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'refinancing'))
+{
+    $items[]=['label' => 'Refinanciar', 'icon' => 'refresh', 'url' => ['/loan/index']];
 }
 
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'customer_list'))
@@ -16,7 +21,7 @@ if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'customer_list')
     $items[]=['label' => 'Clientes', 'icon' => 'users', 'url' => ['/customer/index']];
 }
 
-if(Yii::$app->authManager->getAssignment('Administrador',Yii::$app->user->getId()))
+if(Yii::$app->authManager->getAssignment('admin',Yii::$app->user->getId()))
 {
     $items[]=['label' => 'Administración', 'icon' => 'cogs', 'url' => ['/user/admin/index']];
 }

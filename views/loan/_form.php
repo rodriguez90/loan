@@ -134,38 +134,59 @@ $saveCont = ['class' => 'kv-saved-cont'];
 
                         <?php
 
-                        $addon = <<< HTML
+//                            if(!$model->isNewRecord)
+//                            {
+//                             $htmlReadonly = <<< HTML
+// <div class="form-group">
+//    <label>Date range:</label>
+//
+//    <div class="input-group">
+//    <div class="input-group-addon">
+//    <i class="fa fa-calendar"></i>
+//    </div>
+//    <input type="text" class="form-control pull-right" id="reservation" value="$defaultValueDateRange">
+//    </div>
+//    <!-- /.input group -->
+//    </div>
+//HTML;
+//
+//                                echo $htmlReadonly;
+//                            }
+//                            else {
+                                $addon = <<< HTML
 <div class="input-group-append">
     <span class="input-group-text">
         <i class="fas fa-calendar-alt"></i>
     </span>
 </div>
 HTML;
-                        echo '<div class="form-group drp-container">';
-                        echo '<label>Plazo del Préstamo</label>';
-                        echo DateRangePicker::widget([
+                                echo '<div class="form-group drp-container">';
+                                echo '<label>Plazo del Préstamo</label>';
+                                echo DateRangePicker::widget([
 //                                'model'=>$model,
 //                                'attribute' => 'dateRange',
-                                'name' => 'kvdate2',
-                                'useWithAddon' => true,
-                                'convertFormat' => true,
-                                'disabled'=>true,
-                                'readonly'=>true,
+                                        'name' => 'kvdate2',
+                                        'useWithAddon' => true,
+                                        'convertFormat' => true,
+                                        'disabled'=>true,
+                                        'readonly'=>true,
 //                               'value'=> '14-11-2018 - 14-01-2019',
-                               'value'=> $defaultValueDateRange,
-                                'language' => Yii::$app->language,
-                                'hideInput' => true,
-                                'startAttribute' => 'Loan[start_date]',
-                                'endAttribute' => 'Loan[end_date]',
-                                'pluginOptions'=>[
-                                    'locale'=>
-                                        ['format' => 'd-m-Y'],
-                                    'separator' => '-',
-                                    'opens' => 'left',
-                                    'showDropdowns'=>true
-                                ]
-                            ]) . $addon;
-                        echo '</div>';
+                                        'value'=> $defaultValueDateRange,
+                                        'language' => Yii::$app->language,
+                                        'hideInput' => true,
+                                        'startAttribute' => 'Loan[start_date]',
+                                        'endAttribute' => 'Loan[end_date]',
+                                        'pluginOptions'=>[
+                                            'locale'=>
+                                                ['format' => 'd-m-Y'],
+                                            'separator' => '-',
+                                            'opens' => 'left',
+                                            'showDropdowns'=>true
+                                        ]
+                                    ]) . $addon;
+                                echo '</div>';
+//                            }
+
                         ?>
 
                         <?= $form->field($model, 'frequency_payment')
@@ -243,7 +264,7 @@ HTML;
                                 </div>
                             </div>
 
-                            <?= Html::hiddenInput(['name'=>'payments'])?>
+                            <?= Html::hiddenInput('payments', [], ['id'=>'payments'])?>
                         </div>
 
                     </div>

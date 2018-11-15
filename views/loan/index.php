@@ -35,16 +35,11 @@ $this->params['breadcrumbs'][] = $this->title;
                             [
                                 'class' => 'yii\grid\DataColumn', // can be omitted, as it is the default
                                 'attribute' => 'status',
-//                            'value' => function($data) {
-//                                return \app\models\Loan::STATUS_LABEL[$data['status']];
-//                            },
                                 'content' => function ($data) {
                                     return $data['status'] ? '<span class="label label-success pull-left">Activo</span>' : '<span class="label label-danger">Inactivo</span>';
                                 },
                                 'filter' => ['0' =>'Inactivo', '1' =>'Activo' , '2'=>'Cerrado',],
                             ],
-                            //'refinancing_id',
-//                        'frequency_payment',
                             [
                                 'attribute' => 'start_date',
 //                            'value' => function($data){

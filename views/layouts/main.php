@@ -65,3 +65,7 @@ if (Yii::$app->controller->action->id === 'login') {
     </html>
     <?php $this->endPage() ?>
 <?php } ?>
+
+<script type="text/javascript">
+    var homeUrl = '<?php echo Yii::$app->homeUrl; ?>';
+</script>

@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Payment;
 use Da\User\Filter\AccessRuleFilter;
 use Da\User\Model\User;
 use Yii;
@@ -105,8 +106,41 @@ class LoanController extends Controller
             $data["Loan"]['start_date'] = date('Y-m-d', strtotime($data["Loan"]['start_date']));
             $data["Loan"]['end_date'] = date('Y-m-d', strtotime($data["Loan"]['end_date']));
 
-            if ($model->load($data) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+            $payments = json_decode($data['payments']);
+            $transaction = Yii::$app->getDb()->beginTransaction();
+
+            $result = true;
+
+            if ($model->load($data))
+            {
+                if($model->save())
+                {
+                    foreach ($payments as $payment)
+                    {
+                        $pay = new Payment();
+                        $pay->loan_id = $model->id;
+                        $pay->payment_date = date('Y-m-d', strtotime($payment->payment_date));
+                        $pay->collector_id = $model->collector_id;
+                        $pay->amount = $model->fee_payment;
+
+                        if(!$pay->save())
+                        {
+                            $result = false;
+                            $model->addError(nul, 'Ah ocurrido un error al generar los pagos.');
+                            break;
+                        }
+                    }
+                }
+                else
+                    $result = false;
+
+                if($result)
+                {
+                    $transaction->commit();
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
+                else
+                    $transaction->rollBack();
             }
         }
 
@@ -137,11 +171,44 @@ class LoanController extends Controller
             $data["Loan"]['end_date'] = date('Y-m-d', strtotime($data["Loan"]['end_date']));
             $data["Loan"]['updated_at'] = date('Y-m-d');
 
-            if ($model->load($data) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+            $payments = json_decode($data['payments']);
+
+            $transaction = Yii::$app->getDb()->beginTransaction();
+
+            $result = true;
+
+            if ($model->load($data))
+            {
+                if($model->save())
+                {
+                    foreach ($payments as $payment)
+                    {
+                        $pay = new Payment();
+                        $pay->loan_id = $model->id;
+                        $pay->payment_date = date('Y-m-d', strtotime($payment->payment_date));
+                        $pay->collector_id = $model->collector_id;
+                        $pay->amount = $model->fee_payment;
+
+                        if(!$pay->save())
+                        {
+                            $result = false;
+                            $model->addError(nul, 'Ah ocurrido un error al generar los pagos.');
+                            break;
+                        }
+                    }
+                }
+                else
+                    $result = false;
+
+                if($result)
+                {
+                    $transaction->commit();
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
+                else
+                    $transaction->rollBack();
             }
         }
-
 
         return $this->render('update', [
             'model' => $model,
@@ -212,7 +279,17 @@ class LoanController extends Controller
                 ->andWhere(['like', 'user.username', $q])
                 ->orWhere(['like','profile.name', $q])
                 ->all();
-            $out['results'] = array_values($data);
+
+            $result = [];
+
+            foreach ($data as $user)
+            {
+                if(Yii::$app->authManager->getAssignment('Cobrador', $user->id))
+                {
+                    $result[] = ['id' => $user->id, 'username' => $user->username];
+                }
+            }
+            $out['results'] = array_values($result);
         }
         elseif ($id > 0)
         {

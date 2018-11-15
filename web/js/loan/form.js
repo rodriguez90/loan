@@ -1,7 +1,5 @@
 
-var payments = [
-
-];
+var payments = [];
 
 var generateFee = function () {
     // alert('generateFee');
@@ -90,16 +88,14 @@ var generateFee = function () {
                 .draw();
             for (var i=0; i < fee_count; i++)
             {
-                var pay_date = {
-
-                };
+                var pay_date = {'payment_date':start_date.add(frequency, 'days').format('DD-MM-YYYY')};
                 table.row.add(
-                    {
-                        'pay_date':start_date.add(frequency, 'days').format('DD-MM-YYYY')
-                    }
+                    pay_date
                 ).draw();
                 payments.push(pay_date);
             }
+            console.log(payments);
+            $('#payments').val(JSON.stringify(payments));
         }
     }
 
@@ -140,7 +136,7 @@ var handleDataTable = function() {
                     "data":null
                 },
                 { "title": "Fecha",
-                "data":"pay_date"
+                "data":"payment_date"
                 }
             ],
             columnDefs:[
@@ -221,12 +217,62 @@ $(document).ready(function () {
         }
 
         generateFee();
+
+        // $('#w1-container').click(function (e) {
+        //
+        //     e.preventDefault();
+        //     alert('asd');
+        //     return true;
+        // });
     }
 
+    // console.log(homeUrl);
 
     // form submit
     $('#aceptBtn').on('click', function(){
+        // var formData = $('#w0').serialize();
+        // console.log(formData);
         $('#w0').submit();
-        return;
+
+        $("#modal-default").modal("hide");
+
+        // $.ajax({
+        //     url: homeUrl + "/loan/create",
+        //     type: "POST",
+        //     dataType: "json",
+        //     data:  {
+        //
+        //     },
+        //     beforeSend:function () {
+        //         $("#modal-select-bussy").modal("show");
+        //     },
+        //     success: function (response) {
+        //         $("#modal-select-bussy").modal("hide");
+        //         // you will get response from your php page (what you echo or print)
+        //         console.log(response);
+        //         // var obj = response;
+        //         // console.log(obj);
+        //
+        //         if(response.success)
+        //         {
+        //             valid = true;
+        //             window.location.href = response.url;
+        //         }
+        //         else
+        //         {
+        //             valid  = false;
+        //             alert(response.msg);
+        //         }
+        //         return valid;
+        //     },
+        //     error: function(data) {
+        //         $("#modal-select-bussy").modal("hide");
+        //         console.log(data);
+        //         alert(data['msg']);
+        //         valid = false;
+        //         return valid;
+        //     }
+        // });
+        // return;
     });
 });

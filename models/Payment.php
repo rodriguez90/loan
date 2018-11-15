@@ -69,6 +69,7 @@ class Payment extends \yii\db\ActiveRecord
             'created_at' => 'Fecha Registro',
             'updated_at' => 'Fehca Modificación',
             'status' => 'Estado',
+            'collectorName' => 'Cobrador'
         ];
     }
 
@@ -86,5 +87,21 @@ class Payment extends \yii\db\ActiveRecord
     public function getLoan()
     {
         return $this->hasOne(Loan::className(), ['id' => 'loan_id']);
+    }
+
+    /**
+     * @return string
+     */
+    public function getCollectorName()
+    {
+        return $this->collector->username;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCustomerName()
+    {
+        return $this->loan->getCustomerName();
     }
 }

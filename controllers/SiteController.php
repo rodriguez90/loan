@@ -72,7 +72,8 @@ class SiteController extends Controller
 
         $customerCount = Customer::find()->count();
         $loanCount = Loan::find()->count();
-        $paymentCount = Payment::find()->count();
+        $paymentCount = Payment::find()->where(['status'=>1])->count();
+        $unpaidCount = Payment::find()->where(['status'=>0])->count();
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -80,6 +81,7 @@ class SiteController extends Controller
             'customerCount' =>$customerCount,
             'loanCount' =>$loanCount,
             'paymentCount' =>$paymentCount,
+            'unpaidCount' =>$unpaidCount,
         ]);
     }
 

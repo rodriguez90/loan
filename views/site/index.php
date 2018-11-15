@@ -32,7 +32,7 @@ $this->title = '';
                 <h3><?= $paymentCount ?></h3>
 <!--                <h3>4<sup style="font-size: 20px">%</sup></h3>-->
 
-                <p>Cobros</p>
+                <p>Cuotas Pagadas</p>
             </div>
             <div class="icon">
                 <i class="ion ion-stats-bars"></i>
@@ -60,9 +60,9 @@ $this->title = '';
         <!-- small box -->
         <div class="small-box bg-red">
             <div class="inner">
-                <h3>0</h3>
+                <h3><?= $unpaidCount ?></h3>
 
-                <p>Impagos</p>
+                <p>Cuotas por Pagar</p>
             </div>
             <div class="icon">
                 <i class="ion ion-pie-graph"></i>
@@ -78,9 +78,10 @@ $this->title = '';
     <div class="col-lg-12 col-xs-6">
         <div class="box box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title">Pagos de Pendientes</h3>
+                <h3 class="box-title">Cuotas Pendientes</h3>
 
                 <div class="box-tools pull-right">
+                    <button id="pay_btn" type="button" class="btn btn-primary btn-sm btn-box-too">Pagar Seleccionados</button>
                     <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                     </button>
                 </div>
@@ -103,15 +104,48 @@ $this->title = '';
                                     \yii\helpers\Url::toRoute(['/loan/view/', 'id' => $data['loan_id']]));
                             }
                         ],
-//                        [
-//                            'loan:',
-//                        ],
-//                        'collector_id',
-                        'payment_date',
+                        [
+                            'attribute'=>'customerName',
+                        ],
+                        [
+                            'attribute'=>'collectorName',
+                        ],
+                        [
+                            'attribute' => 'payment_date',
+                            'value' => 'payment_date',
+//                            'format' => 'php:date',
+                            'filter' =>  \kartik\date\DatePicker::widget([
+                                'model' => $searchModel,
+                                'attribute'=>'payment_date',
+                                'pluginOptions' => [
+//                                    'format' => 'dd-M-yyyy',
+                                    'format' => 'yyyy-m-dd',
+                                    'autoclose'=>true,
+                                    'todayHighlight' => true
+                                ]
+                            ]),
+                            'format' => 'html',
+                        ],
                         'amount',
-
+                        [
+                            'class' => 'yii\grid\DataColumn', // can be omitted, as it is the default
+                            'attribute' => 'status',
+                            'content' => function ($data) {
+                                return $data['status'] ? '<span class="label label-success pull-left">Cobrado</span>' : '<span class="label label-danger">Pendiente</span>';
+                            },
+                            'filter' => ['0' =>'Pendiente', '1' =>'Cobrado',],
+                        ],
+                        [
+                           'name'=>'pay',
+                           'header' => Html::checkbox('pay_all', false, [
+                                'class' => 'select-on-check-all pull-right',
+                                'label' => '<span class="pull-left">Seleccionar</span>'
+                           ]),
+                           'class' => '\yii\grid\CheckboxColumn'
+                        ],
                         ['class' => 'yii\grid\ActionColumn'],
                     ],
+                    'tableOptions'=>['class'=>'table table-striped table-bordered table-condensed' ]
                 ]); ?>
                 <?php Pjax::end(); ?>
             </div>

@@ -88,6 +88,7 @@ class Loan extends \yii\db\ActiveRecord
             'updated_at' => 'Fecha de Modificación',
             'fee_payment' => 'Couta',
             'collector_id' => 'Cobrador',
+            'customerName' => 'Cliente',
         ];
     }
 
@@ -137,5 +138,13 @@ class Loan extends \yii\db\ActiveRecord
     public function getPayments()
     {
         return $this->hasMany(Payment::className(), ['loan_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCustomerName()
+    {
+        return $this->customer->first_name . ' '. $this->customer->last_name;
     }
 }
