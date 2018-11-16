@@ -158,6 +158,7 @@ class PaymentSearch extends Payment
         $query->andFilterWhere(['like', 'payment_date', $this->payment_date]);
         $query->andFilterWhere(['like', 'CONCAT(customer.first_name,customer.last_name)', $this->customerName]);
         $query->andFilterWhere(['payment.status'=>0]);
+        $query->andFilterWhere(['loan.status'=>Loan::ACTIVE]);
         $data = $query->select([
             'payment.id',
             'customer.dni',

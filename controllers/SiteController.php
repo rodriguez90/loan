@@ -119,4 +119,14 @@ class SiteController extends Controller
     {
         return $this->render('about');
     }
+
+    public function actionReport()
+    {
+        if(count(Yii::$app->request->get()) > 0 )
+        {
+            // do report
+        }
+        
+        return $this->render('report');
+    }
 }

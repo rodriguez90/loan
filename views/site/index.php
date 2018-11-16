@@ -6,7 +6,7 @@ use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 
-$this->title = '';
+$this->title = 'Inicio';
 ?>
 <!-- Small boxes (Stat box) -->
 <div class="row">
@@ -74,7 +74,6 @@ $this->title = '';
 </div>
 
 <div class="row">
-
     <div class="col-lg-12 col-xs-12">
         <div class="box box-solid">
             <div class="box-header with-border">

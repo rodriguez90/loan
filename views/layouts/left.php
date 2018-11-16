@@ -20,11 +20,16 @@ if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'customer_list')
 {
     $items[]=['label' => 'Clientes', 'icon' => 'users', 'url' => ['/customer/index']];
 }
-
+if(Yii::$app->authManager->getAssignment('admin',Yii::$app->user->getId()) ||
+    Yii::$app->authManager->getAssignment('Administrador',Yii::$app->user->getId()))
+{
+    $items[]=['label' => 'Reporte', 'icon' => 'file', 'url' => ['/site/report']];
+}
 if(Yii::$app->authManager->getAssignment('admin',Yii::$app->user->getId()))
 {
     $items[]=['label' => 'Administración', 'icon' => 'cogs', 'url' => ['/user/admin/index']];
 }
+
 ?>
 <aside class="main-sidebar">
 
