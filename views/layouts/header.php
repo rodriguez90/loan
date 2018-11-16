@@ -20,21 +20,24 @@ use yii\helpers\Html;
 
         <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
             <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
         </a>
 
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
-
                 <?php
                     if(!Yii::$app->user->isGuest)
                     {
                         echo Html::beginTag('li', ['class'=>'dropdown user user-menu']);
+//                            echo '<img src="" class="user-image" alt="">';
                             echo Html::beginTag('a', ['class'=>'dropdown-toggle', 'data-toggle'=>'dropdown']);
-                                echo Html::tag('span', $user->username ,['class'=>'hidden-xs']);
+                                echo Html::tag('span', $user->username);
                             echo Html::endTag('a');
                             echo Html::beginTag('ul', ['class'=>'dropdown-menu']);
                                 echo Html::beginTag('li', ['class'=>'user-header']);
-                                    echo Html::beginTag('p', ['class'=>'user-header']);
+                                    echo Html::beginTag('p');
                                         if($user->profile && !empty($user->profile->name))
                                         {
                                             echo Html::encode($user->profile->name);
@@ -64,8 +67,6 @@ use yii\helpers\Html;
                                 echo Html::endTag('li');
                             echo Html::endTag('ul');
                         echo Html::endTag('li');
-
-//                        var_dump($html) ;die;
                     }
                 ?>
 
