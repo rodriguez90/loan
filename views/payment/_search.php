@@ -20,21 +20,21 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id') ?>
 
-    <?= $form->field($model, 'loan_id') ?>
+    <?php //echo $form->field($model, 'loan_id') ?>
 
-    <?= $form->field($model, 'collector_id') ?>
+    <?php //echo $form->field($model, 'collector_id') ?>
 
-    <?= $form->field($model, 'payment_date') ?>
+    <?php //echo $form->field($model, 'payment_date') ?>
 
-    <?= $form->field($model, 'amount') ?>
+    <?php //echo $form->field($model, 'amount') ?>
 
     <?php // echo $form->field($model, 'created_at') ?>
 
     <?php // echo $form->field($model, 'updated_at') ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
+        <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary']) ?>
+        <?= Html::resetButton('Limpiar', ['class' => 'btn btn-default']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

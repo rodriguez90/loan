@@ -7,74 +7,45 @@ use yii\widgets\Pjax;
 /* @var $searchModel app\models\PaymentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Cobros';
+$this->title = 'Cuotas';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
 <div class="row">
-    <div class="col-lg-12 col-xs-6">
+
+    <div class="col-lg-12 col-xs-12">
         <div class="box box-solid">
-
             <div class="box-header with-border">
-                <?= Html::a('Nuevo Cobro', ['create'], ['class' => 'btn btn-success']) ?>
-            </div>
-            <div class="box-body">
+                <h3 class="box-title"></h3>
 
-                <?php Pjax::begin(); ?>
-                <div class="table-responsive">
-                    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-                    <?= GridView::widget([
-                        'dataProvider' => $dataProvider,
-                        'filterModel' => $searchModel,
-                        'columns' => [
-                            ['class' => 'yii\grid\SerialColumn'],
-                            [
-                                'attribute' => 'loan_id',
-                                'content' => function ($data) {
-                                    return  Html::a($data['loan_id'],
-                                        \yii\helpers\Url::toRoute(['/loan/view/', 'id' => $data['loan_id']]));
-                                }
-                            ],
-                            [
-                                'attribute'=>'customerName',
-                            ],
-                            [
-                                'attribute'=>'collectorName',
-                            ],
-                            [
-                                'attribute' => 'payment_date',
-                                'value' => 'payment_date',
-//                            'format' => 'php:date',
-                                'filter' =>  \kartik\date\DatePicker::widget([
-                                    'model' => $searchModel,
-                                    'attribute'=>'payment_date',
-                                    'pluginOptions' => [
-//                                    'format' => 'dd-M-yyyy',
-                                        'format' => 'yyyy-m-dd',
-                                        'autoclose'=>true,
-                                        'todayHighlight' => true
-                                    ]
-                                ]),
-                                'format' => 'html',
-                            ],
-                            'amount',
-                            [
-                                'class' => 'yii\grid\DataColumn', // can be omitted, as it is the default
-                                'attribute' => 'status',
-                                'content' => function ($data) {
-                                    return $data['status'] ? '<span class="label label-success pull-left">Cobrado</span>' : '<span class="label label-danger">Pendiente</span>';
-                                },
-                                'filter' => ['0' =>'Pendiente', '1' =>'Cobrado',],
-                            ],
-
-                            ['class' => 'yii\grid\ActionColumn'],
-                        ],
-                        'tableOptions'=>['class'=>'table table-striped table-bordered table-condensed' ]
-                    ]); ?>
+                <div class="box-tools pull-right">
+<!--                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>-->
+<!--                    </button>-->
                 </div>
-
-                <?php Pjax::end(); ?>
+                <!-- /.box-tools -->
             </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="table-responsive">
+                    <table id="data-table" class="display table table-bordered no-wrap" width="100%">
+                        <thead>
+                        <tr>
+                            <th class="all">Cliente</th>
+                            <th class="all">Cuota</th>
+                            <th class="all">Fecha de Pago</th>
+                            <th>Cédula</th>
+                            <th>Cobrador</th>
+                            <th>Estado</th>
+                            <th><input type="checkbox" name="select_all" value="1" id="select-all"></th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <!-- /.box-body -->
         </div>
     </div>
 </div>
+
+<?php $this->registerJsFile('@web/js/payment/index.js', ['depends' => ['app\assets\DataTableAsset']]) ?>

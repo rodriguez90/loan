@@ -89,16 +89,14 @@ class PaymentSearch extends Payment
 
         $query->joinWith(['collector', 'loan']);
         $query->innerJoin('customer', 'customer.id = loan.customer_id ');
-
-
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'pagination' => false,
-//            'pagination' => [
-//                'pageSize' => 10,
-//            ]
+//            'pagination' => false,
+            'pagination' => [
+                'pageSize' => 10,
+            ]
         ]);
 
         $dataProvider->setSort([
@@ -122,12 +120,12 @@ class PaymentSearch extends Payment
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
+            'payment.id' => $this->id,
             'loan_id' => $this->loan_id,
-            'amount' => $this->amount,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'status' => $this->status,
+            'payment.amount' => $this->amount,
+//            'created_at' => $this->created_at,
+//            'updated_at' => $this->updated_at,
+            'payment.status' => $this->status,
         ]);
 
         if(Yii::$app->authManager->getAssignment('admin',Yii::$app->user->getId()) ||
@@ -144,5 +142,39 @@ class PaymentSearch extends Payment
         $query->andFilterWhere(['like', 'CONCAT(customer.first_name,customer.last_name)', $this->customerName]);
 
         return $dataProvider;
+    }
+
+    public function searchDashBoard2()
+    {
+        $query = Payment::find();
+        $query->joinWith(['collector', 'loan']);
+        $query->innerJoin('customer', 'customer.id = loan.customer_id ');
+
+        if(Yii::$app->authManager->getAssignment('Cobrador',Yii::$app->user->getId()))
+        {
+            $query->andFilterWhere([ 'payment.collector_id' => Yii::$app->user->getId()]);
+        }
+
+        $query->andFilterWhere(['like', 'payment_date', $this->payment_date]);
+        $query->andFilterWhere(['like', 'CONCAT(customer.first_name,customer.last_name)', $this->customerName]);
+        $query->andFilterWhere(['payment.status'=>0]);
+        $data = $query->select([
+            'payment.id',
+            'customer.dni',
+            'CONCAT(customer.first_name,customer.last_name) as customerName',
+            'payment.amount',
+            'payment.payment_date',
+            'user.username as collectorName',
+            'payment.status',
+        ])->orderBy(['payment_date'=>SORT_ASC])->asArray()->all();
+
+        $result = [];
+        foreach ($data as $row)
+        {
+            $row['checkbox']='';
+            $result[]=$row;
+        }
+
+        return $result;
     }
 }

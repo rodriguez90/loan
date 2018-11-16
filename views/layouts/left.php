@@ -8,7 +8,7 @@ if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'loan_list'))
 
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'payment_list', []))
 {
-    $items[]=['label' => 'Cobros', 'icon' => 'credit-card', 'url' => ['/payment/index']];
+    $items[]=['label' => 'Cuotas', 'icon' => 'credit-card', 'url' => ['/payment/index']];
 }
 
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'refinancing'))

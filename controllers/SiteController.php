@@ -67,17 +67,12 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new PaymentSearch();
-        $dataProvider = $searchModel->searchDashBoard(Yii::$app->request->queryParams);
-
         $customerCount = Customer::find()->count();
         $loanCount = Loan::find()->count();
         $paymentCount = Payment::find()->where(['status'=>1])->count();
         $unpaidCount = Payment::find()->where(['status'=>0])->count();
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+        return $this->render('index3', [
             'customerCount' =>$customerCount,
             'loanCount' =>$loanCount,
             'paymentCount' =>$paymentCount,

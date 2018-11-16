@@ -6,10 +6,14 @@ use Da\User\Filter\AccessRuleFilter;
 use Yii;
 use app\models\Payment;
 use app\models\PaymentSearch;
+use yii\db\conditions\InCondition;
 use yii\filters\AccessControl;
+use yii\helpers\Url;
 use yii\web\Controller;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * PaymentController implements the CRUD actions for Payment model.
@@ -26,6 +30,8 @@ class PaymentController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                    'pay' => ['POST'],
+                    'pay-bulk' => ['POST'],
                 ],
             ],
             'access' => [
@@ -39,16 +45,16 @@ class PaymentController extends Controller
 //                        'roles' => ['@'],
 //                    ],
                     [
-                        'actions' => ['index','view'],
+                        'actions' => ['index','view','list','pay','pay-bulk'],
                         'allow' => true,
                         'roles' => ['admin','Administrador','Cobrador'],
-//                        'permissions' => ['customer_view', 'customer_list'],
+//                        'permissions' => [],
                     ],
                     [
                         'actions' => ['create','update','delete'],
                         'allow' => true,
-                        'roles' => ['admin','Administrador', 'Cobrador'],
-//                        'permissions' => ['customer_create', 'customer_update', 'customer_delete'],
+                        'roles' => ['admin','Administrador',],
+//                        'permissions' => [],
                     ],
                 ],
             ],
@@ -129,6 +135,70 @@ class PaymentController extends Controller
         ]);
     }
 
+    public function actionPay($id)
+    {
+
+        try{
+            $payment = Payment::findOne($id);
+            if($payment)
+            {
+                $payment->status = 1;
+                if(!$payment->save())
+                    throw new NotFoundHttpException('Ah ocurrido un error al registrar el pago.');
+            }
+            else
+                throw new NotFoundHttpException('El pago no existe.');
+//            $result = Payment::updateAll(['status' => 1],new InCondition('id', 'IN', [$id])); // Non register un modelhistory
+//            if($result <= 0)
+//                throw new NotFoundHttpException('El pago no existe.');
+        }
+        catch ( Exception $e)
+        {
+            throw new NotFoundHttpException('Ah ocurrido un error al registrar el pago.');
+        }
+
+        return $this->redirect(Url::to(['/site/index']));
+    }
+
+    public function actionPayBulk()
+    {
+        $paymentsId = Yii::$app->request->post('payments');
+
+        try
+        {
+            $payments = Payment::find()->where(['in', 'id', $paymentsId])->all();
+
+            if(count($payments) > 0)
+            {
+                $transaction = Yii::$app->getDb()->beginTransaction();
+               foreach ($payments as $payment)
+               {
+                   $payment->status = 1;
+                   if(!$payment->save())
+                   {
+                       $transaction->rollBack();
+                       throw new NotFoundHttpException('Ah ocurrido un error al registrar el pago.');
+                   }
+               }
+                $transaction->commit();
+            }
+            else
+            {
+                throw new NotFoundHttpException('Los pagos no existen.');
+            }
+
+//            $result = Payment::updateAll(['status' => 1],new InCondition('id', 'IN', $payments));// Non register un modelhistory
+//            if($result <= 0)
+//                throw new NotFoundHttpException('El pago no existe.');
+        }
+        catch ( Exception $e)
+        {
+            throw new NotFoundHttpException('Ah ocurrido un error al registrar los pagos.');
+        }
+
+        return $this->redirect(Url::to(['/site/index']));
+    }
+
     /**
      * Deletes an existing Payment model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
@@ -159,7 +229,8 @@ class PaymentController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    public function actionList(){
+    public function actionList()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
         $response = array();
@@ -167,36 +238,17 @@ class PaymentController extends Controller
         $response['data'] = [];
         $response['msg'] = '';
         $response['msg_dev'] = '';
-        $session = Yii::$app->session;
         if($response['success'])
         {
             try{
 
-                $response['data'] = Payment::find()
-                    ->select('process.id, 
-                                    process.bl, 
-                                    process.delivery_date, 
-                                    process.type, 
-                                    process.created_at, 
-                                    agency.name as agency_name,
-                                    COUNT(process_transaction.id) as countContainer,			 
-                                    COUNT(ticket.id) as countTicket,'
-                    )
-                    ->innerJoin('agency', 'agency.id = process.agency_id')
-                    ->innerJoin("process_transaction","process_transaction.process_id = process.id and process_transaction.active=1")
-                    ->leftJoin("ticket","process_transaction.id = ticket.process_transaction_id and ticket.active=1")
-                    ->where(['process.active'=>1])
-                    ->andFilterWhere(['agency_id'=>$session->get('agencyId')])
-                    ->andFilterWhere(['process_transaction.trans_company_id'=>$session->get('transCompanyId')])
-                    ->groupBy(['process.id', 'agency.id'])
-                    ->groupBy(['process.id', 'process.bl', 'process.delivery_date', 'process.type', 'agency.id', 'agency.name', 'process.created_at'])
-                    ->asArray()
-                    ->all();
+                $searchModel = new PaymentSearch();
+                $response['data'] = $searchModel->searchDashBoard2();
             }
             catch ( Exception $e)
             {
                 $response['success'] = false;
-                $response['msg'] = "Ah ocurrido al recuperar los procesos.";
+                $response['msg'] = "Ah ocurrido al recuperar los pagos.";
                 $response['msg_dev'] = $e->getMessage();
                 $response['data'] = [];
             }

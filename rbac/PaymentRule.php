@@ -30,6 +30,13 @@ class PaymentRule extends Rule
                 $result = true;
             }
         }
+//        elseif ( isset($params['payments']))
+//        {
+//            foreach ($params['payments'] as $payment)
+//            {
+//
+//            }
+//        }
         return $result;
     }
 }

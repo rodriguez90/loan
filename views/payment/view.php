@@ -7,8 +7,8 @@ use yii\widgets\DetailView;
 /* @var $model app\models\Payment */
 
 //$this->title = 'Cobro: No.  ' . $model->id;
-$this->title = 'Datos del Cobro';
-$this->params['breadcrumbs'][] = ['label' => 'Cobros', 'url' => ['index']];
+$this->title = 'Datos de la Cuota';
+$this->params['breadcrumbs'][] = ['label' => 'Cuotas', 'url' => ['index']];
 //$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="row">
@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = ['label' => 'Cobros', 'url' => ['index']];
                     <?= Html::a('Eliminar', ['delete', 'id' => $model->id], [
                         'class' => 'btn btn-danger',
                         'data' => [
-                            'confirm' => 'Está seguro que desea eliminar este cobro?',
+                            'confirm' => 'Está seguro que desea eliminar este Cuota?',
                             'method' => 'post',
                         ],
                     ]) ?>
