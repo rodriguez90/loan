@@ -126,7 +126,7 @@ class SiteController extends Controller
         {
             // do report
         }
-        
+
         return $this->render('report');
     }
 }
