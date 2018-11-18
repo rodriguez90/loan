@@ -316,5 +316,3 @@ HTML;
 <script>
     var loanId = '<?php echo $model->id; ?>';
 </script>
-
-<?php $this->registerJsFile('@web/js/loan/form.js', ['depends' => ['app\assets\DataTableAsset']]) ?>

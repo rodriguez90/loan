@@ -12,13 +12,13 @@ $this->title = 'Reporte';
 <div class="row">
     <div class="col-lg-12 col-xs-12">
         <div class="box box-solid">
-            <div class="box-header with-border">
-                <h3 class="box-title">Reporte</h3>
-                <div class="box-tools pull-right">
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                    </button>
-                </div>
-            </div>
+<!--            <div class="box-header with-border">-->
+<!--                <h3 class="box-title"></h3>-->
+<!--                <div class="box-tools pull-right">-->
+<!--                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>-->
+<!--                    </button>-->
+<!--                </div>-->
+<!--            </div>-->
             <div class="box-body">
 
                 <div class="row">
@@ -37,7 +37,7 @@ $this->title = 'Reporte';
 </div>
 HTML;
                         echo '<div class="form-group drp-container">';
-                        echo '<label>Plazo del Préstamo</label>';
+                        echo '<label>Período</label>';
                         echo \kartik\daterange\DateRangePicker::widget([
 //                                'model'=>$model,
 //                                'attribute' => 'dateRange',

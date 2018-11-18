@@ -78,4 +78,59 @@ class LoanSearch extends Loan
 
         return $dataProvider;
     }
+
+    public function search2($params)
+    {
+        $this->load($params);
+
+
+
+        $query = Loan::find();
+        $query->joinWith(['collector', 'customer']);
+//        $query->innerJoin('customer', 'customer.id = loan.customer_id ');
+
+        // add conditions that should always apply here
+
+        // grid filtering conditions
+        $query->andFilterWhere([
+            'loan.id' => $this->id,
+            'loan.customer_id' => $this->customer_id,
+            'banker_id' => $this->banker_id,
+            'loan.amount' => $this->amount,
+            'porcent_interest' => $this->porcent_interest,
+            'loan.status' => $this->status,
+            'refinancing_id' => $this->refinancing_id,
+            'frequency_payment' => $this->frequency_payment,
+            'start_date' => $this->start_date,
+            'end_date' => $this->end_date,
+            'loan.created_at' => $this->created_at,
+            'loan.updated_at' => $this->updated_at,
+            'fee_payment' => $this->fee_payment,
+            'loan.collector_id' => $this->collector_id,
+        ]);
+
+        if(Yii::$app->authManager->getAssignment('Cobrador',Yii::$app->user->getId()))
+        {
+            $query->andFilterWhere(['collector_id'=>Yii::$app->user->getId()]);
+        }
+
+        $result = $query->select([
+                            'loan.id',
+                            'loan.porcent_interest',
+                            'loan.amount',
+                            'loan.fee_payment',
+                            'loan.start_date',
+                            'loan.end_date',
+                            'loan.frequency_payment',
+                            'loan.status',
+                            'loan.refinancing_id',
+                            'user.username as collectorName',
+                            'CONCAT(customer.first_name,customer.last_name) as customerName',
+                            'customer.id as customerId',
+
+                        ])
+                        ->asArray()
+                        ->all();
+        return $result;
+    }
 }

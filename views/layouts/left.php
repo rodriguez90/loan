@@ -11,10 +11,10 @@ if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'payment_list', 
     $items[]=['label' => 'Cuotas', 'icon' => 'credit-card', 'url' => ['/payment/index']];
 }
 
-if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'refinancing'))
-{
-    $items[]=['label' => 'Refinanciar', 'icon' => 'refresh', 'url' => ['/loan/index']];
-}
+//if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'refinancing'))
+//{
+//    $items[]=['label' => 'Refinanciar', 'icon' => 'refresh', 'url' => ['/loan/index']];
+//}
 
 if(Yii::$app->authManager->checkAccess(Yii::$app->user->getId(),'customer_list'))
 {

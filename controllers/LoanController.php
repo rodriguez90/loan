@@ -30,6 +30,7 @@ class LoanController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+//                    'refinance' => ['POST'],
                 ],
             ],
             'access' => [
@@ -43,13 +44,13 @@ class LoanController extends Controller
 //                        'roles' => ['@'],
 //                    ],
                     [
-                        'actions' => ['index','view', 'user-list'],
+                        'actions' => ['index','view', 'user-list', 'loan-list', 'list'],
                         'allow' => true,
                         'roles' => ['admin','Administrador','Cobrador'],
 //                        'permissions' => ['customer_view', 'customer_list'],
                     ],
                     [
-                        'actions' => ['create','update','delete'],
+                        'actions' => ['create','update','delete', 'refinance'],
                         'allow' => true,
                         'roles' => ['admin','Administrador'],
 //                        'permissions' => ['customer_create', 'customer_update', 'customer_delete'],
@@ -215,6 +216,65 @@ class LoanController extends Controller
         ]);
     }
 
+    public function actionRefinance($id)
+    {
+        $model = $this->findModel($id);
+
+        if($data = Yii::$app->request->isPost)
+        {
+            $data = Yii::$app->request->post();
+
+            $data["Loan"]['banker_id'] = Yii::$app->user->identity->getId();
+            $data["Loan"]['status'] = Loan::ACTIVE;
+
+            $data["Loan"]['start_date'] = date('Y-m-d', strtotime($data["Loan"]['start_date']));
+            $data["Loan"]['end_date'] = date('Y-m-d', strtotime($data["Loan"]['end_date']));
+            $data["Loan"]['updated_at'] = date('Y-m-d');
+
+            $payments = json_decode($data['payments']);
+
+            $transaction = Yii::$app->getDb()->beginTransaction();
+
+            $result = true;
+
+            if ($model->load($data))
+            {
+                if($model->save())
+                {
+                    foreach ($payments as $payment)
+                    {
+                        $pay = new Payment();
+                        $pay->loan_id = $model->id;
+                        $pay->payment_date = date('Y-m-d', strtotime($payment->payment_date));
+                        $pay->collector_id = $model->collector_id;
+                        $pay->amount = $model->fee_payment;
+
+                        if(!$pay->save())
+                        {
+                            $result = false;
+                            $model->addError(nul, 'Ah ocurrido un error al generar los pagos.');
+                            break;
+                        }
+                    }
+                }
+                else
+                    $result = false;
+
+                if($result)
+                {
+                    $transaction->commit();
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
+                else
+                    $transaction->rollBack();
+            }
+        }
+
+        return $this->render('refinance', [
+            'model' => $model,
+        ]);
+    }
+
     /**
      * Deletes an existing Loan model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
@@ -224,9 +284,39 @@ class LoanController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        Yii::$app->response->format = Response::FORMAT_JSON;
+//        $params = Yii::$app->request->get();
+        $response = array();
+        $response['success'] = true;
+        $response['data'] = [];
+        $response['msg'] = 'Préstamo eliminado con éxito';
+        $response['msg_dev'] = '';
 
-        return $this->redirect(['index']);
+        $loan = $this->findModel($id);
+        try
+        {
+            if($loan)
+            {
+                if(!$loan->delete())
+                {
+                    $response['success'] = true;
+                    $response['msg'] = 'Ha ocurrido un error al eliminar el préstamo.';
+                }
+            }
+            else
+            {
+                $response['success'] = true;
+                $response['msg'] = 'El préstamo no existe.';
+            }
+
+        }
+        catch (\Exception $e)
+        {
+            $response['success'] = true;
+            $response['msg'] = 'Ha ocurrido un error al eliminar el préstamo.';
+        }
+
+        return $response;
     }
 
 
@@ -258,6 +348,36 @@ class LoanController extends Controller
         }
 
         return $out;
+    }
+
+    public function actionList()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $params = Yii::$app->request->get();
+        $response = array();
+        $response['success'] = true;
+        $response['data'] = [];
+        $response['msg'] = '';
+        $response['msg_dev'] = '';
+
+        if(!is_null($params))
+        {
+            try
+            {
+                $search = new LoanSearch();
+                $response['data'] = $search->search2($params);
+            }
+            catch ( Exception $e)
+            {
+                $response['success'] = false;
+                $response['msg'] = "Ah ocurrido al recuperar los préstamos.";
+                $response['msg_dev'] = $e->getMessage();
+                $response['data'] = [];
+            }
+        }
+
+        return $response;
     }
 
     /**

@@ -155,4 +155,9 @@ class Loan extends \yii\db\ActiveRecord
     {
         return $this->customer->first_name . ' '. $this->customer->last_name;
     }
+
+    public function getAmountPaid()
+    {
+//        $this->payments
+    }
 }
