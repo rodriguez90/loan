@@ -22,9 +22,10 @@ class DataTableAsset extends AssetBundle
         'js/plugins/DataTables/media/css/dataTables.bootstrap.css',
         'js/plugins/DataTables/extensions/Buttons/css/buttons.bootstrap.min.css',
         'js/plugins/DataTables/extensions/Select/css/select.bootstrap.min.css',
-        'js/plugins/DataTables/extensions/Responsive/css/responsive.bootstrap.min.css'	,
+//        'js/plugins/DataTables/extensions/Responsive/css/responsive.bootstrap.min.css'	,
         'js/plugins/DataTables/extensions/KeyTable/css/keyTable.bootstrap.min.css',
         'js/plugins/DataTables/extensions/Checkboxes/dataTables.checkboxes.css',
+        'js/plugins/DataTables/extensions/Responsive/css/responsive.bootstrap.css',
     ];
     public $js = [
         'js/plugins/DataTables/media/js/jquery.dataTables.min.js',
@@ -38,8 +39,9 @@ class DataTableAsset extends AssetBundle
         'js/plugins/DataTables/extensions/Buttons/js/buttons.colvis.min.js',
         'js/plugins/DataTables/extensions/Select/js/dataTables.select.min.js',
         'js/plugins/DataTables/extensions/KeyTable/js/dataTables.keyTable.min.js',
-        'js/plugins/DataTables/extensions/Responsive/js/dataTables.responsive.min.js',
-        'js/plugins/DataTables/extensions/CellEdit/js/dataTables.cellEdit.js',
+//        'js/plugins/DataTables/extensions/Responsive/js/dataTables.responsive.min.js',
+//        'js/plugins/DataTables/extensions/Responsive/js/responsive.bootstrap.min.js',
+//        'js/plugins/DataTables/extensions/CellEdit/js/dataTables.cellEdit.js',
         'js/plugins/DataTables/extensions/Checkboxes/dataTables.checkboxes.min.js',
     ];
     public $depends = [

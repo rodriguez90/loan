@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Loan;
 use Da\User\Filter\AccessRuleFilter;
 use Yii;
 use app\models\Payment;
@@ -32,6 +33,7 @@ class PaymentController extends Controller
                     'delete' => ['POST'],
                     'pay' => ['POST'],
                     'pay-bulk' => ['POST'],
+                    'list' => ['GET'],
                 ],
             ],
             'access' => [
@@ -45,7 +47,7 @@ class PaymentController extends Controller
 //                        'roles' => ['@'],
 //                    ],
                     [
-                        'actions' => ['index','view','list','pay','pay-bulk'],
+                        'actions' => ['index','view','list','pay','pay-bulk','un-paid-list'],
                         'allow' => true,
                         'roles' => ['admin','Administrador','Cobrador'],
 //                        'permissions' => [],
@@ -135,34 +137,59 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function actionPay($id)
+    public function actionPay()
     {
+        Yii::$app->response->format = Response::FORMAT_JSON;
 
-        try{
+        $params = Yii::$app->request->post();
+
+        $response = array();
+        $response['success'] = true;
+        $response['url'] = Url::to(['/site/index']);
+        $response['msg'] = 'La cuota fue registrada con exito.';
+        $response['msg_dev'] = '';
+
+        try
+        {
+            $id = $params['id'];
             $payment = Payment::findOne($id);
             if($payment)
             {
                 $payment->status = 1;
                 if(!$payment->save())
-                    throw new NotFoundHttpException('Ah ocurrido un error al registrar el pago.');
+                {
+                    $response['success'] = false;
+                    $response['msg'] = 'Ah ocurrido un error al registrar el pago.';
+                }
+
             }
             else
-                throw new NotFoundHttpException('El pago no existe.');
-//            $result = Payment::updateAll(['status' => 1],new InCondition('id', 'IN', [$id])); // Non register un modelhistory
-//            if($result <= 0)
-//                throw new NotFoundHttpException('El pago no existe.');
+            {
+                $response['success'] = false;
+                $response['msg'] = 'El pago no existe.';
+            }
         }
         catch ( Exception $e)
         {
-            throw new NotFoundHttpException('Ah ocurrido un error al registrar el pago.');
+            $response['success'] = false;
+            $response['msg'] = 'Ah ocurrido un error al registrar el pago..';
         }
 
-        return $this->redirect(Url::to(['/site/index']));
+        return $response;
     }
 
     public function actionPayBulk()
     {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
         $paymentsId = Yii::$app->request->post('payments');
+
+
+        $response = array();
+        $response['success'] = true;
+        $response['url'] = Url::to(['/site/index']);
+        $response['msg'] = 'Las cuotas fueron registradas con exito.';
+        $response['msg_dev'] = '';
 
         try
         {
@@ -176,15 +203,20 @@ class PaymentController extends Controller
                    $payment->status = 1;
                    if(!$payment->save())
                    {
+                       $response['success'] = false;
+                       $response['msg'] = 'Ah ocurrido un error al registrar las cuotas';
+                       $response['msg_dev'] = $payment->getErrorSummary(true);
                        $transaction->rollBack();
-                       throw new NotFoundHttpException('Ah ocurrido un error al registrar el pago.');
+                       break;
                    }
                }
-                $transaction->commit();
+                if($response['success'])
+                    $transaction->commit();
             }
             else
             {
-                throw new NotFoundHttpException('Los pagos no existen.');
+                $response['success'] = false;
+                $response['msg'] = 'Debe enviar las cuotas a registrar.';
             }
 
 //            $result = Payment::updateAll(['status' => 1],new InCondition('id', 'IN', $payments));// Non register un modelhistory
@@ -193,10 +225,12 @@ class PaymentController extends Controller
         }
         catch ( Exception $e)
         {
-            throw new NotFoundHttpException('Ah ocurrido un error al registrar los pagos.');
+            $response['success'] = false;
+            $response['msg'] = 'Ah ocurrido un error al registrar las cuotas';
+            $response['msg_dev'] = $e->getMessage();
         }
 
-        return $this->redirect(Url::to(['/site/index']));
+        return $response;
     }
 
     /**
@@ -233,6 +267,8 @@ class PaymentController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
+        $params = Yii::$app->request->get();
+
         $response = array();
         $response['success'] = true;
         $response['data'] = [];
@@ -243,7 +279,7 @@ class PaymentController extends Controller
             try{
 
                 $searchModel = new PaymentSearch();
-                $response['data'] = $searchModel->searchDashBoard2();
+                $response['data'] = $searchModel->search2($params);
             }
             catch ( Exception $e)
             {

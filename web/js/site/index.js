@@ -1,5 +1,3 @@
-var selectedPayments = [];
-var selectAll = false;
 
 var handleDataTable  = function (){
 
@@ -7,16 +5,48 @@ var handleDataTable  = function (){
     {
         var table = $('#data-table').DataTable({
             // dom: '<"top"i>flBpt<"bottom"Bp><"clear">',
-            dom: '<"top">flBpt<"bottom"Bp><"clear">',
+            // dom: '<"top">flBpt<"bottom"Bp>',
+            'dom': "<'row'<'col-sm-4'B><'col-sm-4'f><'col-sm-4'p>>" +
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-4'B><'col-sm-4'p>>",
             // dom: '<"top"ip<"clear">>t',
-            buttons: [
+            // "dom": 'lrtip',
+            "ajax": {
+                "url": homeUrl + "payment/list",
+                "type": "GET",
+                'data':{
+                    'status':0,
+                    'loan_status':1
+                }
+            },
+            'pagingType': "full_numbers",
+            'paging': true,
+            'lengthMenu': [5, 10, 15],
+            'pageLength': 10,
+            'language': lan,
+            responsive: true,
+            // responsive: {
+            //     details: false
+            // },
+            // 'responsive': {
+            //     'details': {
+            //         'type': 'column',
+            //         'target': 0
+            //     }
+            // },
+            // 'rowId': 'id',
+
+            // "processing": true,
+            // "serverSide": true,
+            // deferRender:true,
+            'buttons': [
                 {
                     text: 'Pagar Seleccionados',
                     action: function ( e, dt, node, config )
                     {
                         // this.disable(); // disable button
                         // var count = table.rows( { selected: true } ).count();
-                        selectedPayments = [];
+                        var selectedPayments = [];
 
                         table.rows( { selected: true }).data().each( function ( value, index ) {
 
@@ -25,111 +55,99 @@ var handleDataTable  = function (){
                         console.log(selectedPayments);
 
                         if(selectedPayments.length <= 0)
-                            alert( 'Debe seleccionar los pagos.' );
+                            $.alert({
+                                title: 'Advertencia!',
+                                content: 'Debe seleccionar los pagos.',
+                                buttons: {
+                                    confirm: {
+                                        text:'Aceptar'
+                                    }
+                                }
+                            });
                         else
                         {
-                            var r = confirm('Esta seguro que desea regitrar las cuotas?');
-                            if(r == true)
-                            {
-                                $.ajax({
-                                    // async:false,
-                                    url: homeUrl + "payment/pay-bulk",
-                                    type: "POST",
-                                    dataType: "json",
-                                    data:  {
-                                        'payments':selectedPayments
+                            $.confirm({
+                                title: 'Advertencia!',
+                                content: 'Esta seguro que desea regitrar las cuotas?',
+                                buttons: {
+                                    confirm: {
+                                        text: 'Confirmar',
+                                        icon: 'fa fa-credit-card',
+                                        // btnClass: 'btn-blue',
+                                        keys: ['enter', 'shift'],
+                                        action: function () {
+                                            $.ajax({
+                                                async:false,
+                                                url: homeUrl + "payment/pay-bulk",
+                                                type: "POST",
+                                                dataType: "json",
+                                                data: {
+                                                    'payments': selectedPayments
+                                                },
+                                                success: function (response) {
+                                                    $.alert(
+                                                    {
+                                                        title:'Información',
+                                                        content:response.msg,
+                                                        buttons: {
+                                                            confirm: {
+                                                                text:'Aceptar',
+                                                                action:function () {
+                                                                    // window.location.href = response.url;
+                                                                    table
+                                                                        .rows( '.selected' )
+                                                                        .remove()
+                                                                        .draw();
+                                                                }
+                                                            },
+                                                        }
+                                                    });
+                                                },
+                                                error: function(data) {
+                                                    $.alert('Ha ocurrido un error al registrar la cuota !');
+                                                }
+                                            });
+                                        }
                                     },
-//                            contentType: "application/json; charset=utf-8",
-                                    beforeSend:function () {
-                                        // $("#modal-select-bussy").modal("show");
-                                    },
-                                    success: function (response) {
-
-                                        // $("#modal-select-bussy").modal("hide");
-                                        // // you will get response from your php page (what you echo or print)
-                                        // // console.log(response);
-                                        //
-                                        // if(response['success'])
-                                        // {
-                                        //     result = true;
-                                        //     window.location.href = response['url'];
-                                        // }
-                                        // else
-                                        // {
-                                        //     alert(response['msg']);
-                                        // }
-                                        // result = false;
-                                    },
-                                    error: function(data) {
-                                        // $("#modal-select-bussy").modal("hide");
-                                        // // console.log(data);
-                                        // console.log(data.responseText);
-                                        // result = false;
-                                        // return false;
-                                    },
-                                });
-                            }
+                                    cancel: {
+                                        text:'Cancelar'
+                                    }
+                                }
+                            });
                         }
                     },
                     className: 'btn btn-primary btn-xs',
                     // name: 'payBtn'
                 }
             ],
-            pagingType: "full_numbers",
-            paging: true,
-            lengthMenu: [5, 10, 15],
-            pageLength: 10,
-            language: lan,
-            responsive: true,
-            // responsive: {
-            //     details: false
-            // },
-            rowId: 'id',
-            "ajax": homeUrl + "payment/list",
-            "processing": true,
-            // "serverSide": true,
-            // deferRender:true,
-            select: {
-                // items: 'cells',
-                style:    'multi',
-                // selector: 'td:first-child'
-            },
-            "columns": [
+            'columnDefs': [
+                // {
+                //     'data': null,
+                //     'defaultContent': '',
+                //     'className': 'control',
+                //     'orderable': false,
+                //     'targets': 0,
+                //     'checkboxes': {
+                //         'selectRow': true
+                //     }
+                // },
+                // {
+                //     'targets': 0,
+                //     'orderable': false,
+                //     // 'className': 'control',
+                //     'checkboxes': {
+                //         'selectRow': true
+                //     }
+                // },
                 {
-                    // "title": "Cliente",
-                    "data":'customerName',
+                    'data': null,
+                    'orderable': false,
+                    searchable: true,
+                    'targets': 0,
+                    'checkboxes': {
+                        'selectRow': true
+                    }
                 },
-                {
-                    // "title":'Cuota',
-                    "data":"amount",
-                },
-                {
-                    "title":'Cédula',
-                    "data":"dni",
-                },
-                {
-                    // "title":'Fecha de Pago',
-                    "data":"payment_date",
-                },
-                {
-                    // "title":'Cobrador',
-                    "data":"collectorName",
-                },
-                {
-                    // "title": "Estado",
-                    "data":"status",
-                },
-                {
-                    // "title": "Selecionar",
-                    "data":'id', // FIXME CHECK THIS
-                },
-                {
-                    // "title": "Acciones",
-                    "data":null
-                },
-            ],
-            "order": [[ 2, 'asc']],
-            columnDefs: [
                 // {
                 //     'targets': 5,
                 //     'searchable':false,
@@ -142,23 +160,18 @@ var handleDataTable  = function (){
                 {
                     orderable: true,
                     searchable: true,
-                    targets:   [0,1,2,3,4,5]
+                    targets:   [1,2,3,4,5,6]
                 },
                 {
-                    targets: [3],
-                    data:'dni',
-                },
-                {
-                    targets: [4],
+                    targets: 2,
                     data:'payment_date',
                     render: function ( data, type, full, meta )
                     {
-
                         return moment(data).format('DD-MM-YYYY');
-                    },
+                    }
                 },
                 {
-                    targets: [5],
+                    targets: 6,
                     title:"Estado",
                     data:'status',
                     render: function ( data, type, full, meta )
@@ -171,19 +184,19 @@ var handleDataTable  = function (){
                             return customHtml;
                         }
                         return data == 1 ? 'Cobrado':'Pendiente';
-                    },
+                    }
                 },
+                // {
+                //     'targets': 7,
+                //     'searchable':false,
+                //     'orderable':false,
+                //     'checkboxes': {
+                //         'selectRow': true
+                //     },
+                //     data:'id'
+                // },
                 {
-                    'targets': 6,
-                    'searchable':false,
-                    'orderable':false,
-                    'checkboxes': {
-                        'selectRow': true
-                    },
-                    data:'id'
-                },
-                {
-                    targets: [7],
+                    targets: 7,
                     data:null,
                     render: function ( data, type, full, meta ) {
                         var elementId =  String(full.id);
@@ -195,29 +208,94 @@ var handleDataTable  = function (){
                             selectHtml += "<div class=\"col col-xs-12\">" ;
                             selectHtml += "<a " + "href=\"" + homeUrl + "payment/view?id=" + elementId + "\" class=\"btn btn-info btn-icon btn-circle btn-xs\" title=\"Ver\"><i class=\"fa fa-eye\"></i></a>";
                             selectHtml += "<a " + "href=\"" + homeUrl + "payment/update?id=" + elementId + "\" class=\"btn btn-success btn-icon btn-circle btn-xs\" title=\"Editar\"><i class=\"fa fa-edit\"></i></a>";
-                            selectHtml += "<a data-confirm=\"¿Está seguro que desea registrar el pago?\" data-method=\"post\"" + " href=\"" + homeUrl + "payment/pay?id=" + elementId + "&from=1"+ "\" class=\"btn btn-primary btn-icon btn-circle btn-xs\" title=\"Pagar\"><i class=\"fa fa-credit-card\"></i></a>";
+                            if(data.status == 0)
+                                // selectHtml += "<a data-confirm=\"¿Está seguro que desea registrar el pago?\" data-method=\"post\"" + " href=\"" + homeUrl + "payment/pay?id=" + elementId +  "\" class=\"btn btn-primary btn-icon btn-circle btn-xs\" title=\"Pagar\"><i class=\"fa fa-credit-card\"></i></a>";
+                                selectHtml += "<button data-row=\"" + meta.row +"\" + data-name=\"" + elementId +  "\" class=\"btn btn-primary btn-icon btn-circle btn-xs\" title=\"Pagar\"><i class=\"fa fa-credit-card\"></i></button>";
                             selectHtml += "</div>";
                             selectHtml += "</div>";
 
                             return selectHtml;
                         }
                         return "-";
-                    },
-                },
+                    }
+                }
             ],
+            'columns': [
+                { 'data':null },
+                { 'data':'customerName' },
+                { 'data':"payment_date" },
+                { 'data':"amount" },
+                { 'data':"dni" },
+                { 'data':"collectorName" },
+                { 'data':"status" },
+                { 'data':null }
+            ],
+            // select: {
+            //     // items: 'cells',
+            //     style:    'multi',
+            //     // selector: 'td:first-child'
+            // },
+            'select': {
+                'style': 'multi',
+                'selector': 'td .dt-checkboxes'
+                // 'selector': 'td:not(:first-child)'
+                // 'selector': 'td:not(.control)'
+                // 'selector': 'td:eq(7)'
+                // 'selector': 'tr.td:eq(6)'
+            },
+            "order": [[ 1, 'asc']]
         });
 
-        table.on( 'user-select', function ( e, dt, type, cell, originalEvent ) {
+        $('#data-table').on('click', 'button', function()
+        {
+            var id = $(this).data('name');
+            var row = $(this).data('row');
 
-            var index = cell.index();
-            // alert('user-select: ' + index.column);
-
-            if(index.column != 5)
-            {
-                e.preventDefault();
-                return false;
-            }
-        } );
+            $.confirm({
+                title: 'Advertencia!',
+                content: 'Esta seguro que desea regitrar la cuota?',
+                buttons: {
+                    confirm: {
+                        text:'Confirmar',
+                        btnClass: 'btn-blue',
+                        action: function () {
+                            $.ajax({
+                                async:false,
+                                url: homeUrl + "payment/pay",
+                                type: "POST",
+                                data:{'id':id},
+                                success: function (response) {
+                                    $.alert(
+                                        {
+                                            title:'Información',
+                                            content:response.msg,
+                                            buttons: {
+                                                confirm: {
+                                                    text:'Aceptar',
+                                                    action:function () {
+                                                        // window.location.href = response.url;
+                                                        table
+                                                            .row(row)
+                                                            .remove()
+                                                            .draw();
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    );
+                                },
+                                error: function(data) {
+                                    $.alert('Ha ocurrido un error al registrar la cuota !');
+                                }
+                            });
+                        }
+                    },
+                    cancel: {
+                        text:'Cancelar'
+                    }
+                }
+            });
+        });
 
         // Handle click on "Select all" control
         // $('#select-all').on('click', function(){

@@ -21,10 +21,12 @@ class AppAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
 //        'css/site.css',
+        'js/plugins/jquery-confirm/jquery-confirm.min.css'
     ];
     public $js = [
         'js/utils.js',
-        'js/plugins/moment/moment.min.js'
+        'js/plugins/moment/moment.min.js',
+        'js/plugins/jquery-confirm/jquery-confirm.min.js'
     ];
     public $depends = [
         'dmstr\web\AdminLteAsset',

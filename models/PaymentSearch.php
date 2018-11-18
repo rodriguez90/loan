@@ -178,4 +178,48 @@ class PaymentSearch extends Payment
 
         return $result;
     }
+
+    /**
+     * @param $params
+     * @return array
+     */
+    public function search2($params=[])
+    {
+//        var_dump($params);die;
+        $this->load($params,'');
+
+        $query = Payment::find();
+        $query->joinWith(['collector', 'loan']);
+        $query->innerJoin('customer', 'customer.id = loan.customer_id ');
+
+        if(Yii::$app->authManager->getAssignment('Cobrador',Yii::$app->user->getId()))
+        {
+            $query->andFilterWhere([ 'payment.collector_id' => Yii::$app->user->getId()]);
+        }
+
+        $query->andFilterWhere(['like', 'payment_date', $this->payment_date]);
+        $query->andFilterWhere(['like', 'CONCAT(customer.first_name,customer.last_name)', $this->customerName]);
+        $query->andFilterWhere(['payment.status'=>$this->status]);
+        $query->andFilterWhere(['loan.status'=>$params['loan_status']]);
+
+        $data = $query->select([
+            'payment.id',
+            'customer.dni',
+            'CONCAT(customer.first_name,customer.last_name) as customerName',
+            'payment.amount',
+            'payment.payment_date',
+            'user.username as collectorName',
+            'payment.status',
+        ])->orderBy(['payment_date'=>SORT_ASC])->asArray()->all();
+
+        $result = [];
+
+        foreach ($data as $row)
+        {
+            $row['checkbox']='';
+            $result[]=$row;
+        }
+
+        return $result;
+    }
 }

@@ -52,7 +52,7 @@ $this->title = '';
                 <div class="icon">
                     <i class="ion ion-pie-graph"></i>
                 </div>
-                <a href="#" class="small-box-footer">Reportes de Impagos <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="#" class="small-box-footer">Reporte <i class="fa fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <!-- ./col -->
@@ -88,16 +88,16 @@ $this->title = '';
                 <!-- /.box-header -->
                 <div class="box-body">
                     <div class="table-responsive">
-                        <table id="data-table" class="display table table-bordered no-wrap" width="100%">
+                        <table id="data-table" class="display table table-bordered no-wrap" width="100%" cellspacing="0">
                             <thead>
                             <tr>
+                                <th><input type="checkbox"></th>
                                 <th class="all">Cliente</th>
-                                <th class="all">Cuota</th>
                                 <th class="all">Fecha de Pago</th>
+                                <th>Cuota</th>
                                 <th>Cédula</th>
                                 <th>Cobrador</th>
                                 <th>Estado</th>
-                                <th><input type="checkbox" name="select_all" value="1" id="select-all"></th>
                                 <th>Acciones</th>
                             </tr>
                             </thead>
