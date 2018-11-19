@@ -69,8 +69,12 @@ class SiteController extends Controller
     {
         $customerCount = Customer::find()->count();
         $loanCount = Loan::find()->count();
-        $paymentCount = Payment::find()->where(['status'=>1])->count();
-        $unpaidCount = Payment::find()->where(['status'=>0])->count();
+        $paymentCount = Payment::find()
+            ->innerJoin('loan', 'loan.id=payment.loan_id')
+            ->where(['payment.status'=>1, 'loan.status'=>1])->count();
+        $unpaidCount = Payment::find()
+            ->innerJoin('loan', 'loan.id=payment.loan_id')
+            ->where(['payment.status'=>0, 'loan.status'=>1])->count();
 
         return $this->render('index3', [
             'customerCount' =>$customerCount,
