@@ -20,6 +20,7 @@ $this->params['breadcrumbs'][] = ['label' => 'Préstamos', 'url' => ['index']];
 
                 <div class="box-tools pull-right">
                     <?= Html::a('Modificar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+                    <?= Html::a('Refinanciar', ['refinance', 'id' => $model->id], ['class' => 'btn btn-success']) ?>
                     <?= Html::a('Eliminar', ['delete', 'id' => $model->id], [
                         'class' => 'btn btn-danger',
                         'data' => [
@@ -40,17 +41,27 @@ $this->params['breadcrumbs'][] = ['label' => 'Préstamos', 'url' => ['index']];
                             'label' => 'Cliente',
                         ],
                         [
-                            'attribute' => 'banker.username',
-                            'label' => 'Prestamista',
-                        ],
-                        [
                             'attribute' => 'collector.username',
                             'label' => 'Cobrador',
                         ],
-                        'amount',
                         [
                             'attribute' => 'porcent_interest',
                             'value' => strval($model->porcent_interest) . "%",
+                        ],
+                        [
+                            'attribute'=> 'amount',
+//                            'value'=>number_format($model->amount,2)
+                            'format' => 'currency',
+                        ],
+                        [
+                            'attribute'=> 'fee_payment',
+//                            'value'=>number_format($model->fee_payment,2)
+                            'format' => 'currency',
+                        ],
+                        [
+                            'label'=>'Cantidad Cancelada',
+                            'value' => strval($model->getAmountPaid()),
+                            'format' => 'currency',
                         ],
                         [
                             'attribute' => 'status',
@@ -64,14 +75,14 @@ $this->params['breadcrumbs'][] = ['label' => 'Préstamos', 'url' => ['index']];
                             'label' => 'Frecuencia de Pago(días)',
                             'attribute' => 'frequency_payment',
                         ],
+                        [
+                            'attribute' => 'banker.username',
+                            'label' => 'Prestamista',
+                        ],
                         'start_date:date',
                         'end_date:date',
-                        'created_at',
-                        [
-                            'attribute' => 'updated_at',
-//                            'value' => DateTime ? '-': $model->updated_at
-                        ],
-                        'fee_payment',
+                        'created_at:datetime',
+//                        'updated_at:datetime',
                     ],
                     'options'=>['class' => 'table table-striped table-bordered table-condensed detail-view']
                 ]) ?>

@@ -22,105 +22,6 @@ var handleDataTable  = function (){
             'pageLength': 10,
             'language': lan,
             responsive: true,
-            // responsive: {
-            //     details: false
-            // },
-            // 'responsive': {
-            //     'details': {
-            //         'type': 'column',
-            //         'target': 0
-            //     }
-            // },
-            // 'rowId': 'id',
-
-            // "processing": true,
-            // "serverSide": true,
-            // deferRender:true,
-            // 'buttons': [
-            //     {
-            //         text: 'Pagar Seleccionados',
-            //         action: function ( e, dt, node, config )
-            //         {
-            //             // this.disable(); // disable button
-            //             // var count = table.rows( { selected: true } ).count();
-            //             var selectedPayments = [];
-            //
-            //             table.rows( { selected: true }).data().each( function ( value, index ) {
-            //
-            //                 selectedPayments.push(parseInt(value.id));
-            //             });
-            //             console.log(selectedPayments);
-            //
-            //             if(selectedPayments.length <= 0)
-            //                 $.alert({
-            //                     title: 'Advertencia!',
-            //                     content: 'Debe seleccionar los pagos.',
-            //                     buttons: {
-            //                         confirm: {
-            //                             text:'Aceptar'
-            //                         }
-            //                     }
-            //                 });
-            //             else
-            //             {
-            //                 $.confirm({
-            //                     title: 'Advertencia!',
-            //                     content: 'Esta seguro que desea regitrar las cuotas?',
-            //                     buttons: {
-            //                         confirm: {
-            //                             text: 'Confirmar',
-            //                             icon: 'fa fa-credit-card',
-            //                             // btnClass: 'btn-blue',
-            //                             // keys: ['enter', 'shift'],
-            //                             action: function () {
-            //                                 $.ajax({
-            //                                     async:false,
-            //                                     url: homeUrl + "payment/pay-bulk",
-            //                                     type: "POST",
-            //                                     dataType: "json",
-            //                                     data: {
-            //                                         'payments': selectedPayments
-            //                                     },
-            //                                     success: function (response) {
-            //                                         $.alert(
-            //                                             {
-            //                                                 title:'Información',
-            //                                                 content:response.msg,
-            //                                                 buttons: {
-            //                                                     confirm: {
-            //                                                         text:'Aceptar',
-            //                                                         action:function () {
-            //                                                             // window.location.href = response.url;
-            //                                                             table
-            //                                                                 .rows( '.selected' )
-            //                                                                 .data()
-            //                                                                 .each( function ( value, index ) {
-            //                                                                     value.status = 1;
-            //                                                                     table.row(index.row).data(value);
-            //                                                                 })
-            //                                                                 .draw();
-            //                                                         }
-            //                                                     },
-            //                                                 }
-            //                                             });
-            //                                     },
-            //                                     error: function(data) {
-            //                                         $.alert('Ha ocurrido un error al registrar la cuota !');
-            //                                     }
-            //                                 });
-            //                             }
-            //                         },
-            //                         cancel: {
-            //                             text:'Cancelar'
-            //                         }
-            //                     }
-            //                 });
-            //             }
-            //         },
-            //         className: 'btn btn-primary btn-xs',
-            //         // name: 'payBtn'
-            //     }
-            // ],
             'columnDefs': [
                 {
                     orderable: true,
@@ -153,9 +54,9 @@ var handleDataTable  = function (){
                             {
                                 customHtml = '<span class="label label-success f-s-12">Cobrado</span>'
                             }
-                            else
+                            else if(data == 0 && full.refinancing_id > 0)
                             {
-                                customHtml = '<span class="label label-warning f-s-12">Cancelado</span>'
+                                customHtml = '<span class="label label-warning f-s-12">Refinanciado</span>'
                             }
 
                             return customHtml;
@@ -175,7 +76,13 @@ var handleDataTable  = function (){
                             var selectHtml = "<div class=\"row row-fluid\">";
                             selectHtml += "<div class=\"col col-xs-12\">" ;
                             selectHtml += "<a " + "href=\"" + homeUrl + "loan/view?id=" + elementId + "\" class=\"btn btn-info btn-icon btn-circle btn-xs\" title=\"Ver\"><i class=\"fa fa-eye\"></i></a>";
-                            selectHtml += "<a " + "href=\"" + homeUrl + "loan/refinance?id=" + elementId + "\" class=\"btn btn-warning btn-icon btn-circle btn-xs\" title=\"Refinanciar\"><i class=\"fa fa-refresh\"></i></a>";
+                            selectHtml += "<a " + "href=\"" + homeUrl + "loan/update?id=" + elementId + "\" class=\"btn btn-primary btn-icon btn-circle btn-xs\" title=\"Ver\"><i class=\"fa fa-edit\"></i></a>";
+
+                            if(full.status == 1)
+                            {
+                                selectHtml += "<a " + "href=\"" + homeUrl + "loan/refinance?id=" + elementId + "\" class=\"btn btn-success btn-icon btn-circle btn-xs\" title=\"Refinanciar\"><i class=\"fa fa-refresh\"></i></a>";
+                            }
+
                             // if(data.status == 0)
                             // selectHtml += "<a data-confirm=\"¿Está seguro que desea registrar el pago?\" data-method=\"post\"" + " href=\"" + homeUrl + "payment/pay?id=" + elementId +  "\" class=\"btn btn-primary btn-icon btn-circle btn-xs\" title=\"Pagar\"><i class=\"fa fa-credit-card\"></i></a>";
                             selectHtml += "<button data-row=\"" + meta.row +"\" + data-name=\"" + elementId +  "\" class=\"btn btn-danger btn-icon btn-circle btn-xs\" title=\"Eliminar\"><i class=\"fa fa-trash\"></i></button>";
@@ -233,24 +140,39 @@ var handleDataTable  = function (){
                                 type: "POST",
                                 // data:{'id':id},
                                 success: function (response) {
-                                    $.alert(
-                                        {
-                                            title:'Información',
-                                            content:response.msg,
-                                            buttons: {
-                                                confirm: {
-                                                    text:'Aceptar',
-                                                    action:function () {
-                                                        // window.location.href = response.url;
-                                                         table
-                                                            .row(row)
-                                                            .remove()
-                                                            .draw();
+                                    if(response.success)
+                                    {
+                                        $.alert(
+                                            {
+                                                title:'Información',
+                                                content:response.msg,
+                                                buttons: {
+                                                    confirm: {
+                                                        text:'Aceptar',
+                                                        action:function () {
+                                                            // window.location.href = response.url;
+                                                            table
+                                                                .row(row)
+                                                                .remove()
+                                                                .draw();
+                                                        }
                                                     }
                                                 }
                                             }
-                                        }
-                                    );
+                                        );
+                                    }
+                                    else {
+                                        $.alert(
+                                            {
+                                                title:'Error',
+                                                content:response.msg,
+                                                buttons: {
+                                                    confirm: {
+                                                        text:'Aceptar',
+                                                    }
+                                                }
+                                            });
+                                    }
                                 },
                                 error: function(data) {
                                     $.alert('Ha ocurrido un error al intenar eliminar el préstamo!');

@@ -53,7 +53,8 @@ $url = \yii\helpers\Url::to(['/loan/loan-list']);
 
                     echo $form->field($model, 'payment_date', [
                         'addon'=>['prepend'=>['content'=>'<i class="fas fa-calendar-alt"></i>']],
-                        'options'=>['class'=>'drp-container form-group']
+                        'options'=>['class'=>'drp-container form-group',  'readonly'=>$model->isNewRecord],
+
                     ])->widget(DateRangePicker::classname(), [
 
                         'value'=>date('d-m-Y'),
@@ -64,8 +65,7 @@ $url = \yii\helpers\Url::to(['/loan/loan-list']);
                             'locale'=>['format' => 'd-m-Y'],
                             'singleDatePicker'=>true,
                             'showDropdowns'=>true
-                        ]
-                    ]);
+                    ]]);
 
                 ?>
 
@@ -102,3 +102,9 @@ $url = \yii\helpers\Url::to(['/loan/loan-list']);
         </div>
     </div>
 </div>
+
+<script>
+    var scenario = '<?php echo !$model->isNewRecord? 'update':'create'; ?>';
+</script>
+
+<?php $this->registerJsFile('@web/js/payment/form.js', ['depends' => ['app\assets\FormPluginsAsset']]) ?>

@@ -124,6 +124,7 @@ class PaymentController extends Controller
      */
     public function actionUpdate($id)
     {
+//        throw  new ForbiddenHttpException("No tiene acceso a esta ación.");
         $model = $this->findModel($id);
 
         $data["Payment"]['updated_at'] = date('Y-m-d');
@@ -146,7 +147,7 @@ class PaymentController extends Controller
         $response = array();
         $response['success'] = true;
         $response['url'] = Url::to(['/site/index']);
-        $response['msg'] = 'La cuota fue registrada con exito.';
+        $response['msg'] = 'La cuota fue registrada con éxito.';
         $response['msg_dev'] = '';
 
         try
@@ -155,6 +156,7 @@ class PaymentController extends Controller
             $payment = Payment::findOne($id);
             if($payment)
             {
+                $transaction = Yii::$app->getDb()->beginTransaction();
                 $payment->status = 1;
                 if(!$payment->save())
                 {
@@ -162,6 +164,7 @@ class PaymentController extends Controller
                     $response['msg'] = 'Ah ocurrido un error al registrar el pago.';
                 }
 
+                if($response['success'] == true) $transaction->commit(); else $transaction->rollBack();
             }
             else
             {
@@ -188,7 +191,7 @@ class PaymentController extends Controller
         $response = array();
         $response['success'] = true;
         $response['url'] = Url::to(['/site/index']);
-        $response['msg'] = 'Las cuotas fueron registradas con exito.';
+        $response['msg'] = 'Las cuotas fueron registradas con éxito.';
         $response['msg_dev'] = '';
 
         try
@@ -242,6 +245,7 @@ class PaymentController extends Controller
      */
     public function actionDelete($id)
     {
+        throw  new ForbiddenHttpException("No tiene acceso a esta ación.");
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);

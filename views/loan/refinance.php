@@ -10,12 +10,11 @@ $this->params['breadcrumbs'][] = ['label' => 'Préstamos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 //$this->params['breadcrumbs'][] = 'Update';
 ?>
-<div class="loan-update">
 
     <?= $this->render('_form', [
         'model' => $model,
+        'scenario'=>\app\models\Loan::SCENARIO_REFINANCE
     ]) ?>
 
-</div>
 
-<?php $this->registerJsFile('@web/js/loan/refinance.js', ['depends' => ['app\assets\FormPluginsAsset']]) ?>
+<?php $this->registerJsFile('@web/js/loan/refinance.js', ['depends' => ['app\assets\FormPluginsAsset','app\assets\DataTableAsset'] ]) ?>

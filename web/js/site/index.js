@@ -85,23 +85,39 @@ var handleDataTable  = function (){
                                                     'payments': selectedPayments
                                                 },
                                                 success: function (response) {
-                                                    $.alert(
+                                                    if(response.success)
                                                     {
-                                                        title:'Información',
-                                                        content:response.msg,
-                                                        buttons: {
-                                                            confirm: {
-                                                                text:'Aceptar',
-                                                                action:function () {
-                                                                    // window.location.href = response.url;
-                                                                    table
-                                                                        .rows( '.selected' )
-                                                                        .remove()
-                                                                        .draw();
+                                                        $.alert(
+                                                            {
+                                                                title:'Información',
+                                                                content:response.msg,
+                                                                buttons: {
+                                                                    confirm: {
+                                                                        text:'Aceptar',
+                                                                        action:function () {
+                                                                            // window.location.href = response.url;
+                                                                            table
+                                                                                .rows( '.selected' )
+                                                                                .remove()
+                                                                                .draw();
+                                                                        }
+                                                                    },
                                                                 }
-                                                            },
-                                                        }
-                                                    });
+                                                            });
+                                                    }
+                                                    else {
+                                                        $.alert(
+                                                            {
+                                                                title:'Error',
+                                                                content:response.msg,
+                                                                buttons: {
+                                                                    confirm: {
+                                                                        text:'Aceptar',
+                                                                    }
+                                                                }
+                                                            });
+                                                    }
+
                                                 },
                                                 error: function(data) {
                                                     $.alert('Ha ocurrido un error al registrar la cuota !');
@@ -265,24 +281,39 @@ var handleDataTable  = function (){
                                 type: "POST",
                                 data:{'id':id},
                                 success: function (response) {
-                                    $.alert(
-                                        {
-                                            title:'Información',
-                                            content:response.msg,
-                                            buttons: {
-                                                confirm: {
-                                                    text:'Aceptar',
-                                                    action:function () {
-                                                        // window.location.href = response.url;
-                                                        table
-                                                            .row(row)
-                                                            .remove()
-                                                            .draw();
+                                    if(response.success)
+                                    {
+                                        $.alert(
+                                            {
+                                                title:'Información',
+                                                content:response.msg,
+                                                buttons: {
+                                                    confirm: {
+                                                        text:'Aceptar',
+                                                        action:function () {
+                                                            // window.location.href = response.url;
+                                                            table
+                                                                .row(row)
+                                                                .remove()
+                                                                .draw();
+                                                        }
                                                     }
                                                 }
                                             }
-                                        }
-                                    );
+                                        );
+                                    }
+                                    else {
+                                        $.alert(
+                                            {
+                                                title:'Error',
+                                                content:response.msg,
+                                                buttons: {
+                                                    confirm: {
+                                                        text:'Aceptar',
+                                                    }
+                                                }
+                                            });
+                                    }
                                 },
                                 error: function(data) {
                                     $.alert('Ha ocurrido un error al registrar la cuota !');

@@ -94,7 +94,7 @@ var generateFee = function () {
                 ).draw();
                 payments.push(pay_date);
             }
-            console.log(payments);
+            // console.log(payments);
             $('#payments').val(JSON.stringify(payments));
         }
     }
@@ -112,7 +112,17 @@ var generateFee = function () {
 
     if(!flag)
     {
-        alert(error);
+        $.alert(
+            {
+                title:'Advertencia!',
+                content:error,
+                buttons: {
+                    confirm: {
+                        text:'Aceptar',
+                    }
+                }
+            }
+        );
     }
 };
 
@@ -158,8 +168,14 @@ var handleDataTable = function() {
     }
 };
 
-$(document).ready(function () {
-    // $('#countFee').prop()
+var hasChanged = false;
+
+
+var init = function(){
+  //   var amount = $('#loan-amount').val();
+  //   amount = parseFloat(amount).toFixed(2);
+  //   // alert(amount);
+  // $('#loan-amount').val(amount);
 
     handleDataTable();
 
@@ -175,38 +191,60 @@ $(document).ready(function () {
         return false;
     });
 
+    if(scenario == 'update')
+    {
+        $('#loan-porcent_interest').prop('readonly', 'readonly').prop('disabled','disabled');
+        $('#loan-amount').prop('readonly', 'readonly').prop('disabled','disabled');
+        $('#w1-container').attr('disabled','disabled');
+        $('#w1-container .kv-drp-dropdown').attr('disabled','disabled');
+        $('#w1-container .range-value').attr('disabled','disabled');
+        // $('#w1-container .kv-drp-dropdown').prop('disabled','disabled');
+        $('#loan-frequency_payment').prop('readonly', 'readonly').prop('disabled','disabled');
+    }
+};
+
+$(document).ready(function () {
+    console.log(loan);
+    console.log(scenario);
+    init();
+
     // $('#loan-fee_payment').change(function () {
+    //     // hasChanged = true;
     //     // alert('loan-fee_payment: ' + this.value);
     //     // console.log(this.value);
-    //     generateFee();
+    //     // generateFee();
     // });
     //
     // $('#loan-amount-disp').change(function () {
+    //     hasChanged = true;
     //     // alert('loan-amount-disp: ' + this.value);
     //     // console.log(this.value);
-    //     generateFee();
+    //     // generateFee();
     // });
     //
     // $('#loan-porcent_interest').change(function () {
+    //     hasChanged = true;
     //     // alert('loan-porcent_interest: ' + this.value);
-    //     generateFee();
+    //     // generateFee();
     // });
     //
     // $('#loan-frequency_payment').change(function () {
+    //     hasChanged = true;
     //     // alert('loan-porcent_interest: ' + this.value);
-    //     generateFee();
+    //     // generateFee();
     // });
-    //
-    // // $('#w1-start').change(function () {
-    // //     // alert('w1-start: ' + this.value);
-    // //     // console.log(this.value);
-    // //     generateFee();
-    // // });
-    //
-    // $('#w1-end').change(function () {
-    //     // alert('w1-end: ' + this.value);
+
+    // $('#w1-start').change(function () {
+    //     // alert('w1-start: ' + this.value);
     //     // console.log(this.value);
     //     generateFee();
+    // });
+
+    // $('#w1-end').change(function () {
+    //     hasChanged = true;
+    //     // alert('w1-end: ' + this.value);
+    //     // console.log(this.value);
+    //     // generateFee();
     // });
 
     if(loanId > 0)

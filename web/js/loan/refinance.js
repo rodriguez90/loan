@@ -47,7 +47,6 @@ var generateFee = function () {
         error = 'Debe definir el plazo del préstamo.';
     }
     else {
-        // diff = moment.duration(end_date.subtract(start_date, 'days'), 'days', true);
         diff = end_date.diff(start_date, 'days', true);
     }
 
@@ -70,9 +69,14 @@ var generateFee = function () {
         // if(flag && (isNaN(fee) || fee == 0))
         if(flag)
         {
+            // if(loan.amount_paid !== null && loan.amount_paid > 0)
+            // {
+            //     amount += loan.amount_unpaid ;
+            // }
+
             var partial = (amount * interes) / 100;
             // partial = round(partial,2);
-            total = amount + partial;
+            total = amount + partial + loan.amount_unpaid;
             // total = round(total,2);
             fee =  total / fee_count;
             fee = round(fee,2);
@@ -101,9 +105,9 @@ var generateFee = function () {
 
     console.log('Interes: ' + interes);
     console.log('Cantidad: ' + amount);
-    console.log('Start Date: ' + start_date);
-    console.log('End Date: ' + end_date);
-    console.log('Frecuencia: ' + frequency);
+    console.log('Start Date: ' + moment(start_date).format('DD-MM-YY'));
+    console.log('End Date: ' + moment(end_date).format('DD-MM-YY'));
+    console.log('Frecuenscia: ' + frequency);
     console.log('Diff: ' + diff);
     console.log('Cantidad de Cuotas: ' + fee_count);
     console.log('Total: ' + total);
@@ -112,7 +116,17 @@ var generateFee = function () {
 
     if(!flag)
     {
-        alert(error);
+        $.alert(
+            {
+                title:'Advertencia!',
+                content:error,
+                buttons: {
+                    confirm: {
+                        text:'Aceptar',
+                    }
+                }
+            }
+        );
     }
 };
 
@@ -158,8 +172,14 @@ var handleDataTable = function() {
     }
 };
 
-$(document).ready(function () {
-    // $('#countFee').prop()
+var hasChanged = false;
+
+
+var init = function(){
+    // var amount = $('#loan-amount').val();
+    // amount = parseFloat(amount).toFixed(2);
+    // // alert(amount);
+    // $('#loan-amount').val(amount);
 
     handleDataTable();
 
@@ -174,40 +194,57 @@ $(document).ready(function () {
 
         return false;
     });
+};
+
+$(document).ready(function () {
+    console.log(loan);
+    init();
+
 
     // $('#loan-fee_payment').change(function () {
+    //     hasChanged = true;
+    //     // alert(this.value !== loan. );
     //     // alert('loan-fee_payment: ' + this.value);
     //     // console.log(this.value);
-    //     generateFee();
+    //     // generateFee();
     // });
-    //
-    // $('#loan-amount-disp').change(function () {
-    //     // alert('loan-amount-disp: ' + this.value);
+
+    $('#loan-amount').change(function () {
+        // hasChanged = true;
+        // alert('loan-amount-disp: ' + this.value);
+        // console.log(this.value);
+        generateFee();
+    });
+
+    $('#loan-porcent_interest').change(function ()
+    {
+        generateFee();
+        // if(parseInt(this.value) !== parseInt(loan.porcent_interest))
+        // {
+        //     // loan.fee_payment !=  parseFloat($('#loan-fee_payment').val())
+        //     hasChanged = true;
+        //     generateFee();
+        // }
+    });
+
+    $('#loan-frequency_payment').change(function () {
+        // hasChanged = true;
+        // alert('loan-porcent_interest: ' + this.value);
+        generateFee();
+    });
+
+    // $('#w1-start').change(function () {
+    //     // alert('w1-start: ' + this.value);
     //     // console.log(this.value);
     //     generateFee();
     // });
-    //
-    // $('#loan-porcent_interest').change(function () {
-    //     // alert('loan-porcent_interest: ' + this.value);
-    //     generateFee();
-    // });
-    //
-    // $('#loan-frequency_payment').change(function () {
-    //     // alert('loan-porcent_interest: ' + this.value);
-    //     generateFee();
-    // });
-    //
-    // // $('#w1-start').change(function () {
-    // //     // alert('w1-start: ' + this.value);
-    // //     // console.log(this.value);
-    // //     generateFee();
-    // // });
-    //
-    // $('#w1-end').change(function () {
-    //     // alert('w1-end: ' + this.value);
-    //     // console.log(this.value);
-    //     generateFee();
-    // });
+
+    $('#w1-end').change(function () {
+        // hasChanged = true;
+        // alert('w1-end: ' + this.value);
+        // console.log(this.value);
+        generateFee();
+    });
 
     if(loanId > 0)
     {

@@ -51,6 +51,9 @@ $saveOptions = [
 
 $saveCont = ['class' => 'kv-saved-cont'];
 
+//var_dump($mode);
+//var_dump($mode == \app\models\Loan::SCENARIO_UPDATE);die;
+
 ?>
 
 <?php if ($model->hasErrors()) {
@@ -116,19 +119,40 @@ $saveCont = ['class' => 'kv-saved-cont'];
                                     'data-parsley-required' => "true",
                                     'data-parsley-type' => "integer",
                                     'data-parsley-type' => "number",
-                                    'data-parsley-min'=>"10"]
-                            )?>
+                                    'data-parsley-min'=>"10",
+                            ])
+                        ?>
+                        <?= $form->field($model, 'amount')
+                            ->input('number', [
+                                    'placeholder'=>'0.00',
+//                                    'step'=>'100.00',
+                                    'step'=>'any',
+                                    'data-parsley-pattern'=>"^[0-9]*\,[0-9]{2}$",
+                                    'data-parsley-min'=>"0",
+                            ])?>
 
-                        <?= $form->field($model, 'amount')->widget(NumberControl::className(), [
+                        <?php /*echo $form->field($model, 'amount')->widget(NumberControl::className(), [
+//                            'type'=>'text',
+//                            'maskedInputOptions' => [
+//                                'prefix' => '$ ',
+//                                'suffix' => ' ¢',
+//                                'allowMinus' => false
+//                            ],
                             'maskedInputOptions' => [
                                 'prefix' => '$ ',
                                 'suffix' => ' ¢',
-                                'allowMinus' => false
+                                'allowMinus' => false,
+                                'alias' => 'numeric',
+                                'digits' => 2,
+                                'groupSeparator' => ',',
+                                'autoGroup' => true,
+                                'autoUnmask' => true,
+                                'unmaskAsNumber' => true,
                             ],
 //                                'options' => $saveOptions,
                             'displayOptions' => $disOptions,
                             'saveInputContainer' => $saveCont,
-                        ]) ?>
+                        ])*/ ?>
                     </div>
                     <div class="col-md-4">
 
@@ -230,7 +254,10 @@ HTML;
                                 ?>
 
                                 <?= $form->field($model, 'fee_payment')
-                                    ->input('number', ['data-parsley-pattern'=>"^[0-9]*\,[0-9]{2}$"])
+                                    ->input('number', [
+                                        'readonly'=>'readonly',
+                                        'data-parsley-pattern'=>"^[0-9]*\,[0-9]{2}$"
+                                    ])
                                     ->label('Valor de las Cuotas') ?>
 
 <!--                                <div class="form-group">-->
@@ -247,6 +274,10 @@ HTML;
                                 <div class="form-group">
                                     <?= Html::label('Total a cancelar: ', null, ['id'=>'total'])?>
 
+                                </div>
+
+                                <div class="form-group" <?php echo $scenario == \app\models\Loan::SCENARIO_REFINANCE  ? '' : 'style="display: none;"'?>>
+                                    <?= Html::label('Cantidad por pagar: ' . $model->getAmountUnPaid()  , null, ['id'=>'unpaid'])?>
                                 </div>
 
                             </div>
@@ -315,4 +346,17 @@ HTML;
 
 <script>
     var loanId = '<?php echo $model->id; ?>';
+    var loan = null;
+    loan = <?php echo json_encode(['id'=>$model->id,
+                                   'porcent_interest'=>$model->porcent_interest,
+                                   'amount'=>$model->amount,
+                                   'start_date'=>$model->start_date,
+                                   'end_date'=>$model->end_date,
+                                   'frequency_payment'=>$model->frequency_payment,
+                                   'fee_payment'=>$model->fee_payment,
+                                   'amount_paid'=>$model->getAmountPaid(),
+                                   'amount_unpaid'=>$model->getAmountUnPaid(),
+                                   'totalPay'=>$model->getTotalPay(),
+                                  ]); ?>;
+    var scenario = '<?php echo $scenario; ?>';
 </script>

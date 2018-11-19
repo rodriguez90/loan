@@ -10,7 +10,9 @@ use app\models\Loan;
 use app\models\LoanSearch;
 use yii\db\Query;
 use yii\filters\AccessControl;
+use yii\web\BadRequestHttpException;
 use yii\web\Controller;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
@@ -108,12 +110,12 @@ class LoanController extends Controller
             $data["Loan"]['end_date'] = date('Y-m-d', strtotime($data["Loan"]['end_date']));
 
             $payments = json_decode($data['payments']);
-            $transaction = Yii::$app->getDb()->beginTransaction();
 
             $result = true;
 
             if ($model->load($data))
             {
+                $transaction = Yii::$app->getDb()->beginTransaction();
                 if($model->save())
                 {
                     foreach ($payments as $payment)
@@ -160,51 +162,25 @@ class LoanController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $modelOld = $this->findModel($id);
 
-        if($data = Yii::$app->request->isPost)
+        if(Yii::$app->request->isPost)
         {
             $data = Yii::$app->request->post();
 
             $data["Loan"]['banker_id'] = Yii::$app->user->identity->getId();
-            $data["Loan"]['status'] = Loan::ACTIVE;
-
-            $data["Loan"]['start_date'] = date('Y-m-d', strtotime($data["Loan"]['start_date']));
-            $data["Loan"]['end_date'] = date('Y-m-d', strtotime($data["Loan"]['end_date']));
             $data["Loan"]['updated_at'] = date('Y-m-d');
-
-            $payments = json_decode($data['payments']);
-
-            $transaction = Yii::$app->getDb()->beginTransaction();
-
-            $result = true;
 
             if ($model->load($data))
             {
-                if($model->save())
-                {
-                    foreach ($payments as $payment)
-                    {
-                        $pay = new Payment();
-                        $pay->loan_id = $model->id;
-                        $pay->payment_date = date('Y-m-d', strtotime($payment->payment_date));
-                        $pay->collector_id = $model->collector_id;
-                        $pay->amount = $model->fee_payment;
-
-                        if(!$pay->save())
-                        {
-                            $result = false;
-                            $model->addError(nul, 'Ah ocurrido un error al generar los pagos.');
-                            break;
-                        }
-                    }
-                }
-                else
-                    $result = false;
-
-                if($result)
+                $transaction = Yii::$app->getDb()->beginTransaction();
+                $modelOld->customer_id = $model->customer_id;
+                $modelOld->collector_id = $model->collector_id;
+                $modelOld->updated_at = $model->updated_at;
+                if($modelOld->update(true,['customer_id', 'collector_id', 'updated_at', 'banker_id']) !== false)
                 {
                     $transaction->commit();
-                    return $this->redirect(['view', 'id' => $model->id]);
+                    return $this->redirect(['view', 'id' => $modelOld->id]);
                 }
                 else
                     $transaction->rollBack();
@@ -212,7 +188,7 @@ class LoanController extends Controller
         }
 
         return $this->render('update', [
-            'model' => $model,
+            'model' => $modelOld,
         ]);
     }
 
@@ -220,41 +196,55 @@ class LoanController extends Controller
     {
         $model = $this->findModel($id);
 
-        if($data = Yii::$app->request->isPost)
+        if($model->status == 0 || $model->status == 2)
+        {
+            throw new BadRequestHttpException('Este préstamo no puede ser refinanciado.');
+        }
+
+        if(Yii::$app->request->isPost)
         {
             $data = Yii::$app->request->post();
-
             $data["Loan"]['banker_id'] = Yii::$app->user->identity->getId();
             $data["Loan"]['status'] = Loan::ACTIVE;
-
             $data["Loan"]['start_date'] = date('Y-m-d', strtotime($data["Loan"]['start_date']));
             $data["Loan"]['end_date'] = date('Y-m-d', strtotime($data["Loan"]['end_date']));
-            $data["Loan"]['updated_at'] = date('Y-m-d');
 
             $payments = json_decode($data['payments']);
 
-            $transaction = Yii::$app->getDb()->beginTransaction();
-
             $result = true;
 
-            if ($model->load($data))
+            $newModel = new Loan();
+
+            if ($newModel->load($data))
             {
-                if($model->save())
+                $transaction = Yii::$app->getDb()->beginTransaction();
+
+                $newModel->amount = $model->amount + $model->getAmountUnPaid();
+
+                if($newModel->save())
                 {
                     foreach ($payments as $payment)
                     {
                         $pay = new Payment();
-                        $pay->loan_id = $model->id;
+                        $pay->loan_id = $newModel->id;
                         $pay->payment_date = date('Y-m-d', strtotime($payment->payment_date));
-                        $pay->collector_id = $model->collector_id;
-                        $pay->amount = $model->fee_payment;
+                        $pay->collector_id = $newModel->collector_id;
+                        $pay->amount = $newModel->fee_payment;
+                        $pay->status = Payment::PENDING;
 
                         if(!$pay->save())
                         {
                             $result = false;
-                            $model->addError(nul, 'Ah ocurrido un error al generar los pagos.');
+                            $model->addError(nul, 'Ah ocurrido un error al generar las cuotas del préstamo.');
                             break;
                         }
+                    }
+
+                    if($result)
+                    {
+                        $model->refinancing_id = $newModel->id;
+                        $model->status = Loan::INACTIVE;
+                        if(!$model->save())$result = false;
                     }
                 }
                 else
@@ -263,7 +253,7 @@ class LoanController extends Controller
                 if($result)
                 {
                     $transaction->commit();
-                    return $this->redirect(['view', 'id' => $model->id]);
+                    return $this->redirect(['view', 'id' => $newModel->id]);
                 }
                 else
                     $transaction->rollBack();

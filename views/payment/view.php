@@ -19,14 +19,14 @@ $this->params['breadcrumbs'][] = ['label' => 'Cuotas', 'url' => ['index']];
 
                 <div class="box-tools pull-right">
 
-                    <?= Html::a('Modificar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-                    <?= Html::a('Eliminar', ['delete', 'id' => $model->id], [
+                    <?php  echo Html::a('Modificar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+                    <?php /* echo Html::a('Eliminar', ['delete', 'id' => $model->id], [
                         'class' => 'btn btn-danger',
                         'data' => [
                             'confirm' => 'Está seguro que desea eliminar este Cuota?',
                             'method' => 'post',
                         ],
-                    ]) ?>
+                    ])*/ ?>
                 </div>
                 <div class="box-body">
                     <?= DetailView::widget([
@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = ['label' => 'Cuotas', 'url' => ['index']];
                             'loan_id',
                             'collector.username',
                             'payment_date:date',
-                            'amount',
+                            'amount:currency',
                             'collectorName',
                             'customerName',
                             [

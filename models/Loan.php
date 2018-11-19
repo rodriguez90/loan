@@ -43,6 +43,10 @@ class Loan extends \yii\db\ActiveRecord
         2 => 'Cerrado',
     ];
 
+    const SCENARIO_CREATE = 'create';
+    const SCENARIO_UPDATE = 'update';
+    const SCENARIO_REFINANCE = 'refinance';
+
     /**
      * {@inheritdoc}
      */
@@ -67,6 +71,15 @@ class Loan extends \yii\db\ActiveRecord
             [['refinancing_id'], 'exist', 'skipOnError' => true, 'targetClass' => Loan::className(), 'targetAttribute' => ['refinancing_id' => 'id']],
         ];
     }
+
+//    public function scenarios()
+//    {
+//        return [
+//            self::SCENARIO_CREATE => ['customer_id', 'banker_id', 'amount', 'porcent_interest', 'status', 'frequency_payment', 'start_date', 'end_date', 'fee_payment', 'collector_id'],
+//            self::SCENARIO_UPDATE => ['customer_id', 'collector_id',],
+//            self::SCENARIO_CREATE => ['customer_id', 'banker_id', 'amount', 'porcent_interest', 'status', 'frequency_payment', 'start_date', 'end_date', 'fee_payment', 'collector_id'],
+//        ];
+//    }
 
     public function behaviors()
     {
@@ -156,8 +169,32 @@ class Loan extends \yii\db\ActiveRecord
         return $this->customer->first_name . ' '. $this->customer->last_name;
     }
 
+    public function getTotalPay()
+    {
+        $benefit = ($this->amount * $this->porcent_interest)/100;
+        $total = $this->amount + $benefit;
+//        return number_format($total, 2);
+        return $total;
+    }
+
     public function getAmountPaid()
     {
-//        $this->payments
+        $result = Loan::find()
+                        ->innerJoin('payment', 'payment.loan_id=loan.id')
+                        ->where(['payment.status'=>1, 'loan.id'=>$this->id])
+                        ->sum('payment.amount');
+        $result = round($result);
+//        return number_format($result,2);
+        return $result;
+    }
+
+    public function getAmountUnPaid()
+    {
+        $result = Loan::find()
+            ->innerJoin('payment', 'payment.loan_id=loan.id')
+            ->where(['payment.status'=>0, 'loan.id'=>$this->id])
+            ->sum('payment.amount');
+        $result = round($result);
+        return $result;
     }
 }
