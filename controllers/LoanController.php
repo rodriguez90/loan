@@ -49,7 +49,7 @@ class LoanController extends Controller
                         'actions' => ['index','view', 'user-list', 'loan-list', 'list'],
                         'allow' => true,
                         'roles' => ['admin','Administrador','Cobrador'],
-//                        'permissions' => ['customer_view', 'customer_list'],
+//                        'permissions' => ['loan_view', 'loan_list'],
                     ],
                     [
                         'actions' => ['create','update','delete', 'refinance'],
@@ -424,5 +424,10 @@ class LoanController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionComputeLoan()
+    {
+        // FIXME: this is for compute loan by ajax
     }
 }

@@ -26,6 +26,7 @@ class DataTableAsset extends AssetBundle
         'js/plugins/DataTables/extensions/KeyTable/css/keyTable.bootstrap.min.css',
         'js/plugins/DataTables/extensions/Checkboxes/dataTables.checkboxes.css',
         'js/plugins/DataTables/extensions/Responsive/css/responsive.bootstrap.css',
+        'js/plugins/DataTables/extensions/FixedHeader/css/fixedHeader.bootstrap.css',
     ];
     public $js = [
         'js/plugins/DataTables/media/js/jquery.dataTables.min.js',
@@ -43,6 +44,7 @@ class DataTableAsset extends AssetBundle
 //        'js/plugins/DataTables/extensions/Responsive/js/responsive.bootstrap.min.js',
 //        'js/plugins/DataTables/extensions/CellEdit/js/dataTables.cellEdit.js',
         'js/plugins/DataTables/extensions/Checkboxes/dataTables.checkboxes.min.js',
+        'js/plugins/DataTables/extensions/FixedHeader/js/dataTables.fixedHeader.js',
     ];
     public $depends = [
         'app\assets\AppAsset',

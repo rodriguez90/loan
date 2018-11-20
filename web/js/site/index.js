@@ -134,7 +134,8 @@ var handleDataTable  = function (){
                     },
                     className: 'btn btn-primary btn-xs',
                     // name: 'payBtn'
-                }
+                },
+                // 'pdf'
             ],
             'columnDefs': [
                 // {

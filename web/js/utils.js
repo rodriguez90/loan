@@ -184,3 +184,23 @@ var calFeePayment = function (loan, interes, fee_count) {
 var round = function (value, decimals) {
     return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
 };
+
+$.fn.serializeObject = function () {
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function () {
+       if(o[this.name] !== undefined)
+       {
+          if(!o[this.name].push)
+          {
+              o[this.name] = [o[this.name]];
+          }
+          o[this.name].push(this.value || '');
+       }
+       else
+       {
+           o[this.name] = this.value || '';
+       }
+    });
+    return o;
+};

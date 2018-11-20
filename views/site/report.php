@@ -20,13 +20,13 @@ $this->title = 'Reporte';
 <!--                </div>-->
 <!--            </div>-->
             <div class="box-body">
-
+                <?php $form = ActiveForm::begin([
+                    'action' => ['report'],
+                    'method' => 'get',
+                ]); ?>
                 <div class="row">
-                    <div class="col-lg-12 col-md-12 col-xs-12">
-                        <?php $form = ActiveForm::begin([
-                            'action' => ['report'],
-                            'method' => 'get',
-                        ]); ?>
+                    <div class="col-lg-6 col-md-6 col-xs-6">
+
 
                         <?php
                         $addon = <<< HTML
@@ -44,14 +44,10 @@ HTML;
                                 'name' => 'kvdate2',
                                 'useWithAddon' => true,
                                 'convertFormat' => true,
-                                'disabled'=>true,
-                                'readonly'=>true,
-//                               'value'=> '14-11-2018 - 14-01-2019',
-//                        'value'=> $defaultValueDateRange,
                                 'language' => Yii::$app->language,
                                 'hideInput' => true,
-//                        'startAttribute' => 'Loan[start_date]',
-//                        'endAttribute' => 'Loan[end_date]',
+                        'startAttribute' => 'start_date',
+                        'endAttribute' => 'end_date',
                                 'pluginOptions'=>[
                                     'locale'=>
                                         ['format' => 'd-m-Y'],
@@ -62,41 +58,68 @@ HTML;
                             ]) . $addon;
                         echo '</div>';
                         ?>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-xs-6">
                         <div class="form-group">
-                            <?php echo Html::checkboxList(
-                                'options',
-                                null,
-                                ['Clientes en mora',
-                                'Total del clientes',
-                                'Cantidad Prestada',
-                                'Cantidad por cobrar',
-                                'Ganancias']
-                            )?>
+                            <div class="checkbox">
+                                <label>
+                                    <input id="customerUnPaid" name="option" type="radio" value="customerUnPaid">
+                                    Clientes en mora
+                                </label>
+                            </div>
+
+<!--                            <div class="checkbox">-->
+<!--                                <label>-->
+<!--                                    <input id="totalCustomer" name="totalCustomer" type="radio">-->
+<!--                                    Total del clientes                                </label>-->
+<!--                            </div>-->
+
+                            <div class="checkbox">
+                                <label>
+                                    <input id="loanAmount" name="option" type="radio" value="loanAmount">
+                                    Cantidad Prestada
+                                </label>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <input id="amountPaid" name="option" type="radio" value="amountPaid">
+                                    Cantidad por cobrar
+                                </label>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <input id="earnings" name="option" type="radio" value="amountPaid">
+                                    Ganancias
+                                </label>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary']) ?>
-                            <?= Html::resetButton('Limpiar', ['class' => 'btn btn-default']) ?>
-                        </div>
-                        <?php ActiveForm::end(); ?>
                     </div>
                 </div>
+                <div class="form-group">
+                    <?= Html::button('Buscar', ['id'=>'searchBtn', 'class' => 'btn btn-primary']) ?>
+                    <?= Html::resetButton('Limpiar', ['id'=>'reset', 'class' => 'btn btn-default']) ?>
+                </div>
+                <?php ActiveForm::end(); ?>
 
                 <div class="table-responsive">
                     <table id="data-table" class="display table table-bordered no-wrap" width="100%">
                         <thead>
-                        <tr>
-                            <th class="all">Cliente</th>
-                            <th class="all">Cuota</th>
-                            <th class="all">Fecha de Pago</th>
-                            <th>Cédula</th>
-                            <th>Cobrador</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                        </tr>
+<!--                        <tr>-->
+<!--                            <th class="all">Cliente</th>-->
+<!--                            <th>Cédula</th>-->
+<!--                            <th class="all">Cuota</th>-->
+<!--                            <th class="all">Fecha de Pago</th>-->
+<!--                            <th>Cobrador</th>-->
+<!--                            <th>Estado</th>-->
+<!--                        </tr>-->
                         </thead>
+                        <tfoot></tfoot>
                     </table>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<?php $this->registerJsFile('@web/js/site/report.js', ['depends' => ['app\assets\DataTableAsset']]) ?>
+
