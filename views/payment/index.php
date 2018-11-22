@@ -16,12 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="col-lg-12 col-xs-12">
         <div class="box box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title"></h3>
-
-                <div class="box-tools pull-right">
-<!--                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>-->
-<!--                    </button>-->
-                </div>
+				<?= Html::a('Nuevo Préstamo', ['create'], ['class' => 'btn btn-success']) ?>
                 <!-- /.box-tools -->
             </div>
             <!-- /.box-header -->
