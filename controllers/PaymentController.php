@@ -47,16 +47,33 @@ class PaymentController extends Controller
 //                        'roles' => ['@'],
 //                    ],
                     [
-                        'actions' => ['index','view','list','pay','pay-bulk','un-paid-list'],
+                        'actions' => ['index','view','list','un-paid-list'],
                         'allow' => true,
-                        'roles' => ['admin','Administrador','Cobrador'],
-//                        'permissions' => [],
+//                        'roles' => ['admin','Administrador','Cobrador'],
+                        'roles' => ['payment_view', 'payment_list'],
                     ],
                     [
                         'actions' => ['create','update','delete'],
                         'allow' => true,
-                        'roles' => ['admin','Administrador',],
-//                        'permissions' => [],
+//                        'roles' => ['admin','Administrador','Cobrador'],
+                        'roles' => ['payment_create', 'payment_update', 'payment_delete'],
+                    ],
+                    [
+                        'actions' => ['pay'],
+                        'allow' => true,
+//                        'roles' => ['admin','Administrador','Cobrador'],
+                        'roles' => ['payment','payment_update'],
+                        'roleParams' => [
+                            'payments' => [Yii::$app->request->post('id')]
+                        ],
+                    ],
+                    [
+                        'actions' => ['pay-bulk'],
+                        'allow' => true,
+                        'roles' => ['payment','payment_update'],
+                        'roleParams' => [
+                            'payments' => Yii::$app->request->post('payments')
+                        ],
                     ],
                 ],
             ],

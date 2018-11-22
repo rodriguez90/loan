@@ -30,13 +30,14 @@ class SiteController extends Controller
 //                'only' => ['logout'],
                 'rules' => [
                     [
+                        'actions' => ['index', 'logout'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
                     [
                         'actions' => ['report'],
                         'allow' => true,
-                        'roles' => ['admin','Administrador'],
+                        'roles' => ['report_view'],
                     ],
                 ],
             ],
@@ -72,6 +73,10 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+//        if (\Yii::$app->user->can('createPost')) {
+//            // create post
+//        }
+
         $customerCount = Customer::find()->count();
         $loanCount = Loan::find()->count();
         $paymentCount = Payment::find()

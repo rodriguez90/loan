@@ -48,14 +48,15 @@ class LoanController extends Controller
                     [
                         'actions' => ['index','view', 'user-list', 'loan-list', 'list'],
                         'allow' => true,
-                        'roles' => ['admin','Administrador','Cobrador'],
+//                        'roles' => ['admin','Administrador','Cobrador'],
+                        'roles' => ['loan_view', 'loan_list'],
 //                        'permissions' => ['loan_view', 'loan_list'],
                     ],
                     [
                         'actions' => ['create','update','delete', 'refinance'],
                         'allow' => true,
-                        'roles' => ['admin','Administrador'],
-//                        'permissions' => ['customer_create', 'customer_update', 'customer_delete'],
+//                        'roles' => ['admin','Administrador'],
+                        'roles' => ['loan_create', 'loan_update', 'loan_delete'],
                     ],
                 ],
             ],

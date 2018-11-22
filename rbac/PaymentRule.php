@@ -20,23 +20,33 @@ class PaymentRule extends Rule
     {
         $result = false;
         // TODO: Implement execute() method.
+//        var_dump('in rule');
+//        var_dump($user);
+//        var_dump($item);
+//        var_dump($params);
 //        var_dump($item);die;
-        if( isset($params['payment']))
+
+        if(\Yii::$app->authManager->getAssignment('admin', $user)
+            || \Yii::$app->authManager->getAssignment('Administrador', $user))
         {
-            if($params['payment']->collector_id == $user
-                || \Yii::$app->authManager->getAssignment('admin', $user)
-                || \Yii::$app->authManager->getAssignment('Administrador', $user))
-            {
                 $result = true;
+        }
+
+        if( isset($params['payments']))
+        {
+            $result = true;
+            foreach ($params['payments'] as $paymentID )
+            {
+                $payment = Payment::findOne($paymentID);
+                if($payment->collector_id !== $user)
+                {
+                    $result = false;
+                    break;
+                }
             }
         }
-//        elseif ( isset($params['payments']))
-//        {
-//            foreach ($params['payments'] as $payment)
-//            {
-//
-//            }
-//        }
+
+//        var_dump($result);die;
         return $result;
     }
 }

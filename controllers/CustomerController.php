@@ -43,14 +43,14 @@ class CustomerController extends Controller
                     [
                         'actions' => ['index','view', 'customer-list'],
                         'allow' => true,
-                        'roles' => ['admin','Administrador','Cobrador'],
-//                        'permissions' => ['customer_view', 'customer_list'],
+//                        'roles' => ['admin','Administrador','Cobrador'],
+                        'roles' => ['customer_view', 'customer_list'],
                     ],
                     [
                         'actions' => ['create','update','delete'],
                         'allow' => true,
-                        'roles' => ['admin','Administrador'],
-//                        'permissions' => ['customer_create', 'customer_update', 'customer_delete'],
+//                        'roles' => ['admin','Administrador'],
+                        'roles' => ['customer_create', 'customer_update', 'customer_delete'],
                     ],
                 ],
             ],
