@@ -27,7 +27,7 @@ class SiteController extends Controller
                 'ruleConfig' => [
                     'class' => AccessRuleFilter::class,
                 ],
-//                'only' => ['logout'],
+//                'only' => ['error'],
                 'rules' => [
                     [
                         'actions' => ['index', 'logout'],
@@ -38,6 +38,11 @@ class SiteController extends Controller
                         'actions' => ['report'],
                         'allow' => true,
                         'roles' => ['report_view'],
+                    ],
+                    [
+                        'actions' => ['error'],
+                        'allow' => true,
+//                        'roles' => ['?'],
                     ],
                 ],
             ],

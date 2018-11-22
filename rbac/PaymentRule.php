@@ -20,11 +20,9 @@ class PaymentRule extends Rule
     {
         $result = false;
         // TODO: Implement execute() method.
-//        var_dump('in rule');
+        var_dump('in rule');
 //        var_dump($user);
-//        var_dump($item);
 //        var_dump($params);
-//        var_dump($item);die;
 
         if(\Yii::$app->authManager->getAssignment('admin', $user)
             || \Yii::$app->authManager->getAssignment('Administrador', $user))

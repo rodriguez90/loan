@@ -47,21 +47,42 @@ class PaymentController extends Controller
 //                        'roles' => ['@'],
 //                    ],
                     [
-                        'actions' => ['index','view','list','un-paid-list'],
+                        'actions' => ['index','list','un-paid-list'],
                         'allow' => true,
-//                        'roles' => ['admin','Administrador','Cobrador'],
-                        'roles' => ['payment_view', 'payment_list'],
+                        'roles' => ['payment_list'],
                     ],
                     [
-                        'actions' => ['create','update','delete'],
+                        'actions' => ['view'],
                         'allow' => true,
-//                        'roles' => ['admin','Administrador','Cobrador'],
-                        'roles' => ['payment_create', 'payment_update', 'payment_delete'],
+                        'roles' => ['payment_view'],
+                        'roleParams' => [
+                            'payments' => [Yii::$app->request->get('id')]
+                        ],
+                    ],
+                    [
+                        'actions' => ['create'],
+                        'allow' => true,
+                        'roles' => ['payment_create'],
+                    ],
+                    [
+                        'actions' => ['update'],
+                        'allow' => true,
+                        'roles' => ['payment_update'],
+                        'roleParams' => [
+                            'payments' => [Yii::$app->request->post('id')]
+                        ],
+                    ],
+                    [
+                        'actions' => ['delete'],
+                        'allow' => true,
+                        'roles' => ['payment_delete'],
+                        'roleParams' => [
+                            'payments' => [Yii::$app->request->post('id')]
+                        ],
                     ],
                     [
                         'actions' => ['pay'],
                         'allow' => true,
-//                        'roles' => ['admin','Administrador','Cobrador'],
                         'roles' => ['payment','payment_update'],
                         'roleParams' => [
                             'payments' => [Yii::$app->request->post('id')]
