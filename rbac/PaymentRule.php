@@ -29,8 +29,7 @@ class PaymentRule extends Rule
         {
                 $result = true;
         }
-
-        if( isset($params['payments']))
+		else if( isset($params['payments']))
         {
             $result = true;
             foreach ($params['payments'] as $paymentID )
@@ -43,6 +42,9 @@ class PaymentRule extends Rule
                 }
             }
         }
+			
+
+        
 
 //        var_dump($result);die;
         return $result;
