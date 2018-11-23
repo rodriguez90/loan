@@ -17,64 +17,26 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?= Html::a('Nuevo Cliente', ['create'], ['class' => 'btn btn-success btn']) ?>
                 </div>
                 <!-- /.box-header -->
-                <div class="box-body table-responsive">
-
-                    <?php Pjax::begin(); ?>
-                    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-                    <?= GridView::widget([
-                        'dataProvider' => $dataProvider,
-                        'filterModel' => $searchModel,
-                        'columns' => [
-                            ['class' => 'yii\grid\SerialColumn'],
-
-                            [
-                                'label'=>'Nombre',
-                                'attribute'=>'first_name'
-                            ],
-                            [
-                                'label'=>'Apellidos',
-                                'attribute'=>'last_name'
-                            ],
-                            [
-                                'label'=>'Cedúla',
-                                'attribute'=>'dni'
-                            ],
-                            'email:email',
-                            [
-                                'label'=>'Teléfono',
-                                'attribute'=>'phone_number'
-                            ],
-                            [
-                                'label'=>'Estado',
-                                'attribute'=>'active',
-                                'content' => function ($data) {
-                                    return $data['active'] ? '<span class="label label-success  pull-left">Activo</span>' : '<span class="label label-danger">Inactivo</span>';
-                                },
-                                'filter' => ['0' =>'Inactivo', '1' =>'Activo',],
-                            ],
-                            //'phone_number',
-                            [
-                                'attribute'=>'location',
-                                'format'=>'raw',
-//                                'contentOptions'=>['class'=>'text-truncate'],
-                                'value' => function ($data) {
-//                                    return Html::a($data->location,$data->location, ['style'=>'text-overflow:ellipsis;white-space:nowrap;overflow:hidden;width:70px'] );
-//                                    return Html::a($data->location,$data->location, ['class'=>'text-ellipsis'] );
-                                    return Html::a('Ir',$data->location);
-                                },
-                            ],
-                            //'address',
-                            //'created_at',
-                            //'updated_at',
-                            //'created_by',
-
-                            ['class' => 'yii\grid\ActionColumn'],
-                        ],
-                        'tableOptions'=>['class'=>'table table-striped table-bordered table-condensed']
-                    ]); ?>
-                    <?php Pjax::end(); ?>
+                <div class="box-body">
+                    <div class="table-responsive">
+                        <table id="data-table" class="display table table-bordered  table-striped table-condensed no-wrap" width="100%" cellspacing="0">
+                            <thead>
+                            <tr>
+                                <!--                            <th></th>-->
+                                <th class="all">Cliente</th>
+                                <th class="all">Cedúla</th>
+                                <th>Teléfono</th>
+                                <th>Email</th>
+                                <th>Ubicación</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
                 </div>
             </div>
     </div>
 </div>
+
+<?php $this->registerJsFile('@web/js/customer/index.js', ['depends' => ['app\assets\DataTableAsset']]) ?>

@@ -41,7 +41,7 @@ class CustomerController extends Controller
 //                        'roles' => ['@'],
 //                    ],
                     [
-                        'actions' => ['index', 'customer-list'],
+                        'actions' => ['index', 'customer-list', 'list'],
                         'allow' => true,
                         'roles' => ['customer_list'],
                     ],
@@ -161,7 +161,19 @@ class CustomerController extends Controller
      */
     public function actionDelete($id)
     {
+
         $this->findModel($id)->delete();
+
+        if(Yii::$app->request->isAjax)
+        {
+
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $response = array();
+            $response['success'] = true;
+            $response['msg'] = 'Cliente eliminado con éxito';
+            $response['msg_dev'] = '';
+            return $response;
+        }
 
         return $this->redirect(['index']);
     }
@@ -191,6 +203,36 @@ class CustomerController extends Controller
         }
 
         return $out;
+    }
+
+    public function actionList()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $params = Yii::$app->request->get();
+        $response = array();
+        $response['success'] = true;
+        $response['data'] = [];
+        $response['msg'] = '';
+        $response['msg_dev'] = '';
+
+        if(!is_null($params))
+        {
+            try
+            {
+                $search = new CustomerSearch();
+                $response['data'] = $search->search2($params);
+            }
+            catch ( Exception $e)
+            {
+                $response['success'] = false;
+                $response['msg'] = "Ah ocurrido al recuperar los préstamos.";
+                $response['msg_dev'] = $e->getMessage();
+                $response['data'] = [];
+            }
+        }
+
+        return $response;
     }
 
     /**

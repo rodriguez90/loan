@@ -76,4 +76,33 @@ class CustomerSearch extends Customer
 
         return $dataProvider;
     }
+
+    public function search2($params)
+    {
+        $this->load($params);
+
+        $query = Customer::find();
+
+        // add conditions that should always apply here
+        $query->andFilterWhere([
+            'id' => $this->id,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'created_by' => $this->created_by,
+            'active' => $this->active,
+        ]);
+
+        $result = $query->select([
+            'customer.id',
+            "CONCAT(customer.first_name,' ', customer.last_name) as customerName",
+            'customer.dni',
+            'customer.phone_number',
+            'customer.email',
+            'customer.location',
+            'customer.active',
+        ])
+            ->asArray()
+            ->all();
+        return $result;
+    }
 }

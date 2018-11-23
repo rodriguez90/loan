@@ -42,9 +42,6 @@ class PaymentRule extends Rule
                 }
             }
         }
-			
-
-        
 
 //        var_dump($result);die;
         return $result;

@@ -292,8 +292,6 @@ class LoanController extends Controller
      */
     public function actionDelete($id)
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-//        $params = Yii::$app->request->get();
         $response = array();
         $response['success'] = true;
         $response['data'] = [];
@@ -324,7 +322,15 @@ class LoanController extends Controller
             $response['msg'] = 'Ha ocurrido un error al eliminar el préstamo.';
         }
 
-        return $response;
+        if(Yii::$app->request->isAjax)
+        {
+
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $response;
+        }
+
+        return $this->redirect(['index']);
+
     }
 
 
