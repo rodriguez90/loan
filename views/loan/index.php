@@ -18,10 +18,10 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <div class="box-body">
                 <div class="table-responsive">
-                    <table id="data-table" class="display table table-bordered no-wrap" width="100%" cellspacing="0">
+                    <table id="data-table" class="display table table-bordered table-condensed no-wrap" width="100%" cellspacing="0">
                         <thead>
                         <tr>
-<!--                            <th></th>-->
+                            <th class="all">No.</th>
                             <th class="all">Cliente</th>
                             <th class="all">Interés</th>
                             <th>Cantidad</th>

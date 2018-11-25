@@ -197,6 +197,7 @@ class PaymentSearch extends Payment
             $query->andFilterWhere([ 'payment.collector_id' => Yii::$app->user->getId()]);
         }
 
+        $query->andFilterWhere(['payment.loan_id'=>$params['loanId']]);
         $query->andFilterWhere(['like', 'payment_date', $this->payment_date]);
         $query->andFilterWhere(['like', 'CONCAT(customer.first_name,customer.last_name)', $this->customerName]);
         $query->andFilterWhere(['payment.status'=>$this->status]);

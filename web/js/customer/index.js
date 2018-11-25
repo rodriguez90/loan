@@ -76,7 +76,7 @@ var handleDataTable  = function (){
                             var selectHtml = "<div class=\"row row-fluid\">";
                             selectHtml += "<div class=\"col col-xs-12\">" ;
                             selectHtml += "<a " + "href=\"" + homeUrl + "customer/view?id=" + elementId + "\" class=\"btn btn-info btn-icon btn-circle btn-xs\" title=\"Ver\"><i class=\"fa fa-eye\"></i></a>";
-                            selectHtml += "<a " + "href=\"" + homeUrl + "customer/update?id=" + elementId + "\" class=\"btn btn-primary btn-icon btn-circle btn-xs\" title=\"Ver\"><i class=\"fa fa-edit\"></i></a>";
+                            selectHtml += "<a " + "href=\"" + homeUrl + "customer/update?id=" + elementId + "\" class=\"btn btn-primary btn-icon btn-circle btn-xs\" title=\"Modificar\"><i class=\"fa fa-edit\"></i></a>";
                             selectHtml += "<button data-row=\"" + meta.row +"\" + data-name=\"" + elementId +  "\" class=\"btn btn-danger btn-icon btn-circle btn-xs\" title=\"Eliminar\"><i class=\"fa fa-trash\"></i></button>";
                             selectHtml += "</div>";
                             selectHtml += "</div>";

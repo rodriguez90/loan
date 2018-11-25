@@ -233,11 +233,20 @@ class LoanController extends Controller
 
             $newModel = new Loan();
 
+            if(count($payments) == 0)
+            {
+                $model->addError('payments', 'Para registar el crédito debe generar los pagos.');
+                return $this->render('refinance', [
+                    'model' => $model,
+                ]);
+            }
+
             if ($newModel->load($data))
             {
                 $transaction = Yii::$app->getDb()->beginTransaction();
 
-                $newModel->amount = $model->amount + $model->getAmountUnPaid();
+//                $newModel->amount = $model->amount + $model->getAmountUnPaid();
+                $newModel->amount = $model->amount;// + $model->getAmountUnPaid();
 
                 if($newModel->save())
                 {
@@ -345,15 +354,37 @@ class LoanController extends Controller
 
         $out = ['results'=>['id'=>'', 'text'=>'']];
 
+        $userId = null;
+
+        if(Yii::$app->authManager->getAssignment('Cobrador', Yii::$app->user->id))
+        {
+            $userId = Yii::$app->user->id;
+        }
+
         if(!is_null($q))
         {
             $query = new Query();
-            $query->select(['id',"id AS text"])
+            $query->select(['loan.id',
+                            "CONCAT(customer.first_name, ' ', customer.last_name, ' - ',loan.amount) AS text",
+                            'loan.fee_payment',
+                            'SUM(payment.amount) as amount',
+                            'loan.start_date',
+                            'loan.end_date'])
                 ->from('loan')
-                ->andWhere(['like', 'CONVERT(id, CHAR(50))', $q]);
+                ->innerJoin('customer', 'customer.id=loan.customer_id')
+                ->innerJoin('payment', 'payment.loan_id=loan.id and payment.status=0')
+                ->where(['loan.status'=>Loan::ACTIVE])
+                ->andFilterWhere(['loan.collector_id'=>$userId])
+                ->andWhere(['or',
+                    ['like', 'CONVERT(loan.id, CHAR(50))', $q],
+                    ['like', "CONCAT(customer.first_name, ' ', customer.last_name)", $q]])
+                ->groupBy(['loan.id']);
+
             $command = $query->createCommand();
+//            $sql = $command->rawSql;
             $data = $command->queryAll();
             $out['results'] = array_values($data);
+//            $out['sql'] = $sql;
         }
         elseif ($id > 0)
         {

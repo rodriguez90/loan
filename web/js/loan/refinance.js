@@ -77,6 +77,7 @@ var generateFee = function () {
             var partial = (amount * interes) / 100;
             // partial = round(partial,2);
             total = amount + partial + loan.amount_unpaid;
+            // console.log("loan unpaid: " + loan.amount_unpaid);
             // total = round(total,2);
             fee =  total / fee_count;
             fee = round(fee,2);
@@ -134,6 +135,70 @@ var handleDataTable = function() {
 
     if ($('#data-table').length !== 0) {
 
+        var ajax = null;
+
+        var columns = [
+            {
+                "title": "No.",
+                "data":null
+            },
+            {
+                "title": "Fecha",
+                "data":"payment_date"
+            }
+        ];
+
+        var columnDefs = [
+            {
+                'targets':[0],
+                'data':null,
+                'render': function ( data, type, full, meta ) {
+                    return meta.row + 1 ;
+                }
+            }
+        ];
+
+        // if(scenario == 'refinance')
+        // {
+        //     ajax =  {
+        //         "url": homeUrl + "payment/list",
+        //         "type": "GET",
+        //         'data':{'loanId':loanId}
+        //     };
+        //
+        //     var columnFee = {
+        //         "title": "Cuota",
+        //         "data":"amount"
+        //     };
+        //
+        //     var columnStatus = {
+        //         "title": "Estado",
+        //         "data":"status"
+        //     };
+        //
+        //     columns.push(columnFee);
+        //     columns.push(columnStatus);
+        //
+        //     var columnsDefStatus =  {
+        //         targets: 3,
+        //         title:"Estado",
+        //         data:'status',
+        //         render: function ( data, type, full, meta )
+        //         {
+        //             if(type == 'display')
+        //             {
+        //                 var customHtml = data == 1? '<span class="label label-success pull-left f-s-12">Cobrado</span>' :
+        //                     '<span class="label label-danger f-s-12">Pendiente</span>';
+        //
+        //                 return customHtml;
+        //             }
+        //             return data == 1 ? 'Cobrado':'Pendiente';
+        //         }
+        //     };
+        //
+        //     columnDefs.push(columnsDefStatus);
+        // }
+
         var  table = $('#data-table').DataTable({
             // dom: '<"top"iflp<"clear">>rt',
             data:payments,
@@ -145,23 +210,9 @@ var handleDataTable = function() {
             order: [[ 0, 'asc' ]],
             responsive: true,
             deferRender: false,
-            columns: [
-                { "title": "No.",
-                    "data":null
-                },
-                { "title": "Fecha",
-                    "data":"payment_date"
-                }
-            ],
-            columnDefs:[
-                {
-                    'targets':[0],
-                    'data':null,
-                    'render': function ( data, type, full, meta ) {
-                        return meta.row + 1 ;
-                    },
-                }
-            ]
+            "ajax": ajax,
+            columns: columns,
+            columnDefs:columnDefs
         });
 
         // table
@@ -171,8 +222,6 @@ var handleDataTable = function() {
         // table.data()
     }
 };
-
-var hasChanged = false;
 
 
 var init = function(){
@@ -194,6 +243,9 @@ var init = function(){
 
         return false;
     });
+
+    document.getElementById('countFee').innerHTML = "Cantidad de Coutas: " + loan.feeCount;
+    document.getElementById('total').innerHTML = "Total a cancelar: " + loan.totalPay;
 };
 
 $(document).ready(function () {
@@ -246,7 +298,7 @@ $(document).ready(function () {
         generateFee();
     });
 
-    if(loanId > 0)
+    if(loanId > 0 && scenario == 'refinance' )
     {
         if($('#feeBox').hasClass('collapsed-box'))
         {
@@ -254,16 +306,7 @@ $(document).ready(function () {
         }
 
         generateFee();
-
-        // $('#w1-container').click(function (e) {
-        //
-        //     e.preventDefault();
-        //     alert('asd');
-        //     return true;
-        // });
     }
-
-    // console.log(homeUrl);
 
     // form submit
     $('#aceptBtn').on('click', function(){

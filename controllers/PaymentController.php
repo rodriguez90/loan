@@ -142,9 +142,47 @@ class PaymentController extends Controller
         {
             $data = Yii::$app->request->post();
             $data["Payment"]['collector_id'] = Yii::$app->user->identity->getId();
+            $data["Payment"]['payment_date'] = date('Y-m-d', strtotime($data["Payment"]['payment_date']));
 
-            if ($model->load($data) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+            if($model->load($data))
+            {
+                $transaction = Yii::$app->getDb()->beginTransaction();
+
+                if ($model->save()) {
+                    $payments = Payment::find()
+                        ->where(['loan_id'=>$model->loan_id, 'status'=>0])
+                        ->orderBy(['id'=>SORT_ASC])
+                        ->all();
+                    $amount  = (float)$model->amount;
+                    foreach ($payments as $payment)
+                    {
+                        if($amount == 0) break;
+
+                        $paymentAmount = (float)$payment->amount;
+                        $paymentAmount -=  $amount;
+
+                        if($paymentAmount <= 0) // la cantidad a descontar era mayor que la cuota a pagar
+                        {
+                            $amount = abs($paymentAmount);
+                            $payment->amount = number_format(0,2);
+                            $payment->status = Payment::COLLECTED;
+                        }
+                        elseif ($paymentAmount > 0) // la cantidad a descontar era menor que la cuota a pagar
+                        {
+                            $amount = 0;
+                            $payment->amount = number_format($paymentAmount,2);
+                        }
+
+                        if(!$payment->save())
+                        {
+                            $transaction->rollBack();
+                            break;
+                        }
+                    }
+                    $transaction->commit();
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
+                else $transaction->rollBack();
             }
         }
 
@@ -162,13 +200,17 @@ class PaymentController extends Controller
      */
     public function actionUpdate($id)
     {
-//        throw  new ForbiddenHttpException("No tiene acceso a esta ación.");
         $model = $this->findModel($id);
 
-        $data["Payment"]['updated_at'] = date('Y-m-d');
+        if($data = Yii::$app->request->isPost)
+        {
+            $data = Yii::$app->request->post();
+            $data["Payment"]['payment_date'] = date('Y-m-d', strtotime($data["Payment"]['payment_date']));
+            $data["Payment"]['updated_at'] = date('Y-m-d');
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->load($data) && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('update', [
@@ -283,7 +325,6 @@ class PaymentController extends Controller
      */
     public function actionDelete($id)
     {
-        throw  new ForbiddenHttpException("No tiene acceso a esta ación.");
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);

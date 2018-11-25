@@ -17,42 +17,42 @@ $this->params['breadcrumbs'][] = ['label' => 'Cuotas', 'url' => ['index']];
             <div class="box-header with-border">
                 <h3 class="box-title"></h3>
 
-                <div class="box-tools pull-right">
-
+                <div class="pull-right">
                     <?php  echo Html::a('Modificar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-                    <?php /* echo Html::a('Eliminar', ['delete', 'id' => $model->id], [
+                    <?php echo Html::a('Eliminar', ['delete', 'id' => $model->id], [
                         'class' => 'btn btn-danger',
                         'data' => [
                             'confirm' => 'Está seguro que desea eliminar este Cuota?',
                             'method' => 'post',
                         ],
-                    ])*/ ?>
-                </div>
-                <div class="box-body">
-                    <?= DetailView::widget([
-                        'model' => $model,
-                        'attributes' => [
-                            'id',
-                            'loan_id',
-                            'collector.username',
-                            'payment_date:date',
-                            'amount:currency',
-                            'collectorName',
-                            'customerName',
-                            [
-                                'label'=>'Estado',
-                                'attribute'=>'status',
-                                'format'=>'raw',
-                                'value' => function ($data) {
-                                    return $data['status'] == 1?
-                                        '<span class="label label-success pull-left">Cobrado</span>' :
-                                        '<span class="label label-danger">Pendiente</span>';
-                                },
-                            ],
-                        ],
-                        'options'=>['class' => 'table table-striped table-bordered table-condensed detail-view']
                     ]) ?>
                 </div>
             </div>
+
+        <div class="box-body">
+            <?= DetailView::widget([
+                'model' => $model,
+                'attributes' => [
+                    'id',
+                    'loan_id',
+                    'collector.username',
+                    'payment_date:date',
+                    'amount:currency',
+                    'collectorName',
+                    'customerName',
+                    [
+                        'label'=>'Estado',
+                        'attribute'=>'status',
+                        'format'=>'raw',
+                        'value' => function ($data) {
+                            return $data['status'] == 1?
+                                '<span class="label label-success pull-left">Cobrado</span>' :
+                                '<span class="label label-danger">Pendiente</span>';
+                        },
+                    ],
+                ],
+                'options'=>['class' => 'table table-striped table-bordered table-condensed detail-view']
+            ]) ?>
         </div>
+    </div>
 </div>

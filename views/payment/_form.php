@@ -2,7 +2,8 @@
 
 use yii\helpers\Html;
 use kartik\daterange\DateRangePicker;
-use kartik\form\ActiveForm;
+use kartik\widgets\ActiveForm;
+use kartik\widgets\SwitchInput;
 use kartik\number\NumberControl;
 use app\models\Payment;
 
@@ -27,8 +28,14 @@ $url = \yii\helpers\Url::to(['/loan/loan-list']);
         <!-- begin box -->
         <div class="box box-success">
             <div class="box-body">
-
-                <?php $form = ActiveForm::begin(); ?>
+                <?php $form = ActiveForm::begin(['options'=>
+                    [
+//                        'id'=>'user-form',
+                        'enableClientScript' => false,
+                        'action'=>"/",
+                        'method'=>"POST",
+                        'data-parsley-validate'=>'true',
+                        'name'=>"form-wizard"]]); ?>
 
                 <?= $form->field($model, 'loan_id')->widget(\kartik\select2\Select2::classname(), [
                     'bsVersion' => '3.x',
@@ -75,12 +82,11 @@ $url = \yii\helpers\Url::to(['/loan/loan-list']);
                         'suffix' => ' ¢',
                         'allowMinus' => false
                     ],
-//                                'options' => $saveOptions,
                     'displayOptions' => $disOptions,
                     'saveInputContainer' => $saveCont,
                 ]) ?>
 
-                <?= $form->field($model, 'status')->widget(\kartik\widgets\SwitchInput::className(),[
+                <?= $form->field($model, 'status')->widget(SwitchInput::className(),[
                     'pluginOptions'=>[
                         'size'=>'mini',
 //                        'onstyle'=>'success',

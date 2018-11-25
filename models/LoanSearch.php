@@ -83,8 +83,6 @@ class LoanSearch extends Loan
     {
         $this->load($params);
 
-
-
         $query = Loan::find();
         $query->joinWith(['collector', 'customer']);
 //        $query->innerJoin('customer', 'customer.id = loan.customer_id ');
@@ -129,6 +127,7 @@ class LoanSearch extends Loan
                             'customer.id as customerId',
 
                         ])
+                        ->orderBy(['loan.id'=>SORT_ASC])
                         ->asArray()
                         ->all();
         return $result;

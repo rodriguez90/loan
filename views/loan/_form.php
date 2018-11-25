@@ -287,10 +287,13 @@ HTML;
                                     <table id="data-table" class="table table-bordered nowrap table-condensed" width="100%">
                                         <thead>
                                         <tr>
-                                            <th>No.</th>
-                                            <th>Fecha</th>
+<!--                                            <th>No.</th>-->
+<!--                                            <th>Fecha</th>-->
                                         </tr>
                                         </thead>
+<!--                                        <tfoot align="right">-->
+<!--                                            <tr><th></th><th></th></tr>-->
+<!--                                        </tfoot>-->
                                     </table>
                                 </div>
                             </div>
@@ -357,6 +360,7 @@ HTML;
                                    'amount_paid'=>$model->getAmountPaid(),
                                    'amount_unpaid'=>$model->getAmountUnPaid(),
                                    'totalPay'=>$model->getTotalPay(),
+                                   'feeCount'=>count($model->payments),
                                   ]); ?>;
     var scenario = '<?php echo $scenario; ?>';
 </script>

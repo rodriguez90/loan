@@ -26,10 +26,10 @@ var handleDataTable  = function (){
                 {
                     orderable: true,
                     searchable: true,
-                    targets:   [1,2,3,4,5,6]
+                    targets:   [0,1,2,3,4,5,6]
                 },
                 {
-                    targets: 4,
+                    targets: 5,
                     data:null,
                     render: function ( data, type, full, meta )
                     {
@@ -38,7 +38,7 @@ var handleDataTable  = function (){
                     }
                 },
                 {
-                    targets: 6,
+                    targets: 7,
                     title:"Estado",
                     data:'status',
                     render: function ( data, type, full, meta )
@@ -65,7 +65,7 @@ var handleDataTable  = function (){
                     }
                 },
                 {
-                    targets: 7,
+                    targets: 8,
                     data:null,
                     render: function ( data, type, full, meta ) {
                         var elementId =  String(full.id);
@@ -76,7 +76,7 @@ var handleDataTable  = function (){
                             var selectHtml = "<div class=\"row row-fluid\">";
                             selectHtml += "<div class=\"col col-xs-12\">" ;
                             selectHtml += "<a " + "href=\"" + homeUrl + "loan/view?id=" + elementId + "\" class=\"btn btn-info btn-icon btn-circle btn-xs\" title=\"Ver\"><i class=\"fa fa-eye\"></i></a>";
-                            selectHtml += "<a " + "href=\"" + homeUrl + "loan/update?id=" + elementId + "\" class=\"btn btn-primary btn-icon btn-circle btn-xs\" title=\"Ver\"><i class=\"fa fa-edit\"></i></a>";
+                            selectHtml += "<a " + "href=\"" + homeUrl + "loan/update?id=" + elementId + "\" class=\"btn btn-primary btn-icon btn-circle btn-xs\" title=\"Editar\"><i class=\"fa fa-edit\"></i></a>";
 
                             if(full.status == 1)
                             {
@@ -96,6 +96,7 @@ var handleDataTable  = function (){
                 }
             ],
             'columns': [
+                { 'data':'id' },
                 { 'data':'customerName' },
                 { 'data':"porcent_interest" },
                 { 'data':"amount" },

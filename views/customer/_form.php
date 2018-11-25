@@ -11,6 +11,7 @@ use app\models\Customer;
 
 use app\assets\FormPluginsAsset;
 
+
 FormPluginsAsset::register($this);  // $this represents the view object
 
 ?>

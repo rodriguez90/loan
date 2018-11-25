@@ -171,8 +171,19 @@ class Loan extends \yii\db\ActiveRecord
 
     public function getTotalPay()
     {
+        $loans = $this->loans; // always 1
         $benefit = ($this->amount * $this->porcent_interest)/100;
-        $total = $this->amount + $benefit;
+
+        if(count($loans) <= 0)
+        {
+            $total = $this->amount + $benefit;
+        }
+        else {
+
+            $referenceUnPaid = $loans[0]->getAmountUnPaid();
+//            var_dump($referenceUnPaid);die;
+            $total = $this->amount + $benefit + $referenceUnPaid;
+        }
 //        return number_format($total, 2);
         return $total;
     }
