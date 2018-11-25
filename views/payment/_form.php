@@ -113,4 +113,4 @@ $url = \yii\helpers\Url::to(['/loan/loan-list']);
     var scenario = '<?php echo !$model->isNewRecord? 'update':'create'; ?>';
 </script>
 
-<?php $this->registerJsFile('@web/js/payment/form.js', ['depends' => ['app\assets\FormPluginsAsset']]) ?>
+<?php $this->registerJsFile('@web/js/c/form.js', ['depends' => ['app\assets\FormPluginsAsset']]) ?>
