@@ -11,46 +11,32 @@ $this->title = 'Préstamos';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="row">
-    <div class="col-lg-12 col-xs-6">
+    <div class="col-lg-12 col-xs-12">
         <div class="box box-solid">
             <div class="box-header with-border">
                 <?= Html::a('Nuevo Préstamo', ['create'], ['class' => 'btn btn-success']) ?>
             </div>
             <div class="box-body">
-                <?php Pjax::begin(); ?>
-                <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-                <?= GridView::widget([
-                    'dataProvider' => $dataProvider,
-                    'filterModel' => $searchModel,
-                    'columns' => [
-//                        ['class' => 'yii\grid\SerialColumn'],
-
-                        'id',
-                        'customer.first_name',
-//                        'banker',
-                        'amount',
-                        'porcent_interest',
-                        [
-                            'class' => 'yii\grid\DataColumn', // can be omitted, as it is the default
-                            'attribute' => 'status',
-                            'value' => function($data) {
-                                return \app\models\Loan::STATUS_LABEL[$data['status']];
-                            },
-                            'filter' => ['0' =>'Inactivo', '1' =>'Activo' , '2'=>'Cerrado',],
-                        ],
-                        //'refinancing_id',
-//                        'frequency_payment',
-                        'start_date',
-                        'end_date',
-                        //'created_at',
-                        //'updated_at',
-
-                        ['class' => 'yii\grid\ActionColumn'],
-                    ],
-                ]); ?>
-                <?php Pjax::end(); ?>
+                <div class="table-responsive">
+                    <table id="data-table" class="display table table-bordered table-condensed no-wrap" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th class="all">No.</th>
+                            <th class="all">Cliente</th>
+                            <th class="all">Interés</th>
+                            <th>Cantidad</th>
+                            <th>Cuota</th>
+                            <th>Plazo</th>
+                            <th>Cobrador</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<?php $this->registerJsFile('@web/js/loan/index.js', ['depends' => ['app\assets\DataTableAsset']]) ?>

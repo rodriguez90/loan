@@ -16,11 +16,12 @@ class FormPluginsAsset extends  AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-
+        'js/plugins/parsley/src/parsley.css',
 
     ];
     public $js = [
-   
+        'js/plugins/parsley/dist/parsley.js',
+        'js/plugins/parsley/dist/i18n/es.js',
     ];
     public $depends = [
         'app\assets\AppAsset'

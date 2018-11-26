@@ -5,6 +5,7 @@ namespace app\models;
 use Yii;
 use Da\User\Model\User;
 
+
 /**
  * This is the model class for table "loan".
  *
@@ -21,8 +22,10 @@ use Da\User\Model\User;
  * @property string $created_at
  * @property string $updated_at
  * @property string $fee_payment
+ * @property int $collector_id
  *
  * @property User $banker
+ * @property User $collector
  * @property Customer $customer
  * @property Loan $refinancing
  * @property Loan[] $loans
@@ -30,7 +33,6 @@ use Da\User\Model\User;
  */
 class Loan extends \yii\db\ActiveRecord
 {
-
     const INACTIVE = 0;
     const ACTIVE = 1;
     const CLOSE = 2;
@@ -40,6 +42,10 @@ class Loan extends \yii\db\ActiveRecord
         1 => 'Activo',
         2 => 'Cerrado',
     ];
+
+    const SCENARIO_CREATE = 'create';
+    const SCENARIO_UPDATE = 'update';
+    const SCENARIO_REFINANCE = 'refinance';
 
     /**
      * {@inheritdoc}
@@ -55,15 +61,33 @@ class Loan extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['customer_id', 'banker_id', 'porcent_interest', 'status', 'frequency_payment', 'start_date', 'end_date'], 'required'],
-            [['customer_id', 'banker_id', 'status', 'refinancing_id', 'frequency_payment'], 'integer'],
+            [['customer_id', 'banker_id', 'amount', 'porcent_interest', 'status', 'frequency_payment', 'start_date', 'end_date', 'fee_payment', 'collector_id'], 'required'],
+            [['customer_id', 'banker_id', 'status', 'refinancing_id', 'frequency_payment', 'collector_id'], 'integer'],
             [['amount', 'porcent_interest', 'fee_payment'], 'number'],
             [['start_date', 'end_date', 'created_at', 'updated_at'], 'safe'],
             [['banker_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['banker_id' => 'id']],
+            [['collector_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['collector_id' => 'id']],
             [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => Customer::className(), 'targetAttribute' => ['customer_id' => 'id']],
             [['refinancing_id'], 'exist', 'skipOnError' => true, 'targetClass' => Loan::className(), 'targetAttribute' => ['refinancing_id' => 'id']],
         ];
     }
+
+//    public function scenarios()
+//    {
+//        return [
+//            self::SCENARIO_CREATE => ['customer_id', 'banker_id', 'amount', 'porcent_interest', 'status', 'frequency_payment', 'start_date', 'end_date', 'fee_payment', 'collector_id'],
+//            self::SCENARIO_UPDATE => ['customer_id', 'collector_id',],
+//            self::SCENARIO_CREATE => ['customer_id', 'banker_id', 'amount', 'porcent_interest', 'status', 'frequency_payment', 'start_date', 'end_date', 'fee_payment', 'collector_id'],
+//        ];
+//    }
+
+    public function behaviors()
+    {
+        return [
+            \nhkey\arh\ActiveRecordHistoryBehavior::className(),
+        ];
+    }
+
 
     /**
      * {@inheritdoc}
@@ -84,6 +108,8 @@ class Loan extends \yii\db\ActiveRecord
             'created_at' => 'Fecha de Registro',
             'updated_at' => 'Fecha de Modificación',
             'fee_payment' => 'Couta',
+            'collector_id' => 'Cobrador',
+            'customerName' => 'Cliente',
         ];
     }
 
@@ -93,6 +119,14 @@ class Loan extends \yii\db\ActiveRecord
     public function getBanker()
     {
         return $this->hasOne(User::className(), ['id' => 'banker_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCollector()
+    {
+        return $this->hasOne(User::className(), ['id' => 'collector_id']);
     }
 
     /**
@@ -125,5 +159,53 @@ class Loan extends \yii\db\ActiveRecord
     public function getPayments()
     {
         return $this->hasMany(Payment::className(), ['loan_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCustomerName()
+    {
+        return $this->customer->first_name . ' '. $this->customer->last_name;
+    }
+
+    public function getTotalPay()
+    {
+        $loans = $this->loans; // always 1
+        $benefit = ($this->amount * $this->porcent_interest)/100;
+
+        if(count($loans) <= 0)
+        {
+            $total = $this->amount + $benefit;
+        }
+        else {
+
+            $referenceUnPaid = $loans[0]->getAmountUnPaid();
+//            var_dump($referenceUnPaid);die;
+            $total = $this->amount + $benefit + $referenceUnPaid;
+        }
+//        return number_format($total, 2);
+        return $total;
+    }
+
+    public function getAmountPaid()
+    {
+        $result = Loan::find()
+                        ->innerJoin('payment', 'payment.loan_id=loan.id')
+                        ->where(['payment.status'=>1, 'loan.id'=>$this->id])
+                        ->sum('payment.amount');
+        $result = round($result);
+//        return number_format($result,2);
+        return $result;
+    }
+
+    public function getAmountUnPaid()
+    {
+        $result = Loan::find()
+            ->innerJoin('payment', 'payment.loan_id=loan.id')
+            ->where(['payment.status'=>0, 'loan.id'=>$this->id])
+            ->sum('payment.amount');
+        $result = round($result);
+        return $result;
     }
 }

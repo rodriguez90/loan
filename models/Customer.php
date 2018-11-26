@@ -19,12 +19,21 @@ use Da\User\Model\User;
  * @property string $created_at
  * @property string $updated_at
  * @property int $created_by
+ * @property int $active
  *
  * @property User $createdBy
  * @property Loan[] $loans
  */
 class Customer extends \yii\db\ActiveRecord
 {
+    const INACTIVE = 0;
+    const ACTIVE = 1;
+
+    const ACTIVE_LABEL = [
+        0 => 'Inactivo',
+        1 => 'Activo',
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -41,10 +50,18 @@ class Customer extends \yii\db\ActiveRecord
         return [
             [['first_name', 'last_name', 'dni', 'email', 'phone_number', 'location', 'address'], 'required'],
             [['created_at', 'updated_at'], 'safe'],
-            [['created_by'], 'integer'],
-            [['first_name', 'last_name', 'dni', 'email', 'phone_number', 'location', 'address'], 'string', 'max' => 255],
+            [['created_by', 'active'], 'integer'],
+            [['location'], 'string'],
+            [['first_name', 'last_name', 'dni', 'email', 'phone_number', 'address'], 'string', 'max' => 255],
             [['created_by'], 'exist', 'skipOnError' => false, 'targetClass' => User::className(), 'targetAttribute' => ['created_by' => 'id']],
         ];
+    }
+
+    public function behaviors()
+    {
+        return [
+                \nhkey\arh\ActiveRecordHistoryBehavior::className(),
+                ];
     }
 
     /**
@@ -64,6 +81,7 @@ class Customer extends \yii\db\ActiveRecord
             'created_at' => 'Fecha de Registro',
             'updated_at' => 'Fecha de Modificación',
             'created_by' => 'Creado Por',
+            'active' => 'Estado',
         ];
     }
 

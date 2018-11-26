@@ -10,10 +10,10 @@ $this->title = 'Nuevo Préstamo';
 $this->params['breadcrumbs'][] = ['label' => 'Préstamos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="loan-create">
 
     <?= $this->render('_form', [
         'model' => $model,
+        'scenario'=>\app\models\Loan::SCENARIO_CREATE
     ]) ?>
 
-</div>
+<?php $this->registerJsFile('@web/js/loan/form.js', ['depends' => ['app\assets\DataTableAsset']]) ?>

@@ -18,7 +18,7 @@ class CustomerSearch extends Customer
     public function rules()
     {
         return [
-            [['id', 'created_by'], 'integer'],
+            [['id', 'created_by', 'active'], 'integer'],
             [['first_name', 'last_name', 'dni', 'email', 'phone_number', 'location', 'address', 'created_at', 'updated_at'], 'safe'],
         ];
     }
@@ -63,6 +63,7 @@ class CustomerSearch extends Customer
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_by' => $this->created_by,
+            'active' => $this->active,
         ]);
 
         $query->andFilterWhere(['like', 'first_name', $this->first_name])
@@ -74,5 +75,34 @@ class CustomerSearch extends Customer
             ->andFilterWhere(['like', 'address', $this->address]);
 
         return $dataProvider;
+    }
+
+    public function search2($params)
+    {
+        $this->load($params);
+
+        $query = Customer::find();
+
+        // add conditions that should always apply here
+        $query->andFilterWhere([
+            'id' => $this->id,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'created_by' => $this->created_by,
+            'active' => $this->active,
+        ]);
+
+        $result = $query->select([
+            'customer.id',
+            "CONCAT(customer.first_name,' ', customer.last_name) as customerName",
+            'customer.dni',
+            'customer.phone_number',
+            'customer.email',
+            'customer.location',
+            'customer.active',
+        ])
+            ->asArray()
+            ->all();
+        return $result;
     }
 }

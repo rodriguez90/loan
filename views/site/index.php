@@ -6,7 +6,7 @@ use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 
-$this->title = '';
+$this->title = 'Inicio';
 ?>
 <!-- Small boxes (Stat box) -->
 <div class="row">
@@ -14,9 +14,9 @@ $this->title = '';
         <!-- small box -->
         <div class="small-box bg-aqua">
             <div class="inner">
-                <h3>150</h3>
+                <h3><?= $loanCount ?></h3>
 
-                <p>Prestamos</p>
+                <p>Préstamos</p>
             </div>
             <div class="icon">
                 <i class="ion ion-bag"></i>
@@ -29,9 +29,10 @@ $this->title = '';
         <!-- small box -->
         <div class="small-box bg-green">
             <div class="inner">
-                <h3>53<sup style="font-size: 20px">%</sup></h3>
+                <h3><?= $paymentCount ?></h3>
+<!--                <h3>4<sup style="font-size: 20px">%</sup></h3>-->
 
-                <p>Cobros</p>
+                <p>Cuotas Pagadas</p>
             </div>
             <div class="icon">
                 <i class="ion ion-stats-bars"></i>
@@ -44,7 +45,7 @@ $this->title = '';
         <!-- small box -->
         <div class="small-box bg-yellow">
             <div class="inner">
-                <h3>44</h3>
+                <h3><?= $customerCount ?></h3>
 
                 <p>Clientes</p>
             </div>
@@ -59,9 +60,9 @@ $this->title = '';
         <!-- small box -->
         <div class="small-box bg-red">
             <div class="inner">
-                <h3>65</h3>
+                <h3><?= $unpaidCount ?></h3>
 
-                <p>Impagos</p>
+                <p>Cuotas por Pagar</p>
             </div>
             <div class="icon">
                 <i class="ion ion-pie-graph"></i>
@@ -73,13 +74,13 @@ $this->title = '';
 </div>
 
 <div class="row">
-
-    <div class="col-lg-12 col-xs-6">
+    <div class="col-lg-12 col-xs-12">
         <div class="box box-solid">
             <div class="box-header with-border">
-                <h3 class="box-title">Pagos de Hoy</h3>
+                <h3 class="box-title">Cuotas Pendientes</h3>
 
                 <div class="box-tools pull-right">
+                    <button id="pay_btn" type="button" class="btn btn-primary btn-xs btn-box-too">Pagar Seleccionados</button>
                     <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                     </button>
                 </div>
@@ -89,24 +90,76 @@ $this->title = '';
             <div class="box-body">
                 <?php Pjax::begin(); ?>
                 <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-                <?= GridView::widget([
+                <div class="table-responsive">
+                    <?= GridView::widget([
                     'dataProvider' => $dataProvider,
                     'filterModel' => $searchModel,
+//                    'id'=>'payments',
                     'columns' => [
                         ['class' => 'yii\grid\SerialColumn'],
-
-                        'loan_id',
-                        'collector_id',
-                        'payment_date',
+                        [
+                            'attribute' => 'loan_id',
+                            'content' => function ($data) {
+                                return  Html::a($data['loan_id'],
+                                    \yii\helpers\Url::toRoute(['/loan/view/', 'id' => $data['loan_id']]));
+                            }
+                        ],
+                        [
+                            'attribute'=>'customerName',
+                        ],
                         'amount',
+                        [
+                            'attribute'=>'collectorName',
+                        ],
+                        [
+                            'attribute' => 'payment_date',
+                            'value' => 'payment_date',
+//                            'format' => 'php:date',
+                            'filter' =>  \kartik\date\DatePicker::widget([
+                                'model' => $searchModel,
+                                'attribute'=>'payment_date',
+                                'pluginOptions' => [
+//                                    'format' => 'dd-M-yyyy',
+                                    'format' => 'yyyy-m-dd',
+                                    'autoclose'=>true,
+                                    'todayHighlight' => true
+                                ]
+                            ]),
+                            'format' => 'html',
+                        ],
 
-                        ['class' => 'yii\grid\ActionColumn'],
+                        [
+                            'class' => 'yii\grid\DataColumn', // can be omitted, as it is the default
+                            'attribute' => 'status',
+                            'content' => function ($data) {
+                                return $data['status'] ? '<span class="label label-success pull-left">Cobrado</span>' : '<span class="label label-danger">Pendiente</span>';
+                            },
+                            'filter' => ['0' =>'Pendiente', '1' =>'Cobrado',],
+                        ],
+                        [
+//                           'name'=>'id',
+//                           'header' => Html::checkbox('select_all', false, [
+//                                'id'=>'select_all',
+//                                'class' => 'select-on-check-all pull-right',
+//                                'label' => '<span class="pull-left">Seleccionar</span>'
+//                           ]),
+                           'class' => '\yii\grid\CheckboxColumn',
+                            'header'=> 'Pagar',
+//                            'id',
+//                            'multiple' => true
+                        ],
+                        ['class' => 'yii\grid\ActionColumn',
+                          'controller'=>'payment'
+                        ],
                     ],
+                    'tableOptions'=>['class'=>'table table-striped table-bordered table-condensed' ]
                 ]); ?>
+                </div>
                 <?php Pjax::end(); ?>
             </div>
             <!-- /.box-body -->
         </div>
     </div>
 </div>
+
+<?php $this->registerJsFile('@web/js/site/index.js', ['depends' => ['app\assets\AppAsset']]) ?>

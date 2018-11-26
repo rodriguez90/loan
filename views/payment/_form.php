@@ -2,8 +2,10 @@
 
 use yii\helpers\Html;
 use kartik\daterange\DateRangePicker;
-use kartik\form\ActiveForm;
+use kartik\widgets\ActiveForm;
+use kartik\widgets\SwitchInput;
 use kartik\number\NumberControl;
+use app\models\Payment;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Payment */
@@ -26,8 +28,14 @@ $url = \yii\helpers\Url::to(['/loan/loan-list']);
         <!-- begin box -->
         <div class="box box-success">
             <div class="box-body">
-
-                <?php $form = ActiveForm::begin(); ?>
+                <?php $form = ActiveForm::begin(['options'=>
+                    [
+//                        'id'=>'user-form',
+                        'enableClientScript' => false,
+                        'action'=>"/",
+                        'method'=>"POST",
+                        'data-parsley-validate'=>'true',
+                        'name'=>"form-wizard"]]); ?>
 
                 <?= $form->field($model, 'loan_id')->widget(\kartik\select2\Select2::classname(), [
                     'bsVersion' => '3.x',
@@ -52,7 +60,8 @@ $url = \yii\helpers\Url::to(['/loan/loan-list']);
 
                     echo $form->field($model, 'payment_date', [
                         'addon'=>['prepend'=>['content'=>'<i class="fas fa-calendar-alt"></i>']],
-                        'options'=>['class'=>'drp-container form-group']
+                        'options'=>['class'=>'drp-container form-group',  'readonly'=>$model->isNewRecord],
+
                     ])->widget(DateRangePicker::classname(), [
 
                         'value'=>date('d-m-Y'),
@@ -63,8 +72,7 @@ $url = \yii\helpers\Url::to(['/loan/loan-list']);
                             'locale'=>['format' => 'd-m-Y'],
                             'singleDatePicker'=>true,
                             'showDropdowns'=>true
-                        ]
-                    ]);
+                    ]]);
 
                 ?>
 
@@ -74,9 +82,20 @@ $url = \yii\helpers\Url::to(['/loan/loan-list']);
                         'suffix' => ' ¢',
                         'allowMinus' => false
                     ],
-//                                'options' => $saveOptions,
                     'displayOptions' => $disOptions,
                     'saveInputContainer' => $saveCont,
+                ]) ?>
+
+                <?= $form->field($model, 'status')->widget(SwitchInput::className(),[
+                    'pluginOptions'=>[
+                        'size'=>'mini',
+//                        'onstyle'=>'success',
+//                        'offstyle'=>'danger',
+                        'onText'=>Payment::STATUS_LABEL[Payment::COLLECTED],
+                        'offText'=>Payment::STATUS_LABEL[Payment::PENDING],
+                        'onColor'=>'success',
+                        'offColor'=>'danger',
+                    ]
                 ]) ?>
 
                 <div class="form-group">
@@ -89,3 +108,9 @@ $url = \yii\helpers\Url::to(['/loan/loan-list']);
         </div>
     </div>
 </div>
+
+<script>
+    var scenario = '<?php echo !$model->isNewRecord? 'update':'create'; ?>';
+</script>
+
+<?php $this->registerJsFile('@web/js/payment/form.js', ['depends' => ['app\assets\FormPluginsAsset']]) ?>
