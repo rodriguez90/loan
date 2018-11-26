@@ -100,4 +100,10 @@ class Customer extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Loan::className(), ['customer_id' => 'id']);
     }
+
+
+    public function getFullName()
+    {
+        return $this->first_name . " " .$this->last_name;
+    }
 }

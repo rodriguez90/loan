@@ -1,5 +1,4 @@
 
-var loan = null;
 $(document).ready(function () {
 
     // $('#w0').parsley();
@@ -10,13 +9,10 @@ $(document).ready(function () {
 
         $('#payment-payment_date-container .kv-drp-dropdown').prop("disabled",true);
         $('#payment-payment_date-container .range-value').prop("disabled",true);
-    }
-    else if(scenario == 'create')
-    {
+
         $('#payment-loan_id').on('select2:select', function (e) {
             loan = e.params.data;
             console.log(loan);
-
             // $('#payment-payment_date')
             //     .attr('data-parsley-min', moment(data.start_date, 'YYYY-MM-DD'))
             //     .attr('data-parsley-max', moment(data.end_date, 'YYYY-MM-DD'));
@@ -29,12 +25,12 @@ $(document).ready(function () {
             console.log('payment-amoun change');
             var value = this.value;
             var self = this;
-            if(value <= 0 || value > loan.amount)
+            if(value <= 0 || value > loan.amountUnPaid)
             {
                 $.alert(
                     {
                         title:'Advertencia',
-                        content:'El valor de la cuota debe ser mayo que 0 y menor que ' + loan.amount,
+                        content:'El valor de la cuota debe ser mayo que 0 y menor que ' + loan.amountUnPaid,
                         buttons: {
                             confirm: {
                                 text:'Aceptar',
@@ -49,6 +45,7 @@ $(document).ready(function () {
             }
         });
     }
+
     //
     // $('#payment-amount')
     //     .attr('data-parsley-min', Number(1))

@@ -13,33 +13,41 @@ use app\models\Payment;
 
 $url = \yii\helpers\Url::to(['/loan/loan-list']);
 
+$loanFullName = "";
+
+if($model->loan_id)
+{
+    $loanFullName = $model->loan->getFullName();
+}
+
 ?>
 
 <?php if ($model->hasErrors()) {
-//    var_dump($model->errors);die;
     \Yii::$app->getSession()->setFlash('error', $model->getErrorSummary(true));
 }
 ?>
 
-<!-- begin row -->
+    <style>
+        .bootstrap-switch .bootstrap-switch-handle-on,.bootstrap-switch .bootstrap-switch-handle-off, .bootstrap-switch .bootstrap-switch-label
+        {
+            height: auto !important;
+        }
+    </style>
+
+
+
+    <!-- begin row -->
 <div class="row">
     <!-- begin col-12 -->
     <div class="col-md-12">
         <!-- begin box -->
         <div class="box box-success">
             <div class="box-body">
-                <?php $form = ActiveForm::begin(['options'=>
-                    [
-//                        'id'=>'user-form',
-                        'enableClientScript' => false,
-                        'action'=>"/",
-                        'method'=>"POST",
-                        'data-parsley-validate'=>'true',
-                        'name'=>"form-wizard"]]); ?>
+                <?php $form = ActiveForm::begin(); ?>
 
                 <?= $form->field($model, 'loan_id')->widget(\kartik\select2\Select2::classname(), [
                     'bsVersion' => '3.x',
-                    'initValueText' => $model->loan_id,
+                    'initValueText' => $loanFullName,
                     'theme' => \kartik\select2\Select2::THEME_BOOTSTRAP,
                     'options' => ['placeholder' => 'Seleccione el préstamo'],
                     'pluginOptions' => [
@@ -56,10 +64,8 @@ $url = \yii\helpers\Url::to(['/loan/loan-list']);
                     ],
                 ]);?>
 
-                <?php
-
-                    echo $form->field($model, 'payment_date', [
-                        'addon'=>['prepend'=>['content'=>'<i class="fas fa-calendar-alt"></i>']],
+                <?php echo $form->field($model, 'payment_date', [
+//                        'addon'=>['prepend'=>['content'=>'<i class="fas fa-calendar-alt"></i>']],
                         'options'=>['class'=>'drp-container form-group',  'readonly'=>$model->isNewRecord],
 
                     ])->widget(DateRangePicker::classname(), [
@@ -73,7 +79,6 @@ $url = \yii\helpers\Url::to(['/loan/loan-list']);
                             'singleDatePicker'=>true,
                             'showDropdowns'=>true
                     ]]);
-
                 ?>
 
                 <?= $form->field($model, 'amount')->widget(NumberControl::className(), [
@@ -87,6 +92,8 @@ $url = \yii\helpers\Url::to(['/loan/loan-list']);
                 ]) ?>
 
                 <?= $form->field($model, 'status')->widget(SwitchInput::className(),[
+                    'bsVersion' => '3.x',
+                    'inlineLabel'=>false,
                     'pluginOptions'=>[
                         'size'=>'mini',
 //                        'onstyle'=>'success',
@@ -95,8 +102,9 @@ $url = \yii\helpers\Url::to(['/loan/loan-list']);
                         'offText'=>Payment::STATUS_LABEL[Payment::PENDING],
                         'onColor'=>'success',
                         'offColor'=>'danger',
-                    ]
+                    ],
                 ]) ?>
+
 
                 <div class="form-group">
                     <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>
@@ -111,6 +119,12 @@ $url = \yii\helpers\Url::to(['/loan/loan-list']);
 
 <script>
     var scenario = '<?php echo !$model->isNewRecord? 'update':'create'; ?>';
+    loan = <?php echo json_encode(['id'=>$model->loan->id,
+        'startDate'=>$model->loan->start_date,
+        'endDdate'=>$model->loan->end_date,
+        'feePayment'=>$model->loan->fee_payment,
+        'amountUnPaid'=>$model->loan->getAmountUnPaid(),
+    ]); ?>;
 </script>
 
-<?php $this->registerJsFile('@web/js/c/form.js', ['depends' => ['app\assets\FormPluginsAsset']]) ?>
+<?php $this->registerJsFile('@web/js/payment/form.js', ['depends' => ['app\assets\FormPluginsAsset']]) ?>

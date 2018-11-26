@@ -314,21 +314,22 @@ class LoanController extends Controller
             {
                 if(!$loan->delete())
                 {
-                    $response['success'] = true;
+                    $response['success'] = false;
                     $response['msg'] = 'Ha ocurrido un error al eliminar el préstamo.';
                 }
             }
             else
             {
-                $response['success'] = true;
+                $response['success'] = false;
                 $response['msg'] = 'El préstamo no existe.';
             }
 
         }
         catch (\Exception $e)
         {
-            $response['success'] = true;
+            $response['success'] = false;
             $response['msg'] = 'Ha ocurrido un error al eliminar el préstamo.';
+            $response['msg_dev'] = $e->getMessage();
         }
 
         if(Yii::$app->request->isAjax)

@@ -181,10 +181,8 @@ class Loan extends \yii\db\ActiveRecord
         else {
 
             $referenceUnPaid = $loans[0]->getAmountUnPaid();
-//            var_dump($referenceUnPaid);die;
             $total = $this->amount + $benefit + $referenceUnPaid;
         }
-//        return number_format($total, 2);
         return $total;
     }
 
@@ -195,17 +193,16 @@ class Loan extends \yii\db\ActiveRecord
                         ->where(['payment.status'=>1, 'loan.id'=>$this->id])
                         ->sum('payment.amount');
         $result = round($result);
-//        return number_format($result,2);
         return $result;
     }
 
     public function getAmountUnPaid()
     {
-        $result = Loan::find()
-            ->innerJoin('payment', 'payment.loan_id=loan.id')
-            ->where(['payment.status'=>0, 'loan.id'=>$this->id])
-            ->sum('payment.amount');
-        $result = round($result);
-        return $result;
+        return $this->getTotalPay() - $this->getAmountPaid();
+    }
+
+    public function getFullName()
+    {
+        return $this->customer->getFullName() . " - " . $this->amount;
     }
 }

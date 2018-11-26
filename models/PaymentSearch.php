@@ -202,15 +202,19 @@ class PaymentSearch extends Payment
         $query->andFilterWhere(['like', 'CONCAT(customer.first_name,customer.last_name)', $this->customerName]);
         $query->andFilterWhere(['payment.status'=>$this->status]);
         $query->andFilterWhere(['loan.status'=>$params['loan_status']]);
+        $query->andFilterWhere(['payment.payment_date'=>$params['paymentDate']]);
 
         $data = $query->select([
             'payment.id',
-            'customer.dni',
-            'CONCAT(customer.first_name,customer.last_name) as customerName',
             'payment.amount',
             'payment.payment_date',
-            'user.username as collectorName',
             'payment.status',
+            'customer.dni',
+            'CONCAT(customer.first_name,customer.last_name) as customerName',
+            'customer.id as customerId',
+            'payment.loan_id',
+            'user.username as collectorName',
+
         ])->orderBy(['payment_date'=>SORT_ASC])->asArray()->all();
 
         $result = [];

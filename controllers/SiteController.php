@@ -159,13 +159,11 @@ class SiteController extends Controller
             $endDate = strtotime($params['end_date']);
             $option = $params['option'];
 
-
             $select = [];
             $groupBy = [];
             $having = [];
 
             $query = Loan::find();
-
 
             if(isset($option) && $option == 'customerUnPaid')
             {

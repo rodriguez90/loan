@@ -16,7 +16,8 @@ var handleDataTable  = function (){
                 "type": "GET",
                 'data':{
                     'status':0,
-                    'loan_status':1
+                    'loan_status':1,
+                    'paymentDate':moment().format('YYYY-MM-DD')
                 }
             },
             'pagingType': "full_numbers",
@@ -178,6 +179,18 @@ var handleDataTable  = function (){
                     orderable: true,
                     searchable: true,
                     targets:   [1,2,3,4,5,6]
+                },
+                {
+                    targets: 1,
+                    data:'customerName',
+                    render: function ( data, type, full, meta )
+                    {
+                        if(type == 'display')
+                        {
+                            return "<a " + "href=\"" + homeUrl + "customer/view?id=" + full.customerId + "\" class=\"\" title=\"Ver\">" + data +"</a>";
+                        }
+                        return '-';
+                    }
                 },
                 {
                     targets: 2,

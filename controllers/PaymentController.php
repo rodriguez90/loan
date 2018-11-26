@@ -15,6 +15,7 @@ use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
+use Zxing\FormatException;
 
 /**
  * PaymentController implements the CRUD actions for Payment model.
@@ -136,6 +137,7 @@ class PaymentController extends Controller
      */
     public function actionCreate()
     {
+//        throw new ForbiddenHttpException('No tiene acceso a esta acción.');
         $model = new Payment();
 
         if($data = Yii::$app->request->isPost)
@@ -161,13 +163,13 @@ class PaymentController extends Controller
                         $paymentAmount = (float)$payment->amount;
                         $paymentAmount -=  $amount;
 
-                        if($paymentAmount <= 0) // la cantidad a descontar era mayor que la cuota a pagar
+                        if($paymentAmount <= 0) // la cantidad a descontar era mayor que la cuota
                         {
                             $amount = abs($paymentAmount);
                             $payment->amount = number_format(0,2);
                             $payment->status = Payment::COLLECTED;
                         }
-                        elseif ($paymentAmount > 0) // la cantidad a descontar era menor que la cuota a pagar
+                        elseif ($paymentAmount > 0) // la cantidad a descontar era menor que la cuota
                         {
                             $amount = 0;
                             $payment->amount = number_format($paymentAmount,2);
@@ -202,14 +204,95 @@ class PaymentController extends Controller
     {
         $model = $this->findModel($id);
 
+        if($model->status == Payment::COLLECTED)
+        {
+            throw new ForbiddenHttpException('Esta cuota ya fue cobrada y no debe ser modificada');
+        }
+
         if($data = Yii::$app->request->isPost)
         {
+            $flag = true;
+            $modelOld = $this->findModel($id);
             $data = Yii::$app->request->post();
             $data["Payment"]['payment_date'] = date('Y-m-d', strtotime($data["Payment"]['payment_date']));
             $data["Payment"]['updated_at'] = date('Y-m-d');
 
-            if ($model->load($data) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+            // validar que si es la ultima cuota debe pagar todo el monto
+            // si el pago es
+
+            if($model->load($data))
+            {
+                $transaction = Payment::getDb()->beginTransaction();
+
+                if ($model->save()) {
+
+                    $payments = Payment::find()
+                        ->where(['loan_id'=>$model->loan_id, 'status'=>0])
+                        ->andWhere(['<>','id',$model->id])
+                        ->orderBy(['payment_date'=>SORT_ASC])
+                        ->all();
+
+                    $amountPaid = (float)$model->amount;
+                    $amountOld= (float)$modelOld->amount;
+                    $amount  = abs($amountOld - $amountPaid);
+
+                    if($amountOld  > $amountPaid) // la cantidad pagada es menor que la cuota fija
+                    {
+                        if(count($payments) > 0)
+                        {
+                            $payment = $payments[0];
+                            $payment->amount += $amount;
+
+                            if(!$payment->save())
+                            {
+                                $flag = false;
+                                $model->addError('amount', 'Ha ocurrido un error al actualziar la cuota.');
+                            }
+                        }
+                        else
+                        {
+                            $flag = false;
+                            $model->addError('amount', 'Debe pagar la cuota completa.');
+                        }
+                    }
+                    elseif ($amountOld  < $amountPaid)// la cantidad a pagada es mayor que lo que se debia pagar en la cuota
+                    {
+                        foreach ($payments as $payment)
+                        {
+                            if($amount == 0) break;
+
+                            $paymentAmount = (float)$payment->amount;
+                            $paymentAmount -=  $amount;
+
+                            if($paymentAmount <= 0) // la cantidad a descontar era mayor que la cuota
+                            {
+                                $amount = abs($paymentAmount);
+                                $payment->amount = number_format(0,2);
+                                $payment->status = Payment::COLLECTED;
+                            }
+                            elseif ($paymentAmount > 0) // la cantidad a descontar era menor que la cuota
+                            {
+                                $amount = 0;
+                                $payment->amount = number_format($paymentAmount,2);
+                            }
+
+                            if(!$payment->save())
+                            {
+                                $flag = false;
+                                $model->addError('amount', 'Ha ocurrido un error al actualziar la cuota.');
+                                break;
+                            }
+                        }
+                    }
+
+                    if($flag)
+                    {
+                        $transaction->commit();
+                        return $this->redirect(['view', 'id' => $model->id]);
+                    }
+                    else $transaction->rollBack();
+                }
+                else $transaction->rollBack();
             }
         }
 

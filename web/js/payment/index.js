@@ -181,6 +181,18 @@ var handleDataTable  = function (){
                     targets:   [1,2,3,4,5,6]
                 },
                 {
+                    targets: 1,
+                    data:'customerName',
+                    render: function ( data, type, full, meta )
+                    {
+                        if(type == 'display')
+                        {
+                            return "<a " + "href=\"" + homeUrl + "customer/view?id=" + full.customerId + "\" class=\"\" title=\"Ver\">" + data +"</a>";
+                        }
+                        return '-';
+                    }
+                },
+                {
                     targets: 2,
                     data:'payment_date',
                     render: function ( data, type, full, meta )

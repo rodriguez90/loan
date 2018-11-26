@@ -15,10 +15,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="col-lg-12 col-xs-12">
         <div class="box box-solid">
-            <div class="box-header with-border">
-				<?= Html::a('Nuevo Cuota', ['create'], ['class' => 'btn btn-success']) ?>
-                <!-- /.box-tools -->
-            </div>
             <!-- /.box-header -->
             <div class="box-body">
                 <div class="table-responsive">
