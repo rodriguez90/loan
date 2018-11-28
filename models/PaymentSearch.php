@@ -210,7 +210,7 @@ class PaymentSearch extends Payment
             'payment.payment_date',
             'payment.status',
             'customer.dni',
-            'CONCAT(customer.first_name,customer.last_name) as customerName',
+            "CONCAT(customer.first_name,' ', customer.last_name) as customerName",
             'customer.id as customerId',
             'payment.loan_id',
             'user.username as collectorName',

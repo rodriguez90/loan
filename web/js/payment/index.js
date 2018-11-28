@@ -160,7 +160,7 @@ var handleDataTable  = function (){
                 {
                     'data': null,
                     'orderable': false,
-                    searchable: true,
+                    searchable: false,
                     'targets': 0,
                     'checkboxes': {
                         'selectRow': true
@@ -189,7 +189,7 @@ var handleDataTable  = function (){
                         {
                             return "<a " + "href=\"" + homeUrl + "customer/view?id=" + full.customerId + "\" class=\"\" title=\"Ver\">" + data +"</a>";
                         }
-                        return '-';
+                        return data;
                     }
                 },
                 {

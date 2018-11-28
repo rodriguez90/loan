@@ -189,7 +189,7 @@ var handleDataTable  = function (){
                         {
                             return "<a " + "href=\"" + homeUrl + "customer/view?id=" + full.customerId + "\" class=\"\" title=\"Ver\">" + data +"</a>";
                         }
-                        return '-';
+                        return data;
                     }
                 },
                 {
