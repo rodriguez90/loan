@@ -37,7 +37,7 @@ class DataTableAsset extends AssetBundle
         'js/plugins/DataTables/extensions/Buttons/js/buttons.print.min.js',
         'js/plugins/DataTables/extensions/Buttons/js/buttons.flash.min.js',
         'js/plugins/DataTables/extensions/Buttons/js/buttons.html5.min.js',
-        'js/plugins/DataTables/extensions/Buttons/js/buttons.colvis.min.js',
+        'js/plugins/DataTables/extensions/Buttons/js/buttons.colVis.min.js',
         'js/plugins/DataTables/extensions/Select/js/dataTables.select.min.js',
         'js/plugins/DataTables/extensions/KeyTable/js/dataTables.keyTable.min.js',
 //        'js/plugins/DataTables/extensions/Responsive/js/dataTables.responsive.min.js',
