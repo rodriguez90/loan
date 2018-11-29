@@ -299,6 +299,7 @@ HTML;
                             </div>
 
                             <?= Html::hiddenInput('payments', [], ['id'=>'payments'])?>
+                            <?= Html::hiddenInput('refinance', $model->getAmountUnPaid())?>
                         </div>
 
                     </div>

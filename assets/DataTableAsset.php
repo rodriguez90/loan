@@ -19,7 +19,7 @@ class DataTableAsset extends AssetBundle
 
     public $css = [
 //        'js/plugins/DataTables/media/css/datatables.css',
-        'js/plugins/DataTables/media/css/dataTables.bootstrap.css',
+        'js/plugins/DataTables/media/css/dataTables.bootstrap.min.css',
         'js/plugins/DataTables/extensions/Buttons/css/buttons.bootstrap.min.css',
         'js/plugins/DataTables/extensions/Select/css/select.bootstrap.min.css',
 //        'js/plugins/DataTables/extensions/Responsive/css/responsive.bootstrap.min.css'	,
@@ -30,8 +30,8 @@ class DataTableAsset extends AssetBundle
     ];
     public $js = [
         'js/plugins/DataTables/media/js/jquery.dataTables.min.js',
-        'js/plugins/DataTables/media/js/datatables.js',
-        'js/plugins/DataTables/media/js/dataTables.bootstrap.js',
+        'js/plugins/DataTables/media/js/datatables.min.js',
+        'js/plugins/DataTables/media/js/dataTables.bootstrap.min.js',
         'js/plugins/DataTables/extensions/Buttons/js/dataTables.buttons.min.js',
         'js/plugins/DataTables/extensions/Buttons/js/buttons.bootstrap.min.js',
         'js/plugins/DataTables/extensions/Buttons/js/buttons.print.min.js',

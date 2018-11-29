@@ -75,6 +75,11 @@ class LoanController extends Controller
                         'allow' => true,
                         'roles' => ['refinance'],
                     ],
+                    [
+                        'actions' => ['compute-loan'],
+                        'allow' => true,
+                        'roles' => ['loan_create'],
+                    ],
                 ],
             ],
         ];
@@ -130,6 +135,14 @@ class LoanController extends Controller
             $payments = json_decode($data['payments']);
 
             $result = true;
+
+            if(count($payments)== 0)
+            {
+                $model->addError(nul, 'Ah ocurrido un error al generar los pagos.');
+                return $this->render('create', [
+                    'model' => $model,
+                ]);
+            }
 
             if ($model->load($data))
             {
@@ -485,5 +498,101 @@ class LoanController extends Controller
     public function actionComputeLoan()
     {
         // FIXME: this is for compute loan by ajax
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $response = array();
+        $response['success'] = true;
+        $response['msg'] = '';
+        $response['data'] = [];
+        $response['msg_dev'] = '';
+
+        $data = Yii::$app->request->post();
+        $loan = new Loan();
+        $loan->load($data);
+
+        $interes = $loan->porcent_interest;
+        $amount = (float)$loan->amount;
+        $startDate = new \DateTime(date('Y-m-d', strtotime($loan->start_date)));
+        $endDate = new \DateTime(date('Y-m-d', strtotime($loan->end_date)));
+
+        $frequency = $loan->frequency_payment;
+        $refinance = $data['refinance'];
+
+        if($interes == null)
+        {
+            $response['success'] = false;
+            $response['msg'] = 'Debe definir el interés del préstamo.';
+        }
+        elseif($amount == null || $amount <= 0 )
+        {
+            $response['success'] = false;
+            $response['msg'] = 'Debe definir la cantidad del préstamo.';
+        }
+        elseif($startDate == null || $startDate == false || $endDate == null || $endDate == false)
+        {
+            $response['success'] = false;
+            $response['msg'] = 'Debe definir el plazo del préstamo.';
+        }
+        elseif($frequency == null || $frequency <= 0)
+        {
+            $response['success'] = false;
+            $response['msg'] = 'La frequencia de pago debe estar comprendida en el plazo del préstamo.';
+        }
+
+        $diff = $startDate->diff($endDate)->days;// date_diff($startDate, $endDate);
+
+        $response['data']['diff'] = $diff;
+
+        if($response['success'] && ($diff == false || $diff < $frequency))
+        {
+            $response['success'] = false;
+            $response['msg'] = 'La frequencia de pago debe estar comprendida en el plazo del préstamo.';
+        }
+
+        if($response['success'])
+        {
+            $earnings = ($amount * $interes) / 100;
+            $total = $amount + $earnings;
+
+            $paymentCount = round( $diff / $frequency);
+
+            $refinance = (float)($refinance);
+            if($refinance)
+            {
+                $total += $refinance;
+            }
+
+            $fee = $total / $paymentCount;
+
+            $response['data']['fee'] = $fee;
+            $response['data']['paymentCount'] = $paymentCount;
+            $response['data']['total'] = $total;
+            $response['data']['loan'] = $loan;
+
+            // build paymento without sunday payment date
+            $count = $paymentCount;
+            $payments = [];
+
+            $interval = date_interval_create_from_date_string($frequency . ' days');
+            $paymentDate = $startDate;
+            while ($count > 0)
+            {
+                $paymentDate->add($interval);
+                if(jddayofweek($paymentDate->getTimestamp()) == 0)
+                {
+                    $response['data']['sunday' . $count] = $paymentDate->sub(date_interval_create_from_date_string('1 days')) ;
+                    $paymentDate->sub(date_interval_create_from_date_string('1 days'));
+                }
+
+                $payments[]= ['payment_date'=>$paymentDate->format('Y-m-d')];
+                $count -= 1;
+            }
+
+            $response['data']['payments'] = $payments;
+        }
+
+
+        return $response;
     }
 }

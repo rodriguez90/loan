@@ -63,52 +63,6 @@ var generateFee = function () {
         error = 'La frequencia de pago debe estar comprendida en el plazo del préstamo.';
     }
 
-    if(flag)
-    {
-        fee_count = Math.round(diff / frequency);
-
-        // if(flag && (isNaN(fee) || fee == 0))
-        if(flag)
-        {
-            var partial = (amount * interes) / 100;
-            // partial = round(partial,2);
-            total = amount + partial;
-            // total = round(total,2);
-            fee =  total / fee_count;
-            fee = round(fee,2);
-            $('#loan-fee_payment').val(fee);
-            // $('#loan-fee_payment-disp').val(fee);
-            document.getElementById('countFee').innerHTML = "Cantidad de Coutas: " + fee_count;
-            document.getElementById('total').innerHTML = "Total a cancelar: " + total.toFixed(2);
-
-            payments = [];
-            var table = $('#data-table').DataTable();
-            table
-                .clear()
-                .draw();
-            for (var i=0; i < fee_count; i++)
-            {
-                var pay_date = {'payment_date':start_date.add(frequency, 'days').format('DD-MM-YYYY')};
-                table.row.add(
-                    pay_date
-                ).draw();
-                payments.push(pay_date);
-            }
-            // console.log(payments);
-            $('#payments').val(JSON.stringify(payments));
-        }
-    }
-
-    console.log('Interes: ' + interes);
-    console.log('Cantidad: ' + amount);
-    console.log('Start Date: ' + start_date);
-    console.log('End Date: ' + end_date);
-    console.log('Frecuencia: ' + frequency);
-    console.log('Diff: ' + diff);
-    console.log('Cantidad de Cuotas: ' + fee_count);
-    console.log('Total: ' + total);
-    console.log('Cuota: ' + fee);
-
 
     if(!flag)
     {
@@ -123,7 +77,129 @@ var generateFee = function () {
                 }
             }
         );
+
+        return;
     }
+
+    if(flag)
+    {
+        var params = $('#w0').serializeObject();
+        console.log(params);
+
+        var jsConfirm = null;
+
+        $.ajax({
+            // async:false,
+            url: homeUrl + "loan/compute-loan",
+            type: "POST",
+            dataType: "json",
+            data:  params,
+//                            contentType: "application/json; charset=utf-8",
+            beforeSend:function () {
+
+            },
+            success: function (response) {
+
+                if(response.success)
+                {
+                    var data = response.data;
+
+                    $('#loan-fee_payment').val(data.fee);
+                    document.getElementById('countFee').innerHTML = "Cantidad de Coutas: " + data.paymentCount;
+                    document.getElementById('total').innerHTML = "Total a cancelar: " + data.total.toFixed(2);
+                    document.getElementById('total').innerHTML = "Total a cancelar: " + data.total.toFixed(2);
+
+                    var table = $('#data-table').DataTable();
+                    table
+                        .clear()
+                        .draw();
+                    table.rows.add(data.payments).draw();
+
+                    // for (var i=0; i < data.payments.length; i++)
+                    // {
+                    //     payments.push(data.payments[i].payment_date);
+                    // }
+
+                    payments= data.payments;
+
+                    $('#payments').val(JSON.stringify(payments));
+
+                }
+                else
+                {
+                    $.alert(
+                        {
+                            title:'Advertencia!',
+                            content:response.msg,
+                            buttons: {
+                                confirm: {
+                                    text:'Aceptar',
+                                }
+                            }
+                        }
+                    );
+                }
+
+            },
+            error: function(data) {
+                $.alert(
+                    {
+                        title:'Advertencia!',
+                        content:'Ah ocurrido un error al calcular las cuotas.',
+                        buttons: {
+                            confirm: {
+                                text:'Aceptar',
+                            }
+                        }
+                    }
+                );
+            },
+        });
+    }
+
+    // fee_count = Math.round(diff / frequency);
+    //
+    // // if(flag && (isNaN(fee) || fee == 0))
+    // if(flag)
+    // {
+    //     var partial = (amount * interes) / 100;
+    //     // partial = round(partial,2);
+    //     total = amount + partial;
+    //     // total = round(total,2);
+    //     fee =  total / fee_count;
+    //     fee = round(fee,2);
+    //     $('#loan-fee_payment').val(fee);
+    //     // $('#loan-fee_payment-disp').val(fee);
+    //     document.getElementById('countFee').innerHTML = "Cantidad de Coutas: " + fee_count;
+    //     document.getElementById('total').innerHTML = "Total a cancelar: " + total.toFixed(2);
+    //
+    //     payments = [];
+    //     var table = $('#data-table').DataTable();
+    //     table
+    //         .clear()
+    //         .draw();
+    //     for (var i=0; i < fee_count; i++)
+    //     {
+    //         var pay_date = {'payment_date':start_date.add(frequency, 'days').format('DD-MM-YYYY')};
+    //         table.row.add(
+    //             pay_date
+    //         ).draw();
+    //         payments.push(pay_date);
+    //     }
+    //     // console.log(payments);
+    //     $('#payments').val(JSON.stringify(payments));
+    // }
+
+    // console.log('Interes: ' + interes);
+    // console.log('Cantidad: ' + amount);
+    // console.log('Start Date: ' + start_date);
+    // console.log('End Date: ' + end_date);
+    // console.log('Frecuencia: ' + frequency);
+    // console.log('Diff: ' + diff);
+    // console.log('Cantidad de Cuotas: ' + fee_count);
+    // console.log('Total: ' + total);
+    // console.log('Cuota: ' + fee);
+
 };
 
 var handleDataTable = function() {

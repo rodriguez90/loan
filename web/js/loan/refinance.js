@@ -35,10 +35,6 @@ var generateFee = function () {
         flag = false;
         error = 'Debe definir la cantidad del préstamo.';
     }
-    else
-    {
-        // amount = round(amount,2);
-    }
 
     if(flag && (!start_date.isValid()
         || !end_date.isValid()))
@@ -62,59 +58,6 @@ var generateFee = function () {
         error = 'La frequencia de pago debe estar comprendida en el plazo del préstamo.';
     }
 
-    if(flag)
-    {
-        fee_count = Math.round(diff / frequency);
-
-        // if(flag && (isNaN(fee) || fee == 0))
-        if(flag)
-        {
-            // if(loan.amount_paid !== null && loan.amount_paid > 0)
-            // {
-            //     amount += loan.amount_unpaid ;
-            // }
-
-            var partial = (amount * interes) / 100;
-            // partial = round(partial,2);
-            total = amount + partial + loan.amount_unpaid;
-            // console.log("loan unpaid: " + loan.amount_unpaid);
-            // total = round(total,2);
-            fee =  total / fee_count;
-            fee = round(fee,2);
-            $('#loan-fee_payment').val(fee);
-            // $('#loan-fee_payment-disp').val(fee);
-            document.getElementById('countFee').innerHTML = "Cantidad de Coutas: " + fee_count;
-            document.getElementById('total').innerHTML = "Total a cancelar: " + total.toFixed(2);
-
-            payments = [];
-            var table = $('#data-table').DataTable();
-            table
-                .clear()
-                .draw();
-            for (var i=0; i < fee_count; i++)
-            {
-                var pay_date = {'payment_date':start_date.add(frequency, 'days').format('DD-MM-YYYY')};
-                table.row.add(
-                    pay_date
-                ).draw();
-                payments.push(pay_date);
-            }
-            console.log(payments);
-            $('#payments').val(JSON.stringify(payments));
-        }
-    }
-
-    console.log('Interes: ' + interes);
-    console.log('Cantidad: ' + amount);
-    console.log('Start Date: ' + moment(start_date).format('DD-MM-YY'));
-    console.log('End Date: ' + moment(end_date).format('DD-MM-YY'));
-    console.log('Frecuenscia: ' + frequency);
-    console.log('Diff: ' + diff);
-    console.log('Cantidad de Cuotas: ' + fee_count);
-    console.log('Total: ' + total);
-    console.log('Cuota: ' + fee);
-
-
     if(!flag)
     {
         $.alert(
@@ -123,12 +66,141 @@ var generateFee = function () {
                 content:error,
                 buttons: {
                     confirm: {
-                        text:'Aceptar',
+                        text:'Aceptar'
                     }
                 }
             }
         );
+        return;
     }
+
+    if(flag)
+    {
+        var params = $('#w0').serializeObject();
+
+        console.log(params);
+
+        var jsConfirm = null;
+
+        $.ajax({
+            // async:false,
+            url: homeUrl + "loan/compute-loan",
+            type: "POST",
+            dataType: "json",
+            data:  params,
+//                            contentType: "application/json; charset=utf-8",
+            beforeSend:function () {
+
+            },
+            success: function (response) {
+
+                if(response.success)
+                {
+                    var data = response.data;
+
+                    $('#loan-fee_payment').val(data.fee);
+                    document.getElementById('countFee').innerHTML = "Cantidad de Coutas: " + data.paymentCount;
+                    document.getElementById('total').innerHTML = "Total a cancelar: " + data.total.toFixed(2);
+
+                    var table = $('#data-table').DataTable();
+                    table
+                        .clear()
+                        .draw();
+                    table.rows.add(data.payments).draw();
+
+                    // for (var i=0; i < data.payments.length; i++)
+                    // {
+                    //     payments.push(data.payments[i].payment_date);
+                    // }
+
+                    payments= data.payments;
+
+                    $('#payments').val(JSON.stringify(payments));
+
+                }
+                else
+                {
+                    $.alert(
+                        {
+                            title:'Advertencia!',
+                            content:response.msg,
+                            buttons: {
+                                confirm: {
+                                    text:'Aceptar',
+                                }
+                            }
+                        }
+                    );
+                }
+
+            },
+            error: function(data) {
+                $.alert(
+                    {
+                        title:'Advertencia!',
+                        content:'Ah ocurrido un error al calcular las cuotas.',
+                        buttons: {
+                            confirm: {
+                                text:'Aceptar',
+                            }
+                        }
+                    }
+                );
+            },
+        });
+        //
+        // fee_count = Math.round(diff / frequency);
+        //
+        // // if(flag && (isNaN(fee) || fee == 0))
+        // if(flag)
+        // {
+        //     // if(loan.amount_paid !== null && loan.amount_paid > 0)
+        //     // {
+        //     //     amount += loan.amount_unpaid ;
+        //     // }
+        //
+        //     var partial = (amount * interes) / 100;
+        //     // partial = round(partial,2);
+        //     total = amount + partial + loan.amount_unpaid;
+        //     // console.log("loan unpaid: " + loan.amount_unpaid);
+        //     // total = round(total,2);
+        //     fee =  total / fee_count;
+        //     fee = round(fee,2);
+        //     $('#loan-fee_payment').val(fee);
+        //     // $('#loan-fee_payment-disp').val(fee);
+        //     document.getElementById('countFee').innerHTML = "Cantidad de Coutas: " + fee_count;
+        //     document.getElementById('total').innerHTML = "Total a cancelar: " + total.toFixed(2);
+        //
+        //     payments = [];
+        //     var table = $('#data-table').DataTable();
+        //     table
+        //         .clear()
+        //         .draw();
+        //     for (var i=0; i < fee_count; i++)
+        //     {
+        //         var pay_date = {'payment_date':start_date.add(frequency, 'days').format('DD-MM-YYYY')};
+        //         table.row.add(
+        //             pay_date
+        //         ).draw();
+        //         payments.push(pay_date);
+        //     }
+        //     console.log(payments);
+        //     $('#payments').val(JSON.stringify(payments));
+        // }
+    }
+
+    // console.log('Interes: ' + interes);
+    // console.log('Cantidad: ' + amount);
+    // console.log('Start Date: ' + moment(start_date).format('DD-MM-YY'));
+    // console.log('End Date: ' + moment(end_date).format('DD-MM-YY'));
+    // console.log('Frecuenscia: ' + frequency);
+    // console.log('Diff: ' + diff);
+    // console.log('Cantidad de Cuotas: ' + fee_count);
+    // console.log('Total: ' + total);
+    // console.log('Cuota: ' + fee);
+
+
+
 };
 
 var handleDataTable = function() {
@@ -305,7 +377,7 @@ $(document).ready(function () {
             document.getElementById('collapsedBtn').click();
         }
 
-        generateFee();
+        // generateFee();
     }
 
     // form submit
